@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "sistema_videojuego": {
+    "sistema_videojuegos": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -22,7 +22,12 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/bootstrap/dist/css/bootstrap.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css"
+            ],
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.js"
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -58,10 +63,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "sistema_videojuego:build:production"
+              "buildTarget": "sistema_videojuegos:build:production"
             },
             "development": {
-              "buildTarget": "sistema_videojuego:build:development"
+              "buildTarget": "sistema_videojuegos:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -86,5 +91,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "5a99b381-97d8-4403-b3df-e0136424b86f"
   }
 }

@@ -1,0 +1,63 @@
+<div class="container">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title text-center mb-4">Login</h3>
+          <form [formGroup]="loginForm" (ngSubmit)="login()">
+            
+            <!-- Campo Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Correo electrónico</label>
+              <input 
+                type="email" 
+                class="form-control" 
+                id="email" 
+                placeholder="Ingrese su correo"
+                formControlName="email"
+                [class.is-invalid]="email?.invalid && (email?.touched || email?.dirty)">
+              
+              <!-- Mensajes de error para email -->
+              <div class="invalid-feedback" *ngIf="email?.invalid && (email?.touched || email?.dirty)">
+                <span *ngIf="email?.errors?.['required']">El email es requerido</span>
+                <span *ngIf="email?.errors?.['email']">Ingrese un email válido</span>
+              </div>
+            </div>
+
+            <!-- Campo Contraseña -->
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña</label>
+              <input 
+                type="password" 
+                class="form-control" 
+                id="password" 
+                placeholder="Ingrese su contraseña"
+                formControlName="password"
+                [class.is-invalid]="password?.invalid && (password?.touched || password?.dirty)">
+              
+              <!-- Mensajes de error para contraseña -->
+              <div class="invalid-feedback" *ngIf="password?.invalid && (password?.touched || password?.dirty)">
+                <span *ngIf="password?.errors?.['required']">La contraseña es requerida</span>
+                <span *ngIf="password?.errors?.['minlength']">
+                  Mínimo {{ password?.errors?.['minlength']?.requiredLength }} caracteres
+                </span>
+              </div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="isLoading || loginForm.invalid">
+                {{ isLoading ? 'Cargando...' : 'Login' }}
+              </button>
+              <button type="button" class="btn btn-secondary" routerLink="/create-account-form">
+                Registrarse
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
