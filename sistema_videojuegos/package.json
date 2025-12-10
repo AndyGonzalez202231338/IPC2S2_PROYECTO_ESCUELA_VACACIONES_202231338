@@ -1,5 +1,5 @@
 {
-  "name": "sistema-videojuego",
+  "name": "sistema-videojuegos",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:sistema_videojuego": "node dist/sistema_videojuego/server/server.mjs"
+    "serve:ssr:sistema_videojuegos": "node dist/sistema_videojuegos/server/server.mjs"
   },
   "prettier": {
     "printWidth": 100,
@@ -31,6 +31,8 @@
     "@angular/platform-server": "^20.3.0",
     "@angular/router": "^20.3.0",
     "@angular/ssr": "^20.3.5",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "express": "^5.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
