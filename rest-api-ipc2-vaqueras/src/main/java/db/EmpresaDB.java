@@ -20,6 +20,12 @@ public class EmpresaDB {
     private static final String EXISTE_EMPRESA_POR_NOMBRE_QUERY = 
         "SELECT COUNT(*) as count FROM empresa WHERE nombre = ?";
     
+    private static final String ACTUALIZAR_EMPRESA_QUERY = 
+        "UPDATE empresa SET nombre = ?, descripcion = ? WHERE id_empresa = ?";
+    
+    private static final String EXISTE_EMPRESA_POR_NOMBRE_EXCLUYENDO_ID_QUERY = 
+        "SELECT COUNT(*) as count FROM empresa WHERE nombre = ? AND id_empresa != ?";
+    
     private Empresa mapResultSetToEmpresa(ResultSet resultSet) throws SQLException {
         return new Empresa(
             resultSet.getInt("id_empresa"),
@@ -119,6 +125,57 @@ public class EmpresaDB {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error al verificar nombre de empresa: " + e.getMessage());
+        }
+        
+        return false;
+    }
+    
+    /**
+     * actualizar una empresa en la base de datos
+     * @param empresa
+     * @return 
+     */
+    public boolean updateEmpresa(Empresa empresa) {
+        Connection connection = DBConnectionSingleton.getInstance().getConnection();
+        
+        try (PreparedStatement update = connection.prepareStatement(ACTUALIZAR_EMPRESA_QUERY)) {
+            
+            update.setString(1, empresa.getNombre());
+            update.setString(2, empresa.getDescripcion());
+            update.setInt(3, empresa.getId_empresa());
+            
+            int affectedRows = update.executeUpdate();
+            return affectedRows > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al actualizar empresa: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Verifica si ya existe una empresa con el mismo nombre, excluyendo una empresa específica
+     * (Para validaciones en update)
+     * @param nombreEmpresa
+     * @param idEmpresaExcluir
+     * @return 
+     */
+    public boolean existeEmpresaPorNombreExcluyendoId(String nombreEmpresa, int idEmpresaExcluir) {
+        Connection connection = DBConnectionSingleton.getInstance().getConnection();
+        
+        try (PreparedStatement query = connection.prepareStatement(EXISTE_EMPRESA_POR_NOMBRE_EXCLUYENDO_ID_QUERY)) {
+            query.setString(1, nombreEmpresa);
+            query.setInt(2, idEmpresaExcluir);
+            ResultSet resultSet = query.executeQuery();
+            
+            if (resultSet.next()) {
+                int count = resultSet.getInt("count");
+                return count > 0;
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al verificar nombre de empresa (excluyendo ID): " + e.getMessage());
         }
         
         return false;

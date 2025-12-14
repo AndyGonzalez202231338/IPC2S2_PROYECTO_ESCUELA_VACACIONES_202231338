@@ -6,6 +6,7 @@ package empresa.services;
 
 import db.EmpresaDB;
 import empresa.dtos.NewEmpresaRequest;
+import empresa.dtos.UpdateEmpresaRequest;
 import empresa.models.Empresa;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityNotFoundException;
@@ -50,12 +51,25 @@ public class EmpresaCrudService {
         }
     }
     
-    public Empresa updateEmpresa(int id, NewEmpresaRequest empresaRequest) 
-            throws EntityNotFoundException, EmpresaDataInvalidException {
+    /**
+     * Actualiza una empresa existente
+     * Solo actualiza nombre y descripción, no requiere información de usuario
+     * @param id
+     * @param empresaRequest
+     * @return
+     * @throws EntityNotFoundException
+     * @throws EmpresaDataInvalidException
+     * @throws EntityAlreadyExistsException 
+     */
+    public Empresa updateEmpresa(int id, UpdateEmpresaRequest empresaRequest) 
+            throws EntityNotFoundException, EmpresaDataInvalidException, EntityAlreadyExistsException {
         
-        // Verificar que la empresa existe
+        System.out.println("Actualizando empresa ID: " + id + " con nombre: " + empresaRequest.getNombre());
+        
+        // 1. Verificar que la empresa existe
         Empresa empresaExistente = getEmpresaById(id);
         
+        // 2. Validar datos básicos
         if (empresaRequest.getNombre() == null || empresaRequest.getNombre().trim().isEmpty()) {
             throw new EmpresaDataInvalidException("El nombre de la empresa es requerido");
         }
@@ -64,12 +78,50 @@ public class EmpresaCrudService {
             throw new EmpresaDataInvalidException("La descripción de la empresa es requerida");
         }
         
-        // Actualizar empresa
-        empresaExistente.setNombre(empresaRequest.getNombre());
-        empresaExistente.setDescripcion(empresaRequest.getDescripcion());
+        // 3. Validar que el nuevo nombre sea único (solo si cambió)
+        String nuevoNombre = empresaRequest.getNombre().trim();
+        String descripcion = empresaRequest.getDescripcion().trim();
         
-        ///return empresaDB.updateEmpresa(empresaExistente);
-        return null;
+        if (!empresaExistente.getNombre().equals(nuevoNombre)) {
+            validarNombreUnicoParaActualizacion(nuevoNombre, id);
+        }
+        
+        // 4. Actualizar los datos de la empresa
+        empresaExistente.setNombre(nuevoNombre);
+        empresaExistente.setDescripcion(descripcion);
+        
+        // 5. Guardar en la base de datos
+        boolean actualizado = empresaDB.updateEmpresa(empresaExistente);
+        
+        if (!actualizado) {
+            throw new RuntimeException("No se pudo actualizar la empresa en la base de datos");
+        }
+        
+        System.out.println("Empresa actualizada exitosamente: " + empresaExistente.getNombre());
+        return empresaExistente;
+    }
+
+    
+    /**
+     * Valida que el nombre sea único para actualización (excluyendo la empresa actual)
+     * @param nombre
+     * @param idEmpresaActual
+     * @throws EntityAlreadyExistsException 
+     */
+    private void validarNombreUnicoParaActualizacion(String nombre, int idEmpresaActual) 
+            throws EntityAlreadyExistsException {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return;
+        }
+        
+        String nombreNormalizado = nombre.trim();
+        
+        if (empresaDB.existeEmpresaPorNombreExcluyendoId(nombreNormalizado, idEmpresaActual)) {
+            throw new EntityAlreadyExistsException(
+                "Ya existe otra empresa con el nombre: '" + nombreNormalizado + "'. " +
+                "Por favor, elige un nombre diferente."
+            );
+        }
     }
     
     public void deleteEmpresa(int id) throws EntityNotFoundException {

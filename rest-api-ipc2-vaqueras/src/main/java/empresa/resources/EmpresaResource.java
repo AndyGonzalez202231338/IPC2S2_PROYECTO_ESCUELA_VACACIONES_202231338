@@ -6,6 +6,7 @@ package empresa.resources;
 
 import empresa.dtos.NewEmpresaRequest;
 import empresa.dtos.EmpresaResponse;
+import empresa.dtos.UpdateEmpresaRequest;
 import empresa.models.Empresa;
 import empresa.services.EmpresaCreator;
 import empresa.services.EmpresaCrudService;
@@ -112,15 +113,32 @@ public class EmpresaResource {
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateEmpresa(@PathParam("id") int id, NewEmpresaRequest empresaRequest) {
+    public Response updateEmpresa(@PathParam("id") int id, UpdateEmpresaRequest empresaRequest) {
         EmpresaCrudService empresaService = new EmpresaCrudService();
         try {
             Empresa empresaActualizada = empresaService.updateEmpresa(id, empresaRequest);
             return Response.ok(new EmpresaResponse(empresaActualizada)).build();
+
         } catch (EntityNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\": \"Empresa no encontrada\"}")
+                    .build();
+
         } catch (EmpresaDataInvalidException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\": \"" + e.getMessage() + "\"}")
+                    .build();
+
+        } catch (EntityAlreadyExistsException e) {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("{\"error\": \"" + e.getMessage() + "\"}")
+                    .build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\": \"Error interno del servidor\"}")
+                    .build();
         }
     }
 

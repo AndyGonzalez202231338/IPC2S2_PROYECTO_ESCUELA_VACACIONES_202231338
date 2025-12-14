@@ -6,6 +6,7 @@ package user.services;
 
 import db.UsersDB;
 import exceptions.EntityNotFoundException;
+import exceptions.OperationNotAllowedException;
 import exceptions.UserDataInvalidException;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
@@ -76,19 +77,51 @@ public class UsersCrudService {
         return user;
     }
     
-    public void deleteUserByEmail(String email) throws EntityNotFoundException {
-        UsersDB usersDB = new UsersDB();
-        Optional<Usuario> userOpt = usersDB.getByEmail(email);
-        if (userOpt.isEmpty()) {
-            throw new EntityNotFoundException(
-                    String.format("El Usuario con email %s no existe", email)
+    public boolean deleteUserByEmail(String email) throws EntityNotFoundException, OperationNotAllowedException {
+    UsersDB usersDB = new UsersDB();
+    Optional<Usuario> userOpt = usersDB.getByEmail(email);
+    
+    if (userOpt.isEmpty()) {
+        throw new EntityNotFoundException(
+                String.format("El Usuario con email %s no existe", email)
+        );
+    }
+    
+    Usuario user = userOpt.get();
+    
+    // Validar si es administrador de empresa (rol 2)
+    if (user.getId_rol() == 2 && user.getId_empresa() > 0) {
+        int idEmpresa = user.getId_empresa();
+        
+        // Contar cuántos administradores tiene la empresa
+        int cantidadAdministradores = usersDB.countAdministradoresEnEmpresa(idEmpresa);
+        
+        // Si es el único administrador, no se puede eliminar
+        if (cantidadAdministradores <= 1) {
+            throw new OperationNotAllowedException(
+                    "No se puede eliminar el ÚNICO administrador de la empresa. " +
+                    "La empresa ID " + idEmpresa + " se quedaría sin administrador. " +
+                    "Primero asigne otro administrador a la empresa."
             );
         }
-        // Obtener el ID del usuario encontrado
-        Usuario user = userOpt.get();
-        int userId = user.getIdUsuario();
-        usersDB.deleteUser(userId);
+        
+        // Si hay más administradores, SÍ se puede eliminar este
+        // Pero necesitas desasignar la empresa primero o eliminar directamente
+        // El DELETE en la BD automáticamente quitará la relación
     }
+    
+    // Validar que no sea el último administrador del sistema (rol 1)
+    /*if (user.getId_rol() == 1) {
+        int countAdmins = usersDB.countUsersByRole(1);
+        if (countAdmins <= 1) {
+            throw new OperationNotAllowedException(
+                    "No se puede eliminar el único administrador del sistema."
+            );
+        }
+    }*/
+    
+    return usersDB.deleteUser(user.getIdUsuario());
+}
     
     public Usuario getUserById(int idUsuario) throws EntityNotFoundException {
     Optional<Usuario> userOpt = new UsersDB().getById(idUsuario);
