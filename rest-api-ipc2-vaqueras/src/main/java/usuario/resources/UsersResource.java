@@ -6,6 +6,7 @@ package usuario.resources;
 
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityNotFoundException;
+import exceptions.OperationNotAllowedException;
 import exceptions.UserDataInvalidException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -42,21 +43,21 @@ public class UsersResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createEvent(NewUserRequest userRequest) {
-        
+
         UsersCreator usersCreator = new UsersCreator();
 
         try {
             usersCreator.createUser(userRequest);
-            
+
             return Response.status(Response.Status.CREATED).build();
         } catch (UserDataInvalidException e) {
-            
+
             return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (EntityAlreadyExistsException e) {
-            
+
             return Response.status(Response.Status.CONFLICT).build();
         } catch (Exception e) {
-            
+
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
@@ -87,7 +88,7 @@ public class UsersResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-    
+
     @GET
     @Path("anunciantes")
     @Produces(MediaType.APPLICATION_JSON)
@@ -135,17 +136,33 @@ public class UsersResource {
     }
 
     @DELETE
-    @Path("{correo}")
-    public Response deleteEvent(@PathParam("correo") String email) {
-        UsersCrudService userCrudService = new UsersCrudService();
-
-        try {
-
-            userCrudService.deleteUserByEmail(email);
-
-            return Response.ok().build();
-        } catch (EntityNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+@Path("{correo}")
+@Produces(MediaType.APPLICATION_JSON)
+public Response deleteUser(@PathParam("correo") String email) {
+    UsersCrudService userCrudService = new UsersCrudService();
+    
+    try {
+        boolean eliminado = userCrudService.deleteUserByEmail(email);
+        
+        return Response.ok()
+                .entity("{\"message\": \"Usuario eliminado exitosamente\", \"email\": \"" + email + "\"}")
+                .build();
+                
+    } catch (EntityNotFoundException e) {
+        return Response.status(Response.Status.NOT_FOUND)
+                .entity("{\"error\": \"" + e.getMessage() + "\"}")
+                .build();
+                
+    } catch (OperationNotAllowedException e) {
+        return Response.status(Response.Status.FORBIDDEN)
+                .entity("{\"error\": \"" + e.getMessage() + "\"}")
+                .build();
+                
+    } catch (Exception e) {
+        e.printStackTrace();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("{\"error\": \"Error interno del servidor\"}")
+                .build();
     }
+}
 }

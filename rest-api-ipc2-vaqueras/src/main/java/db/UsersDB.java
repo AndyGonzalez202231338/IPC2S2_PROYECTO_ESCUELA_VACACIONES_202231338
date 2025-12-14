@@ -67,6 +67,9 @@ private static final String ENCONTRAR_USUARIO_POR_ID_QUERY
 
     private static final String ELIMINAR_USUARIO_POR_ID_QUERY
             = "DELETE FROM usuario WHERE id_usuario = ?";
+    
+    private static final String CONTAR_ADMINISTRADORES_EMPRESA_QUERY = 
+        "SELECT COUNT(*) as count FROM usuario WHERE id_empresa = ? AND id_rol = 2";
 
     private static final String EXISTE_USUARIO_POR_ID_QUERY
             = "SELECT 1 FROM usuario WHERE id_usuario = ?";
@@ -365,22 +368,40 @@ private static final String ENCONTRAR_USUARIO_POR_ID_QUERY
         }
         return false;
     }
+    
+        public int countAdministradoresEnEmpresa(int idEmpresa) {
+        Connection connection = DBConnectionSingleton.getInstance().getConnection();
+        
+        try (PreparedStatement query = connection.prepareStatement(CONTAR_ADMINISTRADORES_EMPRESA_QUERY)) {
+            query.setInt(1, idEmpresa);
+            ResultSet resultSet = query.executeQuery();
+            
+            if (resultSet.next()) {
+                return resultSet.getInt("count");
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al contar administradores de empresa: " + e.getMessage());
+        }
+        
+        return 0;
+    }
 
     /**
      * Método auxiliar para mapear un ResultSet a un objeto User
      */
     private Usuario mapResultSetToUser(ResultSet resultSet) throws SQLException {
 
-        // Mapear Rol con alias correctos
         Rol role = new Rol(
                 resultSet.getInt("rol_id"),
                 resultSet.getString("rol_nombre"),
                 resultSet.getString("rol_descripcion")
         );
 
-        // Mapear Empresa (puede ser null) - ¡CORRECCIÓN AQUÍ!
+        // Mapear Empresa (puede ser null)
         Empresa empresa = null;
-        int empresaId = resultSet.getInt("empresa_id");  // Cambia "empesa_id" a "empresa_id"
+        int empresaId = resultSet.getInt("empresa_id");
 
         // Solo crear empresa si tiene id (no es 0)
         if (empresaId > 0) {
@@ -396,7 +417,7 @@ private static final String ENCONTRAR_USUARIO_POR_ID_QUERY
                 resultSet.getInt("id_usuario"),
                 resultSet.getString("correo"),
                 role,
-                empresa, // puede ser null
+                empresa, // puede no tener una empresa
                 resultSet.getString("nombre"),
                 resultSet.getString("password"),
                 resultSet.getDate("fecha_nacimiento"),
