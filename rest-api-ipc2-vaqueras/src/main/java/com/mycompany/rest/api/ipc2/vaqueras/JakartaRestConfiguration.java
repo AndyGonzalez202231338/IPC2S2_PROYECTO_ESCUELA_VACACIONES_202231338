@@ -1,5 +1,6 @@
 package com.mycompany.rest.api.ipc2.vaqueras;
 
+import categoria.resources.CategoriaResource;
 import empresa.resources.EmpresaResource;
 import jakarta.ws.rs.ApplicationPath;
 import login.resources.LoginResource;
@@ -17,6 +18,7 @@ public class JakartaRestConfiguration extends ResourceConfig {
         register(LoginResource.class);
         register(UsersResource.class); 
         register(EmpresaResource.class);
+        register(CategoriaResource.class);
         register(MultiPartFeature.class);
         
         property(ServerProperties.TRACING, "ALL");
