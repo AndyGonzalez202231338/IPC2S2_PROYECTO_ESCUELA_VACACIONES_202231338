@@ -8,6 +8,7 @@ import usuario.resources.UsersResource;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import sistema.resources.SistemaResource;
 
 @ApplicationPath("api-ipc2-vaqueras/v1")
 public class JakartaRestConfiguration extends ResourceConfig {
@@ -19,6 +20,7 @@ public class JakartaRestConfiguration extends ResourceConfig {
         register(UsersResource.class); 
         register(EmpresaResource.class);
         register(CategoriaResource.class);
+        register(SistemaResource.class);
         register(MultiPartFeature.class);
         
         property(ServerProperties.TRACING, "ALL");
