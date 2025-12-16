@@ -38,42 +38,7 @@ public class SistemaResource {
         }
     }
     
-    @GET
-    @Path("configuraciones/activas")
-    public Response getConfiguracionesActivas() {
-        try {
-            SistemaCrudService sistemaService = new SistemaCrudService();
-            List<ConfiguracionResponse> configuraciones = sistemaService.getConfiguracionesActivas()
-                    .stream()
-                    .map(ConfiguracionResponse::new)
-                    .toList();
-            return Response.ok(configuraciones).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\": \"Error interno del servidor\"}")
-                    .build();
-        }
-    }
-    
-    @GET
-    @Path("configuraciones/search")
-    public Response searchConfiguraciones(@QueryParam("q") String searchTerm) {
-        try {
-            SistemaCrudService sistemaService = new SistemaCrudService();
-            List<ConfiguracionResponse> configuraciones = sistemaService.searchConfiguraciones(searchTerm)
-                    .stream()
-                    .map(ConfiguracionResponse::new)
-                    .toList();
-            return Response.ok(configuraciones).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\": \"Error interno del servidor\"}")
-                    .build();
-        }
-    }
-    
+
     @GET
     @Path("configuraciones/{id}")
     public Response getConfiguracionById(@PathParam("id") int id) {
