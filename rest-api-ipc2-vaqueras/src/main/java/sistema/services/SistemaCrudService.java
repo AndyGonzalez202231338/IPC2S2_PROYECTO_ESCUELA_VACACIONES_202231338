@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package sistema.services;
 
 import sistema.dtos.UpdateConfiguracionRequest;
@@ -11,10 +7,7 @@ import exceptions.EntityNotFoundException;
 import exceptions.ConfiguracionDataInvalidException;
 import java.util.Date;
 import java.util.List;
-/**
- *
- * @author andy
- */
+
 public class SistemaCrudService {
     
     private final SistemaDB sistemaDB;
@@ -23,34 +16,10 @@ public class SistemaCrudService {
         this.sistemaDB = new SistemaDB();
     }
     
-
     public List<ConfiguracionSistema> getAllConfiguraciones() {
         return sistemaDB.getAllConfiguraciones();
     }
     
-    /**
-     * Obtiene configuraciones activas
-     * @return 
-     */
-    public List<ConfiguracionSistema> getConfiguracionesActivas() {
-        //return sistemaDB.getConfiguracionesActivas();
-        return null;
-    }
-    
-    /**
-     * Busca configuraciones
-     * @param searchTerm
-     * @return 
-     */
-    public List<ConfiguracionSistema> searchConfiguraciones(String searchTerm) {
-        if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            return getAllConfiguraciones();
-        }
-        //return sistemaDB.searchConfiguraciones(searchTerm.trim());
-        return null;
-    }
-    
-
     public ConfiguracionSistema getConfiguracionById(int id) throws EntityNotFoundException {
         ConfiguracionSistema config = sistemaDB.getConfiguracionById(id);
         if (config == null) {
@@ -59,7 +28,6 @@ public class SistemaCrudService {
         return config;
     }
     
-
     public ConfiguracionSistema getConfiguracionByNombre(String nombre) throws EntityNotFoundException {
         ConfiguracionSistema config = sistemaDB.getConfiguracionByNombre(nombre);
         if (config == null) {
@@ -68,31 +36,9 @@ public class SistemaCrudService {
         return config;
     }
     
-    /**
-     * Obtiene el valor de una configuración por nombre
-     * @param nombre
-     * @return
-     * @throws EntityNotFoundException 
-     */
-    public String getValorConfiguracion(String nombre) throws EntityNotFoundException {
-        ConfiguracionSistema config = getConfiguracionByNombre(nombre);
-        return config.getValor();
-    }
-    
-    /**
-     * Valida los datos para actualizar una configuración
-     * @param valor
-     * @param fechaFinal
-     * @throws ConfiguracionDataInvalidException 
-     */
     private void validarDatosConfiguracion(String valor, Date fechaFinal) throws ConfiguracionDataInvalidException {
         if (valor == null || valor.trim().isEmpty()) {
             throw new ConfiguracionDataInvalidException("El valor de la configuración es requerido");
-        }
-        
-        // Validaciones específicas según el tipo de configuración
-        if (valor.trim().length() > 255) {
-            throw new ConfiguracionDataInvalidException("El valor no puede exceder 255 caracteres");
         }
     }
     
@@ -106,19 +52,30 @@ public class SistemaCrudService {
         // Validar datos
         validarDatosConfiguracion(configRequest.getValor(), configRequest.getFecha_final());
         
-        
         String tipoConfiguracion = configExistente.getConfiguracion();
         String nuevoValor = configRequest.getValor().trim();
         
+        // Validaciones específicas
         if (tipoConfiguracion.equals("COMISION_GLOBAL")) {
-            // Validar que sea un número decimal válido
             try {
-                double comision = Double.parseDouble(nuevoValor);
-                if (comision < 0 || comision > 100) {
+                double nuevaComision = Double.parseDouble(nuevoValor);
+                if (nuevaComision < 0 || nuevaComision > 100) {
                     throw new ConfiguracionDataInvalidException(
                         "La comisión debe ser un porcentaje entre 0 y 100"
                     );
                 }
+                
+                double valorAnterior = Double.parseDouble(configExistente.getValor());
+                
+                // Solo actualizar comisiones de empresas si el valor cambió
+                if (Math.abs(nuevaComision - valorAnterior) > 0.001) {
+                    System.out.println("CAMBIANDO COMISIÓN GLOBAL de " + valorAnterior + "% a " + nuevaComision + "%");
+                    
+                    // Usar el servicio independiente para actualizar
+                    GlobalComisionUpdateService updateService = new GlobalComisionUpdateService();
+                    updateService.actualizarComisionGlobal(nuevaComision, configRequest.getFecha_final());
+                }
+                
             } catch (NumberFormatException e) {
                 throw new ConfiguracionDataInvalidException(
                     "La comisión debe ser un número válido"
@@ -126,7 +83,6 @@ public class SistemaCrudService {
             }
         } else if (tipoConfiguracion.equals("EDAD_ADOLESCENTES") || 
                    tipoConfiguracion.equals("MAX_MIEMBROS_GRUPO")) {
-            // Validar que sea un número entero válido
             try {
                 int numero = Integer.parseInt(nuevoValor);
                 if (numero <= 0) {
@@ -141,7 +97,7 @@ public class SistemaCrudService {
             }
         }
         
-        
+        // Guardar el nuevo valor en sistema
         boolean actualizado = sistemaDB.updateConfiguracion(
             id, 
             nuevoValor, 
@@ -161,14 +117,10 @@ public class SistemaCrudService {
         return configActualizada;
     }
     
-    /**
-     * Método de conveniencia para obtener valores específicos
-     * @return 
-     */
     public double getComisionGlobal() {
         try {
             String valor = sistemaDB.getValorConfiguracion("COMISION_GLOBAL");
-            return valor != null ? Double.parseDouble(valor) : 15.0; // Valor por defecto
+            return valor != null ? Double.parseDouble(valor) : 15.0;
         } catch (NumberFormatException e) {
             return 15.0; 
         }
@@ -177,7 +129,7 @@ public class SistemaCrudService {
     public int getEdadMinimaAdolescentes() {
         try {
             String valor = sistemaDB.getValorConfiguracion("EDAD_ADOLESCENTES");
-            return valor != null ? Integer.parseInt(valor) : 16; // Valor por defecto
+            return valor != null ? Integer.parseInt(valor) : 16;
         } catch (NumberFormatException e) {
             return 16; 
         }
@@ -186,7 +138,7 @@ public class SistemaCrudService {
     public int getMaxMiembrosGrupo() {
         try {
             String valor = sistemaDB.getValorConfiguracion("MAX_MIEMBROS_GRUPO");
-            return valor != null ? Integer.parseInt(valor) : 6; // Valor por defecto
+            return valor != null ? Integer.parseInt(valor) : 6;
         } catch (NumberFormatException e) {
             return 6; 
         }
