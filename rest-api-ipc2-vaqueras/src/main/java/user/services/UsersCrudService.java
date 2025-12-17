@@ -27,11 +27,7 @@ public class UsersCrudService {
         return usersDB.getAllUsers();
     }
     
-    public List<Usuario> getAllUsersAnunciante() {
-        UsersDB usersDB = new UsersDB();
-        
-        return usersDB.getAllUsersAnunciante();
-    }
+
     
         /**
      * Obtiene todos los administradores de empresa sin empresa asignada

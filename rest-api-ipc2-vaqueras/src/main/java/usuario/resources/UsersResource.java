@@ -90,19 +90,6 @@ public class UsersResource {
     }
 
     @GET
-    @Path("anunciantes")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllUsersAnunciante() {
-        UsersCrudService userCrudService = new UsersCrudService();
-        List<UserResponse> users = userCrudService.getAllUsersAnunciante()
-                .stream()
-                .map(UserResponse::new)
-                .toList();
-
-        return Response.ok(users).build();
-    }
-
-    @GET
     @Path("id/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserById(@PathParam("id") int idUsuario) {

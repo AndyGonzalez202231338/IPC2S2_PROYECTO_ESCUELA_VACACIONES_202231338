@@ -27,6 +27,9 @@ public class Usuario {
     private double saldo_cartera;
     private Byte[] avatar;
 
+    public Usuario() {
+    }
+
     // Constructor con objetos
     public Usuario(int idUsuario, String correo, Rol rol, Empresa empresa, String nombre, 
                    String password, Date fecha_nacimiento, String pais, String telefono, 

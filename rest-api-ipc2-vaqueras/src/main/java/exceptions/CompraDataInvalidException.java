@@ -8,12 +8,12 @@ package exceptions;
  *
  * @author andy
  */
-public class CategoriaDataInvalidException extends Exception {
+public class CompraDataInvalidException extends Exception {
 
-    public CategoriaDataInvalidException() {
+    public CompraDataInvalidException() {
     }
 
-    public CategoriaDataInvalidException(String message) {
+    public CompraDataInvalidException(String message) {
         super(message);
     }
     
