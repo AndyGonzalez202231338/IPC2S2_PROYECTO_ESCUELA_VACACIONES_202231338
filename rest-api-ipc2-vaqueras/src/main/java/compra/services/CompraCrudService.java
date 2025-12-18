@@ -13,6 +13,7 @@ import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityNotFoundException;
 import exceptions.SaldoInsuficienteException;
 import exceptions.ComisionNoEncontradaException;
+import exceptions.EdadNoValidaException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
@@ -46,7 +47,7 @@ public class CompraCrudService {
      * @throws ComisionNoEncontradaException 
      */
     public Compra createCompra(NewCompraRequest request) throws CompraDataInvalidException, EntityNotFoundException, 
-        EntityAlreadyExistsException, SaldoInsuficienteException, ComisionNoEncontradaException {
+        EntityAlreadyExistsException, SaldoInsuficienteException, ComisionNoEncontradaException, EdadNoValidaException {
         try {
             if (request.getFecha_compra() == null) {
                 throw new CompraDataInvalidException("La fecha de compra es requerida");
