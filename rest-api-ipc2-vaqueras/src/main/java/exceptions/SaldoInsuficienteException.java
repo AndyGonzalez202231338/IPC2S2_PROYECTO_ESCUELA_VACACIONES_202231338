@@ -8,12 +8,12 @@ package exceptions;
  *
  * @author andy
  */
-public class CategoriaDataInvalidException extends Exception {
+public class SaldoInsuficienteException extends Exception {
 
-    public CategoriaDataInvalidException() {
+    public SaldoInsuficienteException() {
     }
 
-    public CategoriaDataInvalidException(String message) {
+    public SaldoInsuficienteException(String message) {
         super(message);
     }
     

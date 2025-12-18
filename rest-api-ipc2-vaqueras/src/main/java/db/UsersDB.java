@@ -11,12 +11,12 @@ import user.models.Usuario;
 
 public class UsersDB {
 
-    private static final String CREAR_USUARIO_QUERY
+private static final String CREAR_USUARIO_QUERY
             = "INSERT INTO usuario (correo, id_rol, id_empresa, nombre, password, "
             + "fecha_nacimiento, pais, telefono, saldo_cartera, avatar) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String ASIGNAR_EMPRESA_USUARIO_QUERY
+private static final String ASIGNAR_EMPRESA_USUARIO_QUERY
             = "UPDATE usuario SET id_empresa = ? WHERE id_usuario = ?";
 
 private static final String ADMINISTRADORES_SIN_EMPRESA_QUERY = 
@@ -53,11 +53,6 @@ private static final String ENCONTRAR_USUARIO_POR_ID_QUERY
     private static final String TODOS_LOS_USUARIOS_QUERY
             = "SELECT u.*, r.nombre_rol as nombre_rol, r.descripcion as rol_descripcion "
             + "FROM usuario u INNER JOIN rol r ON u.id_rol = r.id_rol";
-
-    private static final String USUARIOS_ANUNCIANTES_QUERY
-            = "SELECT u.*, r.nombre_rol AS nombre_rol, r.descripcion AS rol_descripcion "
-            + "FROM usuario u INNER JOIN rol r ON u.id_rol = r.id_rol "
-            + "WHERE r.nombre_rol = 'ANUNCIANTE'";
 
     private static final String ACTUALIZAR_USUARIO_POR_ID_QUERY
             = "UPDATE usuario SET correo = ?, id_rol = ?, id_empresa = ?, nombre = ?, password = ?, fecha_nacimiento = ?, pais = ?, telefono = ? saldo_cartera = ? avatar = ?  WHERE id_usuario = ?";
@@ -245,27 +240,12 @@ private static final String ENCONTRAR_USUARIO_POR_ID_QUERY
         return users;
     }
 
-    /**
-     * Obtiene todos los usuarios de tipo anunciantes
-     */
-    public List<Usuario> getAllUsersAnunciante() {
-        List<Usuario> users = new ArrayList<>();
-        Connection connection = DBConnectionSingleton.getInstance().getConnection();
-        try (PreparedStatement query = connection.prepareStatement(USUARIOS_ANUNCIANTES_QUERY)) {
-            ResultSet resultSet = query.executeQuery();
-
-            while (resultSet.next()) {
-                Usuario user = mapResultSetToUser(resultSet);
-                users.add(user);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return users;
-    }
+ 
 
     /**
      * Obtiene un usuario por ID
+     * @param idUsuario
+     * @return 
      */
     public Optional<Usuario> getById(int idUsuario) {
         Connection connection = DBConnectionSingleton.getInstance().getConnection();

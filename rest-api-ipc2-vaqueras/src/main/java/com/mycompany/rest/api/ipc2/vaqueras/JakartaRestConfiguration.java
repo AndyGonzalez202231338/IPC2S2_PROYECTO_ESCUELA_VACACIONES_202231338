@@ -1,6 +1,7 @@
 package com.mycompany.rest.api.ipc2.vaqueras;
 
 import categoria.resources.CategoriaResource;
+import compra.resources.CompraResource;
 import empresa.resources.ComisionResource;
 import empresa.resources.EmpresaResource;
 import jakarta.ws.rs.ApplicationPath;
@@ -10,6 +11,7 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import sistema.resources.SistemaResource;
+import usuario.resources.SaldoResource;
 import videojuego.resources.VideojuegoResource;
 
 @ApplicationPath("api-ipc2-vaqueras/v1")
@@ -25,6 +27,8 @@ public class JakartaRestConfiguration extends ResourceConfig {
         register(SistemaResource.class);
         register(ComisionResource.class);
         register(VideojuegoResource.class);
+        register(CompraResource.class);
+        register(SaldoResource.class);
         register(MultiPartFeature.class);
         
         property(ServerProperties.TRACING, "ALL");

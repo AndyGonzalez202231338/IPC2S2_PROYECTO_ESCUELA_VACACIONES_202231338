@@ -8,12 +8,12 @@ package exceptions;
  *
  * @author andy
  */
-public class CategoriaDataInvalidException extends Exception {
+public class ComisionNoEncontradaException extends Exception {
 
-    public CategoriaDataInvalidException() {
+    public ComisionNoEncontradaException() {
     }
 
-    public CategoriaDataInvalidException(String message) {
+    public ComisionNoEncontradaException(String message) {
         super(message);
     }
     
