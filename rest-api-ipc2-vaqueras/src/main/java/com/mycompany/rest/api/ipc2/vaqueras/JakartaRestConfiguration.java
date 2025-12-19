@@ -2,6 +2,9 @@ package com.mycompany.rest.api.ipc2.vaqueras;
 
 import biblioteca.resources.BibliotecaResource;
 import categoria.resources.CategoriaResource;
+import comentario.resources.CalificacionResource;
+import comentario.resources.ComentarioResource;
+import comentario.resources.RespuestaComentarioResource;
 import compra.resources.CompraResource;
 import empresa.resources.ComisionResource;
 import empresa.resources.EmpresaResource;
@@ -33,6 +36,9 @@ public class JakartaRestConfiguration extends ResourceConfig {
         register(SaldoResource.class);
         register(BibliotecaResource.class);
         register(GrupoResource.class);
+        register(CalificacionResource.class);
+        register(ComentarioResource.class);
+        register(RespuestaComentarioResource.class);
         register(MultiPartFeature.class);
 
         property(ServerProperties.TRACING, "ALL");
