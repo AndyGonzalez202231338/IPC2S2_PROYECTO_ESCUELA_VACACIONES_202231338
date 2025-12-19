@@ -31,6 +31,10 @@ public class VideojuegoDB {
             = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento "
             + "FROM videojuego WHERE id_videojuego = ?";
 
+    private static final String OBTENER_VIDEOJUEGO_POR_TITULO_QUERY
+            = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento "
+            + "FROM videojuego WHERE titulo = ?";
+
     private static final String OBTENER_TODOS_VIDEOJUEGOS_QUERY
             = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento "
             + "FROM videojuego ORDER BY fecha_lanzamiento DESC";
@@ -66,7 +70,12 @@ public class VideojuegoDB {
 
     private static final String ACTUALIZAR_ESTADO_CATEGORIA_QUERY
             = "UPDATE videojuego_categoria SET estado = ? WHERE id_videojuego = ? AND id_categoria = ?";
-
+    //empresa
+    private static final String OBTENER_VIDEOJUEGOS_POR_EMPRESA_QUERY
+        = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento "
+        + "FROM videojuego WHERE id_empresa = ? ORDER BY fecha_lanzamiento DESC";
+    
+    
     /**
      * Crear un nuevo videojuego con sus categorías usando una TRANSACCION con
      * insertvideojuego e insertCategoriasVideojuego
@@ -168,6 +177,31 @@ public class VideojuegoDB {
 
                 if (incluirCategorias) {
                     List<Categoria> categorias = obtenerCategoriasPorVideojuego(connection, idVideojuego);
+                    videojuego.setCategorias(categorias);
+                }
+
+                return videojuego;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Videojuego getVideojuegoByTitulo(String titulo, boolean incluirCategorias) {
+        Connection connection = DBConnectionSingleton.getInstance().getConnection();
+
+        try (PreparedStatement query = connection.prepareStatement(OBTENER_VIDEOJUEGO_POR_TITULO_QUERY)) {
+            query.setString(1, titulo);
+            ResultSet resultSet = query.executeQuery();
+
+            if (resultSet.next()) {
+                Videojuego videojuego = mapResultSetToVideojuego(resultSet);
+
+                if (incluirCategorias) {
+                    List<Categoria> categorias = obtenerCategoriasPorVideojuego(connection, videojuego.getId_videojuego());
                     videojuego.setCategorias(categorias);
                 }
 
@@ -459,4 +493,38 @@ public class VideojuegoDB {
 
         return -1; // No encontrado
     }
+    
+    /**
+ * Obtener todos los videojuegos de una empresa
+ *
+ * @param idEmpresa
+ * @param incluirCategorias
+ * @return
+ */
+public List<Videojuego> getVideojuegosByEmpresa(int idEmpresa, boolean incluirCategorias) {
+    List<Videojuego> videojuegos = new ArrayList<>();
+    Connection connection = DBConnectionSingleton.getInstance().getConnection();
+
+    try (PreparedStatement query = connection.prepareStatement(OBTENER_VIDEOJUEGOS_POR_EMPRESA_QUERY)) {
+        query.setInt(1, idEmpresa);
+        ResultSet resultSet = query.executeQuery();
+
+        while (resultSet.next()) {
+            Videojuego videojuego = mapResultSetToVideojuego(resultSet);
+
+            if (incluirCategorias) {
+                List<Categoria> categorias = obtenerCategoriasPorVideojuego(connection, videojuego.getId_videojuego());
+                videojuego.setCategorias(categorias);
+            }
+
+            videojuegos.add(videojuego);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Error al obtener videojuegos de empresa: " + e.getMessage());
+    }
+
+    return videojuegos;
+}
 }
