@@ -5,6 +5,7 @@ import categoria.resources.CategoriaResource;
 import compra.resources.CompraResource;
 import empresa.resources.ComisionResource;
 import empresa.resources.EmpresaResource;
+import grupo.resources.GrupoResource;
 import jakarta.ws.rs.ApplicationPath;
 import login.resources.LoginResource;
 import usuario.resources.UsersResource; 
@@ -31,6 +32,7 @@ public class JakartaRestConfiguration extends ResourceConfig {
         register(CompraResource.class);
         register(SaldoResource.class);
         register(BibliotecaResource.class);
+        register(GrupoResource.class);
         register(MultiPartFeature.class);
 
         property(ServerProperties.TRACING, "ALL");
