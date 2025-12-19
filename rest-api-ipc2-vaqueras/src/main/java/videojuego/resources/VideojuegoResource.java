@@ -22,6 +22,7 @@ import java.util.List;
 import videojuego.dtos.NewVideojuegoRequest;
 import videojuego.dtos.VideojuegoCategoriaRequest;
 import videojuego.dtos.VideojuegoResponse;
+import videojuego.models.Videojuego;
 import videojuego.services.VideojuegoCrudService;
 
 /**
@@ -31,7 +32,7 @@ import videojuego.services.VideojuegoCrudService;
 @Path("videojuegos")
 @Produces(MediaType.APPLICATION_JSON)
 public class VideojuegoResource {
-    
+
     @GET
     public Response getAllVideojuegos(@QueryParam("incluirCategorias") boolean incluirCategorias) {
         try {
@@ -48,11 +49,11 @@ public class VideojuegoResource {
                     .build();
         }
     }
-    
+
     @GET
     @Path("{id}")
-    public Response getVideojuegoById(@PathParam("id") int id, 
-                                     @QueryParam("incluirCategorias") boolean incluirCategorias) {
+    public Response getVideojuegoById(@PathParam("id") int id,
+            @QueryParam("incluirCategorias") boolean incluirCategorias) {
         try {
             VideojuegoCrudService videojuegoService = new VideojuegoCrudService();
             videojuego.models.Videojuego videojuego = videojuegoService.getVideojuegoById(id, incluirCategorias);
@@ -68,7 +69,37 @@ public class VideojuegoResource {
                     .build();
         }
     }
-    
+
+    @GET
+    @Path("buscar-titulo")
+    public Response getVideojuegoByTitulo(@QueryParam("titulo") String titulo,
+            @QueryParam("incluirCategorias") boolean incluirCategorias) {
+        try {
+            if (titulo == null || titulo.trim().isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"error\": \"El parámetro 'titulo' es requerido\"}")
+                        .build();
+            }
+
+            VideojuegoCrudService videojuegoService = new VideojuegoCrudService();
+            videojuego.models.Videojuego videojuego = videojuegoService.getVideojuegoByTitulo(titulo, incluirCategorias);
+
+            if (videojuego == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("{\"error\": \"Videojuego no encontrado con título: " + titulo + "\"}")
+                        .build();
+            }
+
+            return Response.ok(new VideojuegoResponse(videojuego)).build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\": \"Error interno del servidor\"}")
+                    .build();
+        }
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -94,7 +125,7 @@ public class VideojuegoResource {
                     .build();
         }
     }
-    
+
     @PUT
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -122,7 +153,7 @@ public class VideojuegoResource {
                     .build();
         }
     }
-    
+
     @DELETE
     @Path("{id}")
     public Response deleteVideojuego(@PathParam("id") int id) {
@@ -143,17 +174,17 @@ public class VideojuegoResource {
                     .build();
         }
     }
-    
+
     @PUT
     @Path("{id}/categorias")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response actualizarCategoriasVideojuego(@PathParam("id") int id, 
-                                                  VideojuegoCategoriaRequest categoriasRequest) {
+    public Response actualizarCategoriasVideojuego(@PathParam("id") int id,
+            VideojuegoCategoriaRequest categoriasRequest) {
         try {
             categoriasRequest.setId_videojuego(id);
             VideojuegoCrudService videojuegoService = new VideojuegoCrudService();
-            videojuego.models.Videojuego videojuegoActualizado = 
-                    videojuegoService.actualizarCategoriasVideojuego(categoriasRequest);
+            videojuego.models.Videojuego videojuegoActualizado
+                    = videojuegoService.actualizarCategoriasVideojuego(categoriasRequest);
             return Response.ok(new VideojuegoResponse(videojuegoActualizado)).build();
         } catch (EntityNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -170,7 +201,7 @@ public class VideojuegoResource {
                     .build();
         }
     }
-    
+
     @GET
     @Path("{id}/categorias/aprobadas")
     public Response getCategoriasAprobadas(@PathParam("id") int id) {
@@ -192,13 +223,13 @@ public class VideojuegoResource {
                     .build();
         }
     }
-    
+
     @PUT
     @Path("{idVideojuego}/categorias/{idCategoria}/estado")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response actualizarEstadoCategoria(@PathParam("idVideojuego") int idVideojuego,
-                                             @PathParam("idCategoria") int idCategoria,
-                                             String estado) {
+            @PathParam("idCategoria") int idCategoria,
+            String estado) {
         try {
             VideojuegoCrudService videojuegoService = new VideojuegoCrudService();
             boolean actualizado = videojuegoService.actualizarEstadoCategoria(idVideojuego, idCategoria, estado);
@@ -226,21 +257,21 @@ public class VideojuegoResource {
                     .build();
         }
     }
-    
+
     @GET
     @Path("verificar-titulo")
     public Response verificarTituloDisponible(@QueryParam("titulo") String titulo,
-                                             @QueryParam("idEmpresa") int idEmpresa) {
+            @QueryParam("idEmpresa") int idEmpresa) {
         try {
             if (titulo == null || titulo.trim().isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("{\"error\": \"El título es requerido\"}")
                         .build();
             }
-            
+
             VideojuegoCrudService videojuegoService = new VideojuegoCrudService();
             boolean disponible = videojuegoService.isTituloDisponible(titulo, idEmpresa);
-            
+
             return Response.ok()
                     .entity("{\"disponible\": " + disponible + ", \"titulo\": \"" + titulo + "\"}")
                     .build();
@@ -251,4 +282,26 @@ public class VideojuegoResource {
                     .build();
         }
     }
+    
+    @GET
+@Path("empresa/{id_empresa}")
+public Response getVideojuegosByEmpresa(@PathParam("id_empresa") int idEmpresa,
+                                       @QueryParam("incluirCategorias") boolean incluirCategorias) {
+    try {
+        VideojuegoCrudService videojuegoService = new VideojuegoCrudService();
+        List<Videojuego> videojuegos = videojuegoService.getVideojuegosByEmpresa(idEmpresa, incluirCategorias);
+        
+        List<VideojuegoResponse> videojuegosResponse = videojuegos.stream()
+                .map(VideojuegoResponse::new)
+                .toList();
+        
+        return Response.ok(videojuegosResponse).build();
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("{\"error\": \"Error interno del servidor\"}")
+                .build();
+    }
+}
 }
