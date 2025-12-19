@@ -19,6 +19,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+import java.util.Map;
 import videojuego.dtos.NewVideojuegoRequest;
 import videojuego.dtos.VideojuegoCategoriaRequest;
 import videojuego.dtos.VideojuegoResponse;
@@ -282,26 +283,87 @@ public class VideojuegoResource {
                     .build();
         }
     }
-    
+
     @GET
-@Path("empresa/{id_empresa}")
-public Response getVideojuegosByEmpresa(@PathParam("id_empresa") int idEmpresa,
-                                       @QueryParam("incluirCategorias") boolean incluirCategorias) {
-    try {
-        VideojuegoCrudService videojuegoService = new VideojuegoCrudService();
-        List<Videojuego> videojuegos = videojuegoService.getVideojuegosByEmpresa(idEmpresa, incluirCategorias);
-        
-        List<VideojuegoResponse> videojuegosResponse = videojuegos.stream()
-                .map(VideojuegoResponse::new)
-                .toList();
-        
-        return Response.ok(videojuegosResponse).build();
-        
-    } catch (Exception e) {
-        e.printStackTrace();
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("{\"error\": \"Error interno del servidor\"}")
-                .build();
+    @Path("empresa/{id_empresa}")
+    public Response getVideojuegosByEmpresa(@PathParam("id_empresa") int idEmpresa,
+            @QueryParam("incluirCategorias") boolean incluirCategorias) {
+        try {
+            VideojuegoCrudService videojuegoService = new VideojuegoCrudService();
+            List<Videojuego> videojuegos = videojuegoService.getVideojuegosByEmpresa(idEmpresa, incluirCategorias);
+
+            List<VideojuegoResponse> videojuegosResponse = videojuegos.stream()
+                    .map(VideojuegoResponse::new)
+                    .toList();
+
+            return Response.ok(videojuegosResponse).build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\": \"Error interno del servidor\"}")
+                    .build();
+        }
     }
-}
+
+    /**
+     * Bloquear comentarios de TODOS los videojuegos de una empresa
+     */
+    @PUT
+    @Path("empresa/{idEmpresa}/bloquear-comentarios-todos")
+    public Response bloquearComentariosTodosVideojuegos(@PathParam("idEmpresa") int idEmpresa) {
+        try {
+            VideojuegoCrudService videojuegoService = new VideojuegoCrudService();
+            boolean bloqueados = videojuegoService.bloquearComentariosTodosVideojuegosEmpresa(idEmpresa);
+
+            if (bloqueados) {
+                return Response.ok()
+                        .entity("{\"message\": \"Comentarios bloqueados para TODOS los videojuegos de la empresa\", "
+                                + "\"empresa_id\": " + idEmpresa + ", "
+                                + "\"accion\": \"BLOQUEAR_TODOS\"}")
+                        .build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("{\"error\": \"No se pudieron bloquear los comentarios\"}")
+                        .build();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\": \"Error interno del servidor\"}")
+                    .build();
+        }
+    }
+
+    /**
+     * Desbloquear comentarios de TODOS los videojuegos de una empresa
+     */
+    @PUT
+    @Path("empresa/{idEmpresa}/desbloquear-comentarios-todos")
+    public Response desbloquearComentariosTodosVideojuegos(@PathParam("idEmpresa") int idEmpresa) {
+        try {
+            VideojuegoCrudService videojuegoService = new VideojuegoCrudService();
+            boolean desbloqueados = videojuegoService.desbloquearComentariosTodosVideojuegosEmpresa(idEmpresa);
+
+            if (desbloqueados) {
+                return Response.ok()
+                        .entity("{\"message\": \"Comentarios desbloqueados para TODOS los videojuegos de la empresa\", "
+                                + "\"empresa_id\": " + idEmpresa + ", "
+                                + "\"accion\": \"DESBLOQUEAR_TODOS\"}")
+                        .build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("{\"error\": \"No se pudieron desbloquear los comentarios\"}")
+                        .build();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\": \"Error interno del servidor\"}")
+                    .build();
+        }
+    }
+
 }
