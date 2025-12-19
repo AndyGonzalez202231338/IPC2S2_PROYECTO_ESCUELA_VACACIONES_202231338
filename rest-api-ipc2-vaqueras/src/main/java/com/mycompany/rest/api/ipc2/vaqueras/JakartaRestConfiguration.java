@@ -9,6 +9,9 @@ import compra.resources.CompraResource;
 import empresa.resources.ComisionResource;
 import empresa.resources.EmpresaResource;
 import grupo.resources.GrupoResource;
+import instalacion.resources.InstalacionJuegoResource;
+
+
 import jakarta.ws.rs.ApplicationPath;
 import login.resources.LoginResource;
 import usuario.resources.UsersResource; 
@@ -39,6 +42,7 @@ public class JakartaRestConfiguration extends ResourceConfig {
         register(CalificacionResource.class);
         register(ComentarioResource.class);
         register(RespuestaComentarioResource.class);
+        register(InstalacionJuegoResource.class);
         register(MultiPartFeature.class);
 
         property(ServerProperties.TRACING, "ALL");
