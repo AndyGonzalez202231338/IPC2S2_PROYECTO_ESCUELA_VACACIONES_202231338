@@ -23,6 +23,7 @@ public class VideojuegoResponse {
     private BigDecimal precio;
     private String clasificacion_edad;
     private Date fecha_lanzamiento;
+    private boolean comentarios_bloqueados;
     private List<CategoriaResponse> categorias;
     
         public VideojuegoResponse(Videojuego videojuego) {
@@ -34,6 +35,7 @@ public class VideojuegoResponse {
         this.precio = videojuego.getPrecio();
         this.clasificacion_edad = videojuego.getClasificacion_edad();
         this.fecha_lanzamiento = videojuego.getFecha_lanzamiento();
+        this.comentarios_bloqueados = videojuego.isComentarios_bloqueados();
         
         // Convertir categorías a DTOs si exiten categorias relacionadas al videojuego
         if (videojuego.getCategorias() != null) {
@@ -114,7 +116,14 @@ public class VideojuegoResponse {
     public void setCategorias(List<CategoriaResponse> categorias) {
         this.categorias = categorias;
     }
-        
+    
+        public boolean isComentarios_bloqueados() {
+        return comentarios_bloqueados;
+    }
+
+    public void setComentarios_bloqueados(boolean comentarios_bloqueados) {
+        this.comentarios_bloqueados = comentarios_bloqueados;
+    }
         
     
 }

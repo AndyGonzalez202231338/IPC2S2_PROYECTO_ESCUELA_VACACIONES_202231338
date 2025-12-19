@@ -248,8 +248,27 @@ public class VideojuegoCrudService {
         }
         return !videojuegoDB.existeTituloPorEmpresa(titulo.trim(), idEmpresa);
     }
-    
+
     public List<Videojuego> getVideojuegosByEmpresa(int idEmpresa, boolean incluirCategorias) {
-    return videojuegoDB.getVideojuegosByEmpresa(idEmpresa, incluirCategorias);
+        return videojuegoDB.getVideojuegosByEmpresa(idEmpresa, incluirCategorias);
+    }
+
+    /**
+ * Bloquear comentarios de TODOS los videojuegos de una empresa
+ */
+public boolean bloquearComentariosTodosVideojuegosEmpresa(int idEmpresa) {
+    System.out.println("Bloqueando comentarios de todos los videojuegos de la empresa " + idEmpresa);
+    return videojuegoDB.bloquearComentariosTodosVideojuegosEmpresa(idEmpresa);
 }
+
+/**
+ * Desbloquear comentarios de TODOS los videojuegos de una empresa
+ */
+public boolean desbloquearComentariosTodosVideojuegosEmpresa(int idEmpresa) {
+    System.out.println("Desbloqueando comentarios de todos los videojuegos de la empresa " + idEmpresa);
+    return videojuegoDB.desbloquearComentariosTodosVideojuegosEmpresa(idEmpresa);
+}
+
+
+
 }

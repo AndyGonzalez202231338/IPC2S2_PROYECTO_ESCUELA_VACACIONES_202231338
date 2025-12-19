@@ -23,57 +23,69 @@ import videojuego.models.Videojuego;
  */
 public class VideojuegoDB {
 
+        // Consultas SQL actualizadas con comentarios_bloqueados
     private static final String CREAR_VIDEOJUEGO_QUERY
-            = "INSERT INTO videojuego (id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        = "INSERT INTO videojuego (id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento, comentarios_bloqueados) "
+        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String OBTENER_VIDEOJUEGO_POR_ID_QUERY
-            = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento "
-            + "FROM videojuego WHERE id_videojuego = ?";
+        = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento, comentarios_bloqueados "
+        + "FROM videojuego WHERE id_videojuego = ?";
 
     private static final String OBTENER_VIDEOJUEGO_POR_TITULO_QUERY
-            = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento "
-            + "FROM videojuego WHERE titulo = ?";
+        = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento, comentarios_bloqueados "
+        + "FROM videojuego WHERE titulo = ?";
 
     private static final String OBTENER_TODOS_VIDEOJUEGOS_QUERY
-            = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento "
-            + "FROM videojuego ORDER BY fecha_lanzamiento DESC";
+        = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento, comentarios_bloqueados "
+        + "FROM videojuego ORDER BY fecha_lanzamiento DESC";
 
     private static final String ACTUALIZAR_VIDEOJUEGO_QUERY
-            = "UPDATE videojuego SET id_empresa = ?, titulo = ?, descripcion = ?, recursos_minimos = ?, "
-            + "precio = ?, clasificacion_edad = ?, fecha_lanzamiento = ? WHERE id_videojuego = ?";
+        = "UPDATE videojuego SET id_empresa = ?, titulo = ?, descripcion = ?, recursos_minimos = ?, "
+        + "precio = ?, clasificacion_edad = ?, fecha_lanzamiento = ?, comentarios_bloqueados = ? WHERE id_videojuego = ?";
 
     private static final String ELIMINAR_VIDEOJUEGO_QUERY
-            = "DELETE FROM videojuego WHERE id_videojuego = ?";
+        = "DELETE FROM videojuego WHERE id_videojuego = ?";
 
     private static final String EXISTE_TITULO_POR_EMPRESA_QUERY
-            = "SELECT COUNT(*) as count FROM videojuego WHERE titulo = ? AND id_empresa = ?";
+        = "SELECT COUNT(*) as count FROM videojuego WHERE titulo = ? AND id_empresa = ?";
 
-    //videojuego_categoria
+    // videojuego_categoria
     private static final String AGREGAR_CATEGORIA_A_VIDEOJUEGO_QUERY
-            = "INSERT INTO videojuego_categoria (id_videojuego, id_categoria, estado) VALUES (?, ?, ?)";
+        = "INSERT INTO videojuego_categoria (id_videojuego, id_categoria, estado) VALUES (?, ?, ?)";
 
     private static final String REMOVER_CATEGORIAS_DE_VIDEOJUEGO_QUERY
-            = "DELETE FROM videojuego_categoria WHERE id_videojuego = ?";
+        = "DELETE FROM videojuego_categoria WHERE id_videojuego = ?";
 
     private static final String OBTENER_CATEGORIAS_POR_VIDEOJUEGO_QUERY
-            = "SELECT c.id_categoria, c.nombre, c.descripcion, vc.estado "
-            + "FROM categoria c "
-            + "INNER JOIN videojuego_categoria vc ON c.id_categoria = vc.id_categoria "
-            + "WHERE vc.id_videojuego = ?";
+        = "SELECT c.id_categoria, c.nombre, c.descripcion, vc.estado "
+        + "FROM categoria c "
+        + "INNER JOIN videojuego_categoria vc ON c.id_categoria = vc.id_categoria "
+        + "WHERE vc.id_videojuego = ?";
 
     private static final String OBTENER_CATEGORIAS_APROBADAS_POR_VIDEOJUEGO_QUERY
-            = "SELECT c.id_categoria, c.nombre, c.descripcion "
-            + "FROM categoria c "
-            + "INNER JOIN videojuego_categoria vc ON c.id_categoria = vc.id_categoria "
-            + "WHERE vc.id_videojuego = ? AND vc.estado = 'APROBADA'";
+        = "SELECT c.id_categoria, c.nombre, c.descripcion "
+        + "FROM categoria c "
+        + "INNER JOIN videojuego_categoria vc ON c.id_categoria = vc.id_categoria "
+        + "WHERE vc.id_videojuego = ? AND vc.estado = 'APROBADA'";
 
     private static final String ACTUALIZAR_ESTADO_CATEGORIA_QUERY
-            = "UPDATE videojuego_categoria SET estado = ? WHERE id_videojuego = ? AND id_categoria = ?";
-    //empresa
+        = "UPDATE videojuego_categoria SET estado = ? WHERE id_videojuego = ? AND id_categoria = ?";
+
+    // empresa
     private static final String OBTENER_VIDEOJUEGOS_POR_EMPRESA_QUERY
-        = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento "
+        = "SELECT id_videojuego, id_empresa, titulo, descripcion, recursos_minimos, precio, clasificacion_edad, fecha_lanzamiento, comentarios_bloqueados "
         + "FROM videojuego WHERE id_empresa = ? ORDER BY fecha_lanzamiento DESC";
+
+    // Métodos para comentarios bloqueados - TODOS los videojuegos de la empresa
+    private static final String BLOQUEAR_COMENTARIOS_TODOS_VIDEOJUEGOS_EMPRESA_QUERY
+        = "UPDATE videojuego SET comentarios_bloqueados = true WHERE id_empresa = ?";
+
+    private static final String DESBLOQUEAR_COMENTARIOS_TODOS_VIDEOJUEGOS_EMPRESA_QUERY
+        = "UPDATE videojuego SET comentarios_bloqueados = false WHERE id_empresa = ?";
+
+    private static final String VERIFICAR_COMENTARIOS_BLOQUEADOS_VIDEOJUEGO_QUERY
+        = "SELECT comentarios_bloqueados FROM videojuego WHERE id_videojuego = ?";
     
     
     /**
@@ -118,30 +130,31 @@ public class VideojuegoDB {
     }
 
     private Videojuego insertVideojuego(Connection connection, Videojuego videojuego) throws SQLException {
-        try (PreparedStatement insert = connection.prepareStatement(CREAR_VIDEOJUEGO_QUERY,
-                Statement.RETURN_GENERATED_KEYS)) {
+    try (PreparedStatement insert = connection.prepareStatement(CREAR_VIDEOJUEGO_QUERY,
+            Statement.RETURN_GENERATED_KEYS)) {
 
-            insert.setInt(1, videojuego.getId_empresa());
-            insert.setString(2, videojuego.getTitulo());
-            insert.setString(3, videojuego.getDescripcion());
-            insert.setString(4, videojuego.getRecursos_minimos());
-            insert.setBigDecimal(5, videojuego.getPrecio());
-            insert.setString(6, videojuego.getClasificacion_edad());
-            insert.setDate(7, new Date(videojuego.getFecha_lanzamiento().getTime()));
+        insert.setInt(1, videojuego.getId_empresa());
+        insert.setString(2, videojuego.getTitulo());
+        insert.setString(3, videojuego.getDescripcion());
+        insert.setString(4, videojuego.getRecursos_minimos());
+        insert.setBigDecimal(5, videojuego.getPrecio());
+        insert.setString(6, videojuego.getClasificacion_edad());
+        insert.setDate(7, new Date(videojuego.getFecha_lanzamiento().getTime()));
+        insert.setBoolean(8, videojuego.isComentarios_bloqueados()); // Nuevo campo
 
-            int affectedRows = insert.executeUpdate();
+        int affectedRows = insert.executeUpdate();
 
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = insert.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        videojuego.setId_videojuego(generatedKeys.getInt(1));
-                    }
+        if (affectedRows > 0) {
+            try (ResultSet generatedKeys = insert.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    videojuego.setId_videojuego(generatedKeys.getInt(1));
                 }
             }
-
-            return videojuego;
         }
+
+        return videojuego;
     }
+}
 
     private void insertCategoriasVideojuego(Connection connection, int idVideojuego,
             List<Integer> categoriasIds, String estado) throws SQLException {
@@ -254,26 +267,27 @@ public class VideojuegoDB {
      * @return
      */
     public boolean updateVideojuego(Videojuego videojuego) {
-        Connection connection = DBConnectionSingleton.getInstance().getConnection();
+    Connection connection = DBConnectionSingleton.getInstance().getConnection();
 
-        try (PreparedStatement update = connection.prepareStatement(ACTUALIZAR_VIDEOJUEGO_QUERY)) {
-            update.setInt(1, videojuego.getId_empresa());
-            update.setString(2, videojuego.getTitulo());
-            update.setString(3, videojuego.getDescripcion());
-            update.setString(4, videojuego.getRecursos_minimos());
-            update.setBigDecimal(5, videojuego.getPrecio());
-            update.setString(6, videojuego.getClasificacion_edad());
-            update.setDate(7, new Date(videojuego.getFecha_lanzamiento().getTime()));
-            update.setInt(8, videojuego.getId_videojuego());
+    try (PreparedStatement update = connection.prepareStatement(ACTUALIZAR_VIDEOJUEGO_QUERY)) {
+        update.setInt(1, videojuego.getId_empresa());
+        update.setString(2, videojuego.getTitulo());
+        update.setString(3, videojuego.getDescripcion());
+        update.setString(4, videojuego.getRecursos_minimos());
+        update.setBigDecimal(5, videojuego.getPrecio());
+        update.setString(6, videojuego.getClasificacion_edad());
+        update.setDate(7, new Date(videojuego.getFecha_lanzamiento().getTime()));
+        update.setBoolean(8, videojuego.isComentarios_bloqueados()); // Nuevo campo
+        update.setInt(9, videojuego.getId_videojuego());
 
-            int affectedRows = update.executeUpdate();
-            return affectedRows > 0;
+        int affectedRows = update.executeUpdate();
+        return affectedRows > 0;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error al actualizar videojuego: " + e.getMessage(), e);
-        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        throw new RuntimeException("Error al actualizar videojuego: " + e.getMessage(), e);
     }
+}
 
     /**
      * Eliminar videojuego y su relacion con categorias (videojuego_categoria)
@@ -462,17 +476,18 @@ public class VideojuegoDB {
      * Mapear ResultSet a Videojuego
      */
     private Videojuego mapResultSetToVideojuego(ResultSet resultSet) throws SQLException {
-        Videojuego videojuego = new Videojuego();
-        videojuego.setId_videojuego(resultSet.getInt("id_videojuego"));
-        videojuego.setId_empresa(resultSet.getInt("id_empresa"));
-        videojuego.setTitulo(resultSet.getString("titulo"));
-        videojuego.setDescripcion(resultSet.getString("descripcion"));
-        videojuego.setRecursos_minimos(resultSet.getString("recursos_minimos"));
-        videojuego.setPrecio(resultSet.getBigDecimal("precio"));
-        videojuego.setClasificacion_edad(resultSet.getString("clasificacion_edad"));
-        videojuego.setFecha_lanzamiento(resultSet.getDate("fecha_lanzamiento"));
-        return videojuego;
-    }
+    Videojuego videojuego = new Videojuego();
+    videojuego.setId_videojuego(resultSet.getInt("id_videojuego"));
+    videojuego.setId_empresa(resultSet.getInt("id_empresa"));
+    videojuego.setTitulo(resultSet.getString("titulo"));
+    videojuego.setDescripcion(resultSet.getString("descripcion"));
+    videojuego.setRecursos_minimos(resultSet.getString("recursos_minimos"));
+    videojuego.setPrecio(resultSet.getBigDecimal("precio"));
+    videojuego.setClasificacion_edad(resultSet.getString("clasificacion_edad"));
+    videojuego.setFecha_lanzamiento(resultSet.getDate("fecha_lanzamiento"));
+    videojuego.setComentarios_bloqueados(resultSet.getBoolean("comentarios_bloqueados"));
+    return videojuego;
+}
 
     public int obtenerIdEmpresaDelVideojuego(int idVideojuego) {
         Connection connection = DBConnectionSingleton.getInstance().getConnection();
@@ -527,4 +542,60 @@ public List<Videojuego> getVideojuegosByEmpresa(int idEmpresa, boolean incluirCa
 
     return videojuegos;
 }
+
+public boolean bloquearComentariosTodosVideojuegosEmpresa(int idEmpresa) {
+        String sql = BLOQUEAR_COMENTARIOS_TODOS_VIDEOJUEGOS_EMPRESA_QUERY;
+        
+        try (Connection conn = DBConnectionSingleton.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, idEmpresa);
+            int affectedRows = pstmt.executeUpdate();
+            System.out.println("Videojuegos con comentarios bloqueados: " + affectedRows + " para empresa " + idEmpresa);
+            return affectedRows > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+public boolean desbloquearComentariosTodosVideojuegosEmpresa(int idEmpresa) {
+        String sql = DESBLOQUEAR_COMENTARIOS_TODOS_VIDEOJUEGOS_EMPRESA_QUERY;
+        
+        try (Connection conn = DBConnectionSingleton.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, idEmpresa);
+            int affectedRows = pstmt.executeUpdate();
+            System.out.println("Videojuegos con comentarios desbloqueados: " + affectedRows + " para empresa " + idEmpresa);
+            return affectedRows > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean tieneComentariosBloqueados(int idVideojuego) {
+        try (Connection conn = DBConnectionSingleton.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(VERIFICAR_COMENTARIOS_BLOQUEADOS_VIDEOJUEGO_QUERY)) {
+            
+            pstmt.setInt(1, idVideojuego);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getBoolean("comentarios_bloqueados");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+
+
+
 }

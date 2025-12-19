@@ -20,12 +20,14 @@ public class NewVideojuegoRequest {
     private BigDecimal precio;
     private String clasificacion_edad;
     private Date fecha_lanzamiento;
+    private boolean comentarios_bloqueados;
     private List<Integer> categorias_ids;
     
     public NewVideojuegoRequest() {}
     
-    public NewVideojuegoRequest(int id_empresa, String titulo, String descripcion, String recursos_minimos, BigDecimal precio, 
-            String clasificacion_edad, Date fecha_lanzamiento, List<Integer> categorias_ids) {
+    public NewVideojuegoRequest(int id_empresa, String titulo, String descripcion, String recursos_minimos, 
+        BigDecimal precio, String clasificacion_edad, Date fecha_lanzamiento, 
+        boolean comentarios_bloqueados, List<Integer> categorias_ids) {
         this.id_empresa = id_empresa;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -33,6 +35,7 @@ public class NewVideojuegoRequest {
         this.precio = precio;
         this.clasificacion_edad = clasificacion_edad;
         this.fecha_lanzamiento = fecha_lanzamiento;
+        this.comentarios_bloqueados = comentarios_bloqueados;
         this.categorias_ids = categorias_ids;
     }
 
@@ -99,5 +102,15 @@ public class NewVideojuegoRequest {
     public void setCategorias_ids(List<Integer> categorias_ids) {
         this.categorias_ids = categorias_ids;
     }
+
+    public boolean isComentarios_bloqueados() {
+        return comentarios_bloqueados;
+    }
+
+    public void setComentarios_bloqueados(boolean comentarios_bloqueados) {
+        this.comentarios_bloqueados = comentarios_bloqueados;
+    }
+    
+    
     
 }
