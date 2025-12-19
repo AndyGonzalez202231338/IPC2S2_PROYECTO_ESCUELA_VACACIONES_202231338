@@ -78,10 +78,9 @@ public class TransaccionService {
             connection = DBConnectionSingleton.getInstance().getConnection();
             connection.setAutoCommit(false);
 
-            // Validación pre-transacción que ahora incluye validación de edad
+            
             validarPreTransaccion(idUsuario, idVideojuego, fechaCompra);
 
-            // Resto del código de procesamiento de compra...
             Optional<Usuario> optionalUsuario = usuarioDB.getById(idUsuario);
             Usuario usuario = optionalUsuario.orElse(null);
 
