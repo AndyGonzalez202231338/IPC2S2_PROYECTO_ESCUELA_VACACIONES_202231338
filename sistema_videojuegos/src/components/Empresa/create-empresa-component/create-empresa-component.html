@@ -1,0 +1,220 @@
+<app-header-admin-sistema></app-header-admin-sistema>
+@if(operationDone) {
+<div class="alert alert-success d-flex align-items-center">
+    <i class="bi bi-check-circle flex-shrink-0 me-2"></i>
+    <div>
+        Empresa creada con éxito.
+    </div>
+</div>
+}
+
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <!-- Header -->
+      <div class="mb-4">
+        <h1 class="h2 text-primary">
+          <i class="fas fa-building me-2"></i>Crear Nueva Empresa
+        </h1>
+        <p class="text-muted">
+          Complete el formulario para registrar una nueva empresa y asignarle un administrador.
+        </p>
+        <hr>
+      </div>
+
+      <!-- Alertas -->
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+      </div>
+
+      <!-- Formulario -->
+      <div *ngIf="!operationDone" class="card shadow-sm">
+        <div class="card-body p-4">
+          <form [formGroup]="empresaForm" (ngSubmit)="onSubmit()" novalidate>
+            
+            <!-- Nombre de la Empresa -->
+            <div class="mb-4">
+              <label for="nombre" class="form-label fw-semibold">
+                Nombre de la Empresa <span class="text-danger">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="nombre"
+                class="form-control form-control-lg"
+                formControlName="nombre"
+                [class.is-invalid]="nombre?.invalid && (nombre?.touched || nombre?.dirty)"
+                placeholder="Ingrese el nombre comercial de la empresa"
+              >
+              <div *ngIf="nombre?.invalid && (nombre?.touched || nombre?.dirty)" class="invalid-feedback">
+                <div *ngIf="nombre?.errors?.['required']">El nombre de la empresa es obligatorio</div>
+                <div *ngIf="nombre?.errors?.['maxlength']">El nombre no puede exceder los 100 caracteres</div>
+              </div>
+              <small class="form-text text-muted">
+                Este nombre debe ser único y representativo de la empresa.
+              </small>
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-4">
+              <label for="descripcion" class="form-label fw-semibold">
+                Descripción <span class="text-danger">*</span>
+              </label>
+              <textarea 
+                id="descripcion"
+                class="form-control"
+                formControlName="descripcion"
+                [class.is-invalid]="descripcion?.invalid && (descripcion?.touched || descripcion?.dirty)"
+                rows="4"
+                placeholder="Describa la actividad principal, misión y visión de la empresa..."
+              ></textarea>
+              <div *ngIf="descripcion?.invalid && (descripcion?.touched || descripcion?.dirty)" class="invalid-feedback">
+                <div *ngIf="descripcion?.errors?.['required']">La descripción es obligatoria</div>
+                <div *ngIf="descripcion?.errors?.['maxlength']">La descripción no puede exceder los 500 caracteres</div>
+              </div>
+              <small class="form-text text-muted">
+                Proporcione información relevante sobre la empresa.
+              </small>
+            </div>
+
+            <!-- Selección de Administrador -->
+            <div class="mb-5">
+              <label for="id_administrador" class="form-label fw-semibold">
+                Asignar Administrador <span class="text-danger">*</span>
+              </label>
+              
+              <!-- Loading -->
+              <div *ngIf="isLoadingAdmins" class="alert alert-info">
+                <div class="d-flex align-items-center">
+                  <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                  <span>Cargando administradores disponibles...</span>
+                </div>
+              </div>
+
+              <!-- Sin administradores -->
+              <div *ngIf="!isLoadingAdmins && administradoresDisponibles.length === 0" 
+                   class="alert alert-warning">
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-exclamation-triangle me-2"></i>
+                  <div>
+                    <strong>No hay administradores disponibles</strong>
+                    <p class="mb-0 mt-1">
+                      Primero debe crear un usuario con rol "Administrador de Empresa".
+                      <a [routerLink]="['/dashboard/usuarios/crear']" class="alert-link">
+                        Crear administrador
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Selector de administradores -->
+              <select 
+                *ngIf="!isLoadingAdmins && administradoresDisponibles.length > 0"
+                id="id_administrador"
+                class="form-select form-select-lg"
+                formControlName="id_administrador"
+                [class.is-invalid]="id_administrador?.invalid && (id_administrador?.touched || id_administrador?.dirty)"
+              >
+                <option value="" disabled selected>Seleccione un administrador...</option>
+                <option *ngFor="let admin of administradoresDisponibles" [value]="admin.idUsuario">
+                  {{ admin.nombre }} - {{ admin.correo }}
+                </option>
+              </select>
+              
+              <div *ngIf="id_administrador?.invalid && (id_administrador?.touched || id_administrador?.dirty)" 
+                   class="invalid-feedback">
+                Debe seleccionar un administrador para la empresa
+              </div>
+              
+              <!-- Información del administrador seleccionado -->
+              <div *ngIf="selectedAdmin" class="mt-4 p-3 border rounded bg-light">
+                <h6 class="fw-semibold text-primary mb-3">
+                  <i class="fas fa-user-check me-2"></i>Administrador Seleccionado
+                </h6>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-2">
+                      <strong>Nombre:</strong> {{ selectedAdmin.nombre }}
+                    </div>
+                    <div class="mb-2">
+                      <strong>Email:</strong> {{ selectedAdmin.correo }}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-2">
+                      <strong>Rol:</strong> {{ selectedAdmin.rol?.nombre || 'Administrador de Empresa' }}
+                    </div>
+                    <div class="mb-2">
+                      <strong>Teléfono:</strong> {{ selectedAdmin.telefono || 'No registrado' }}
+                    </div>
+                  </div>
+                </div>
+                <div class="alert alert-info mt-2 mb-0 py-2">
+                  <small>
+                    <i class="fas fa-info-circle me-1"></i>
+                    Este usuario será asignado como administrador principal de la empresa y podrá gestionar usuarios adicionales.
+                  </small>
+                </div>
+              </div>
+
+              <small class="form-text text-muted">
+                Seleccione un usuario administrador que será responsable de la gestión de esta empresa.
+              </small>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex justify-content-between pt-3 border-top">
+              <button type="button" class="btn btn-outline-secondary" (click)="resetForm()" [disabled]="isLoading">
+                <i class="fas fa-eraser me-1"></i> Limpiar Formulario
+              </button>
+              
+              <div>
+                <button type="button" class="btn btn-outline-primary me-2" [routerLink]="['/empresas']" [disabled]="isLoading">
+                  <i class="fas fa-times me-1"></i> Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="isLoading || isLoadingAdmins || administradoresDisponibles.length === 0">
+                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+                  <i *ngIf="!isLoading" class="fas fa-save me-1"></i>
+                  {{ isLoading ? 'Creando...' : 'Crear Empresa' }}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Mensaje de éxito -->
+      <div *ngIf="operationDone" class="text-center py-5">
+        <div class="card border-success shadow">
+          <div class="card-body p-5">
+            <div class="mb-4">
+              <i class="fas fa-check-circle fa-4x text-success"></i>
+            </div>
+            <h3 class="card-title text-success mb-3">¡Empresa Creada Exitosamente!</h3>
+            <p class="card-text mb-4">
+              La empresa ha sido registrada en el sistema y se le ha asignado el administrador seleccionado.
+              Será redirigido a la lista de empresas en unos segundos.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+              <button class="btn btn-outline-primary" [routerLink]="['/dashboard/empresas/crear']" (click)="resetForm()">
+                <i class="fas fa-plus me-1"></i> Crear Otra Empresa
+              </button>
+              <button class="btn btn-primary" [routerLink]="['/dashboard/empresas']">
+                <i class="fas fa-list me-1"></i> Ver Lista de Empresas
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

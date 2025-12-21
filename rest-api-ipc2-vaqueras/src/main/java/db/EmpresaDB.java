@@ -3,6 +3,7 @@ package db;
 import conexion.DBConnectionSingleton;
 import empresa.models.Comision;
 import empresa.models.Empresa;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +40,13 @@ public class EmpresaDB {
             = "INSERT INTO comision (id_empresa, porcentaje, fecha_inicio, fecha_final, tipo_comision) VALUES (?, ?, ?, ?, ?)";
 
     private static final String OBTENER_COMISION_ACTUAL_EMPRESA_QUERY
-            = "SELECT id_comision, id_empresa, porcentaje, fecha_inicio, fecha_final, tipo_comision "
-            + "FROM comision WHERE id_empresa = ? AND "
-            + "(fecha_final IS NULL OR fecha_final >= CURDATE()) "
-            + "ORDER BY fecha_inicio DESC LIMIT 1";
+        = "SELECT id_comision, id_empresa, porcentaje, fecha_inicio, fecha_final, tipo_comision "
+        + "FROM comision "
+        + "WHERE id_empresa = ? "
+        + "AND fecha_final IS NULL "
+        + "ORDER BY fecha_inicio DESC "
+        + "LIMIT 1";
+
 
     private static final String OBTENER_TODAS_COMISIONES_EMPRESA_QUERY
             = "SELECT id_comision, id_empresa, porcentaje, fecha_inicio, fecha_final, tipo_comision "
@@ -69,44 +73,89 @@ public class EmpresaDB {
     }
 
     public Empresa createEmpresa(Empresa empresa) {
-        Connection connection = DBConnectionSingleton.getInstance().getConnection();
-
+    Connection connection = DBConnectionSingleton.getInstance().getConnection();
+    
+    try {
+        
+        boolean autoCommitOriginal = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        
         try {
-            //Crear empresa
+            
             int empresaId = 0;
             try (PreparedStatement insertEmpresa = connection.prepareStatement(
-                    CREAR_EMPRESA_CON_COMISION_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+                    "INSERT INTO empresa (nombre, descripcion) VALUES (?, ?)", 
+                    Statement.RETURN_GENERATED_KEYS)) {
 
                 insertEmpresa.setString(1, empresa.getNombre());
                 insertEmpresa.setString(2, empresa.getDescripcion());
                 insertEmpresa.executeUpdate();
 
+                
                 try (ResultSet generatedKeys = insertEmpresa.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         empresaId = generatedKeys.getInt(1);
                         empresa.setId_empresa(empresaId);
+                        System.out.println("Empresa creada con ID: " + empresaId);
+                    } else {
+                        throw new SQLException("No se pudo obtener el ID de la empresa creada");
                     }
                 }
             }
 
-            //Crear comisión usando el valor global con tipo "global" al crear empresa
-            try (PreparedStatement insertComision = connection.prepareStatement(
-                    CREAR_COMISION_INICIAL_QUERY)) {
-
-                insertComision.setInt(1, empresaId);
-                insertComision.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
-                insertComision.executeUpdate();
+            
+            BigDecimal porcentajeComision;
+            try (PreparedStatement getComision = connection.prepareStatement(
+                    "SELECT CAST(valor AS DECIMAL(10,2)) as porcentaje " +
+                    "FROM sistema " +
+                    "WHERE configuracion = 'COMISION_GLOBAL' " +
+                    "AND (fecha_final IS NULL OR fecha_final >= CURDATE()) " +
+                    "ORDER BY fecha_inicio DESC " +
+                    "LIMIT 1")) {
+                
+                ResultSet rs = getComision.executeQuery();
+                if (rs.next()) {
+                    porcentajeComision = rs.getBigDecimal("porcentaje");
+                } else {
+                    
+                    porcentajeComision = new BigDecimal("10.00");
+                }
             }
 
-            System.out.println("Empresa " + empresaId + " creada con comisión global (tipo: global)");
+            
+            try (PreparedStatement insertComision = connection.prepareStatement(
+                    "INSERT INTO comision (id_empresa, porcentaje, fecha_inicio, tipo_comision) " +
+                    "VALUES (?, ?, ?, 'global')")) {
+
+                insertComision.setInt(1, empresaId);
+                insertComision.setBigDecimal(2, porcentajeComision);
+                insertComision.setDate(3, new java.sql.Date(System.currentTimeMillis()));
+                insertComision.executeUpdate();
+                
+                System.out.println("Comisión creada: " + porcentajeComision + "% para empresa " + empresaId);
+            }
+
+            
+            connection.commit();
+            System.out.println("Transacción completada exitosamente");
+
+            return empresa;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error al crear empresa: " + e.getMessage(), e);
+            
+            connection.rollback();
+            throw e;
+        } finally {
+            
+            connection.setAutoCommit(autoCommitOriginal);
         }
 
-        return empresa;
+    } catch (SQLException e) {
+        System.err.println("Error SQL: " + e.getMessage());
+        e.printStackTrace();
+        throw new RuntimeException("Error al crear empresa: " + e.getMessage(), e);
     }
+}
 
     public Empresa getEmpresaById(int idEmpresa) {
         Connection connection = DBConnectionSingleton.getInstance().getConnection();
@@ -366,5 +415,23 @@ public class EmpresaDB {
 
         return false;
     }
+    
+    public boolean finalizarComisionesActivasEmpresa(int idEmpresa, Date fechaFinal) {
+    Connection connection = DBConnectionSingleton.getInstance().getConnection();
+
+    String sql = "UPDATE comision SET fecha_final = ? " +
+                 "WHERE id_empresa = ? AND fecha_final IS NULL";
+
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setDate(1, new java.sql.Date(fechaFinal.getTime()));
+        ps.setInt(2, idEmpresa);
+        ps.executeUpdate();
+        return true;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
 
 }

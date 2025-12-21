@@ -45,13 +45,7 @@ export class LoginForm {
         this.isLoading = false;
         if (response.success && response.user) {
           console.log('Inicio de sesión exitoso', response.user);
-          
-          // Verificar si el usuario está activo
-          if (response.user.estado === 'INACTIVO') {
-            alert('Su cuenta está inactiva. Contacte al administrador.');
-            return;
-          }
-          
+
           // Redirigir a Home para todos los usuarios
           this.router.navigate(['/home']);
         } else {

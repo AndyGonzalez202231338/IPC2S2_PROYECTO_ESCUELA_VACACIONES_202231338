@@ -1,0 +1,142 @@
+<app-header-admin-sistema></app-header-admin-sistema>
+
+<div class="container-fluid mt-4">
+  <!-- Encabezado -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1 class="h2 mb-0">
+        <i class="fas fa-cogs me-2"></i>Configuraciones del Sistema
+      </h1>
+      <p class="text-muted">Gestiona los parámetros de configuración del sistema</p>
+    </div>
+    <div class="col-md-4 text-end">
+      <button class="btn btn-sm btn-outline-secondary" (click)="loadConfiguraciones()" [disabled]="loading">
+        <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+        {{ loading ? 'Cargando...' : 'Actualizar' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensajes de estado -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+      </div>
+      
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i> {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="card">
+    <div class="card-header bg-light">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="fas fa-list-ul me-2"></i>Lista de Configuraciones
+          <span class="badge bg-secondary ms-2">{{ configuraciones.length }}</span>
+        </h5>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Loading State -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2 text-muted">Cargando configuraciones...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && configuraciones.length === 0" class="text-center py-5">
+        <i class="fas fa-cogs display-1 text-muted"></i>
+        <h4 class="mt-3">No hay configuraciones</h4>
+        <p class="text-muted">No se encontraron configuraciones en el sistema.</p>
+      </div>
+
+      <!-- Tabla de configuraciones -->
+      <div *ngIf="!loading && configuraciones.length > 0" class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Configuración</th>
+              <th scope="col">Valor</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Fecha Inicio</th>
+              <th scope="col">Fecha Final</th>
+              <th scope="col">Estado</th>
+              <th scope="col" class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let config of configuraciones">
+              <td class="fw-bold">#{{ config.id_configuracion }}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="fas {{ getConfiguracionIcon(config.configuracion) }} me-2 text-primary"></i>
+                  <div>
+                    <strong>{{ config.configuracion }}</strong>
+                    <div>
+                      <span class="badge {{ getBadgeClass(config.configuracion) }} fs-6">
+                        {{ getConfiguracionTipo(config.configuracion) }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge bg-dark fs-6">{{ config.valor }}</span>
+              </td>
+              <td>
+                <small class="text-muted">{{ config.descripcion }}</small>
+              </td>
+              <td>
+                <small>{{ formatFecha(config.fecha_inicio) }}</small>
+              </td>
+              <td>
+                <small>{{ formatFecha(config.fecha_final) }}</small>
+              </td>
+              <td>
+                <span *ngIf="isConfiguracionActiva(config)" class="badge bg-success">
+                  <i class="fas fa-check-circle me-1"></i>Activa
+                </span>
+                <span *ngIf="!isConfiguracionActiva(config)" class="badge bg-secondary">
+                  <i class="fas fa-clock me-1"></i>Inactiva
+                </span>
+              </td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-warning" 
+                        (click)="navigateToEdit(config.id_configuracion)"
+                        title="Editar">
+                  <i class="fas fa-edit"></i> Editar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && configuraciones.length > 0" class="card-footer text-muted">
+      <div class="row">
+        <div class="col">
+          Mostrando <strong>{{ configuraciones.length }}</strong> configuración{{ configuraciones.length !== 1 ? 'es' : '' }}
+        </div>
+        <div class="col text-end">
+          <small>
+            <span class="badge bg-success me-2">● Activa</span>
+            <span class="badge bg-secondary me-2">● Inactiva</span>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

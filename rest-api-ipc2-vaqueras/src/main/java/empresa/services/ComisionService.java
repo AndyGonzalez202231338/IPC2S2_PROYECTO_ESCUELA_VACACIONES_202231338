@@ -74,7 +74,7 @@ public class ComisionService {
             }
         }
         
-        // 3. Crear nueva comisión con tipo "especifica"
+        // Crear nueva comisión con tipo "especifica"
         System.out.println("Creando nueva comisión específica: " + porcentaje + "% a partir de: " + fechaInicio);
         return empresaDB.crearComisionConFecha(
             idEmpresa, 
