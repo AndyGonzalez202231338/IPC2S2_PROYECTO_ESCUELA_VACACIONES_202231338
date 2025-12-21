@@ -25,7 +25,6 @@ public class UpdateConfiguracionRequest {
         this.valor = valor;
     }
     
-    // Constructor completo
     public UpdateConfiguracionRequest(String valor, Date fecha_final) {
         this.valor = valor;
         this.fecha_final = fecha_final;

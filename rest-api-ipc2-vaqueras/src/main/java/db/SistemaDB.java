@@ -143,7 +143,7 @@ public class SistemaDB {
     
     public String getValorConfiguracion(String nombreConfiguracion) {
         ConfiguracionSistema config = getConfiguracionByNombre(nombreConfiguracion);
-        return (config != null && config.getFecha_final() == null) ? config.getValor() : null;
+        return config.getValor();
     }
     
         private ConfiguracionSistema mapResultSetToConfiguracion(ResultSet resultSet) throws SQLException {

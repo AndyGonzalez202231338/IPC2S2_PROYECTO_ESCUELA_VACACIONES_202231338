@@ -1,0 +1,206 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+          <h3 class="card-title mb-0">
+            <i class="bi bi-person-plus me-2"></i>
+            Registrar Usuario
+          </h3>
+        </div>
+        
+        <div class="card-body p-4">
+          @if(isLoading) {
+          <div class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+              </div>
+              <p class="mt-2">Procesando registro...</p>
+          </div>
+          } @else {
+              @if(operationDone) {
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  <i class="bi bi-check-circle-fill me-2"></i>
+                  <div>
+                      @if(isEditMode) {
+                          Usuario actualizado con éxito.
+                      } @else {
+                          <strong>¡Cuenta creada con éxito!</strong> Serás redirigido al login en unos segundos...
+                      }
+                  </div>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              }
+
+              <form [formGroup]="newUserForm" (ngSubmit)="submit()" class="needs-validation" novalidate>
+                  <!-- ID del usuario (solo visible en edición) -->
+                  @if(isEditMode) {
+                  <div class="mb-3">
+                      <label for="idUsuario" class="form-label fw-bold">ID Usuario:</label>
+                      
+                  </div>
+                  }
+
+                  <div class="row g-3">
+                      <!-- Nombre -->
+                      <div class="col-md-6">
+                          <label for="nombre" class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
+                          <input type="text" class="form-control" id="nombre" formControlName="nombre"
+                                 placeholder="Ingrese su nombre completo"
+                                 [class.is-invalid]="newUserForm.controls['nombre'].invalid && newUserForm.controls['nombre'].touched">
+                          @if (newUserForm.controls['nombre'].invalid && newUserForm.controls['nombre'].touched) {
+                          <div class="invalid-feedback">
+                              Nombre es requerido (máximo 100 caracteres)
+                          </div>
+                          }
+                      </div>
+
+                      <!-- Correo electrónico -->
+                      <div class="col-md-6">
+                          <label for="correo" class="form-label fw-semibold">Correo <span class="text-danger">*</span></label>
+                          <input type="email" class="form-control" id="correo" formControlName="correo"
+                                 placeholder="ejemplo@correo.com"
+                                 [class.is-invalid]="newUserForm.controls['correo'].invalid && newUserForm.controls['correo'].touched"
+                                 [readonly]="isEditMode">
+                          @if (newUserForm.controls['correo'].invalid && newUserForm.controls['correo'].touched) {
+                          <div class="invalid-feedback">
+                              Por favor ingrese un correo electrónico válido
+                          </div>
+                          }
+                          @if (isEditMode) {
+                          <small class="form-text text-muted">El correo no puede ser modificado.</small>
+                          }
+                      </div>
+
+                      <!-- Contraseña -->
+                      <div class="col-md-6">
+                          <label for="password" class="form-label fw-semibold">Contraseña <span class="text-danger">*</span></label>
+                          <input type="password" class="form-control" id="password" formControlName="password"
+                                 placeholder="Mínimo 3 caracteres"
+                                 [class.is-invalid]="newUserForm.controls['password'].invalid && newUserForm.controls['password'].touched">
+                          @if (newUserForm.controls['password'].invalid && newUserForm.controls['password'].touched) {
+                          <div class="invalid-feedback">
+                              La contraseña debe tener entre 3 y 100 caracteres
+                          </div>
+                          }
+                      </div>
+
+                      <!-- Tipo de Usuario -->
+                      <div class="col-md-6">
+                          <label for="id_rol" class="form-label fw-semibold">Tipo de Usuario <span class="text-danger">*</span></label>
+                          <select id="id_rol" class="form-select" formControlName="id_rol"
+                                  [class.is-invalid]="newUserForm.controls['id_rol'].invalid && newUserForm.controls['id_rol'].touched">
+                              <option [ngValue]="null" disabled selected>Seleccione un tipo</option>
+                              <option *ngFor="let role of availableRoles" [ngValue]="role.id_rol">
+                                  {{ role.nombre }}
+                              </option>
+                          </select>
+                          @if (newUserForm.controls['id_rol'].invalid && newUserForm.controls['id_rol'].touched) {
+                          <div class="invalid-feedback">
+                              Por favor seleccione un tipo de usuario
+                          </div>
+                          }
+                      </div>
+
+                      <!-- Fecha de Nacimiento -->
+                      <div class="col-md-6">
+                          <label for="fecha_nacimiento" class="form-label fw-semibold">
+                              Fecha de Nacimiento
+                              @if (selectedRoleId === 2) {
+                                <span class="text-danger">*</span>
+                              }
+                          </label>
+                          <input type="date" class="form-control" id="fecha_nacimiento" formControlName="fecha_nacimiento"
+                                 [class.is-invalid]="newUserForm.controls['fecha_nacimiento'].invalid && newUserForm.controls['fecha_nacimiento'].touched">
+                          @if (selectedRoleId === 2 && newUserForm.controls['fecha_nacimiento'].invalid && newUserForm.controls['fecha_nacimiento'].touched) {
+                          <div class="invalid-feedback">
+                              La fecha de nacimiento es obligatoria para administradores
+                          </div>
+                          }
+                          @if (selectedRoleId === 3) {
+                          <small class="form-text text-muted">Opcional</small>
+                          }
+                      </div>
+
+                      <!-- Campos solo para usuarios COMUN -->
+                      @if (showFullForm && selectedRoleId === 3) {
+                      <!-- País -->
+                      <div class="col-md-6">
+                          <label for="pais" class="form-label fw-semibold">País</label>
+                          <input type="text" class="form-control" id="pais" formControlName="pais"
+                                 placeholder="Ej: Guatemala">
+                      </div>
+
+                      <!-- Teléfono -->
+                      <div class="col-12">
+                          <label for="telefono" class="form-label fw-semibold">Teléfono</label>
+                          <div class="input-group">
+                              <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                              <input type="tel" class="form-control" id="telefono" formControlName="telefono"
+                                     placeholder="8 dígitos"
+                                     [class.is-invalid]="newUserForm.controls['telefono'].invalid && newUserForm.controls['telefono'].touched">
+                          </div>
+                          @if (newUserForm.controls['telefono'].invalid && newUserForm.controls['telefono'].touched) {
+                          <div class="invalid-feedback d-block">
+                              Ingrese un número válido de 8 dígitos
+                          </div>
+                          }
+                          <small class="form-text text-muted">Ejemplo: 12345678</small>
+                      </div>
+                      }
+                  </div>
+
+                  <!-- Información según rol -->
+@if (selectedRoleId === 2) {
+<div class="alert alert-info mt-3 mb-0">
+    <i class="bi bi-info-circle-fill me-2"></i>
+    <small>
+        Como <strong>Administrador de Empresa</strong>, solo necesitas completar los campos marcados como obligatorios.
+    </small>
+</div>
+} @else if (selectedRoleId === 3) {
+<div class="alert alert-light mt-3 mb-0 border">
+    <i class="bi bi-person me-2"></i>
+    <small>
+        Como <strong>Usuario Común</strong>, puedes proporcionar información adicional para una mejor experiencia.
+    </small>
+</div>
+}
+
+                  <!-- Botones -->
+                  <div class="d-grid gap-2 d-md-flex justify-content-between mt-4 pt-3 border-top">
+                      <button class="btn btn-outline-secondary" type="button" (click)="reset()" [disabled]="isLoading">
+                          <i class="bi bi-x-circle me-1"></i>
+                          {{ isEditMode ? 'Cancelar' : 'Limpiar' }}
+                      </button>
+                      <button class="btn btn-primary px-4" [disabled]="newUserForm.invalid || isLoading">
+                          <i class="bi bi-check-circle me-1"></i>
+                          {{ getSubmitButtonText() }}
+                      </button>
+                  </div>
+              </form>
+          }
+        </div>
+        
+        <div class="card-footer bg-light text-center py-3">
+          <small class="text-muted">
+            ¿Ya tienes una cuenta? 
+            <a [routerLink]="['/login']" class="text-decoration-none fw-semibold">Inicia sesión aquí</a>
+          </small>
+        </div>
+      </div>
+      
+      <!-- Notas importantes -->
+      <div class="mt-3">
+        <div class="alert alert-warning mb-0">
+          <h6 class="alert-heading mb-2"><i class="bi bi-exclamation-triangle me-1"></i> Notas importantes:</h6>
+          <ul class="mb-0 ps-3">
+            <li><small>Los campos marcados con <span class="text-danger">*</span> son obligatorios</small></li>
+            <li><small>El correo electrónico será tu nombre de usuario</small></li>
+            <li><small>Podrás actualizar tu información posteriormente</small></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -120,6 +120,7 @@ public class SistemaCrudService {
     public double getComisionGlobal() {
         try {
             String valor = sistemaDB.getValorConfiguracion("COMISION_GLOBAL");
+            System.out.println("COMISION GLOBAL ACTUAL"+ valor);
             return valor != null ? Double.parseDouble(valor) : 15.0;
         } catch (NumberFormatException e) {
             return 15.0; 

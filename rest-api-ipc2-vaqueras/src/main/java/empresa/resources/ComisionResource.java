@@ -57,55 +57,56 @@ public class ComisionResource {
     }
 
     @GET
-    public Response getTodasComisiones(@PathParam("idEmpresa") int idEmpresa) {
-        try {
-            ComisionService comisionService = new ComisionService();
-            List<Comision> comisiones = comisionService.getTodasComisionesEmpresa(idEmpresa);
+@Produces(MediaType.APPLICATION_JSON)
+public Response getTodasComisiones(@PathParam("idEmpresa") int idEmpresa) {
+    try {
+        ComisionService comisionService = new ComisionService();
+        List<Comision> comisiones = comisionService.getTodasComisionesEmpresa(idEmpresa);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            StringBuilder json = new StringBuilder("[");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        StringBuilder json = new StringBuilder("[");
 
-            for (int i = 0; i < comisiones.size(); i++) {
-                Comision c = comisiones.get(i);
-                json.append(String.format(
-                        "{\"id_comision\": %d, \"porcentaje\": %.2f, "
-                        + "\"fecha_inicio\": \"%s\", \"fecha_final\": %s}",
-                        c.getId_comision(),
-                        c.getPorcentaje(),
-                        sdf.format(c.getFecha_inicio()),
-                        c.getFecha_final() != null ? "\"" + sdf.format(c.getFecha_final()) + "\"" : "null"
-                
-                ));
+        for (int i = 0; i < comisiones.size(); i++) {
+            Comision c = comisiones.get(i);
+            json.append(String.format(
+                    "{\"id_comision\": %d, \"porcentaje\": %.2f, "
+                    + "\"fecha_inicio\": \"%s\", \"fecha_final\": %s, "
+                    + "\"tipo_comision\": \"%s\"}", 
+                    c.getId_comision(),
+                    c.getPorcentaje(),
+                    sdf.format(c.getFecha_inicio()),
+                    c.getFecha_final() != null ? "\"" + sdf.format(c.getFecha_final()) + "\"" : "null",
+                    c.getTipo_comision()
+            ));
 
-                if (i < comisiones.size() - 1) {
-                    json.append(",");
-                }
+            if (i < comisiones.size() - 1) {
+                json.append(",");
             }
-
-            json.append("]");
-
-            return Response.ok(json.toString()).build();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\": \"Error interno del servidor\"}")
-                    .build();
         }
-    }
 
+        json.append("]");
+
+        return Response.ok(json.toString()).build();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("{\"error\": \"Error interno del servidor\"}")
+                .build();
+    }
+}
     @POST
 @Consumes(MediaType.APPLICATION_JSON)
 public Response crearComision(@PathParam("idEmpresa") int idEmpresa, NuevaComisionRequest request) {
     try {
-        // Obtener el porcentaje global actual
+        
         sistema.services.SistemaCrudService sistemaService = new sistema.services.SistemaCrudService();
         double porcentajeGlobal = sistemaService.getComisionGlobal();
         
-        // Si no viene fecha_inicio, usar fecha actual
+        
         java.util.Date fechaInicio = request.getFecha_inicio();
         if (fechaInicio == null) {
-            fechaInicio = new java.util.Date(); // Fecha actual
+            fechaInicio = new java.util.Date(); 
         }
         
         // Convertir java.util.Date a java.sql.Date

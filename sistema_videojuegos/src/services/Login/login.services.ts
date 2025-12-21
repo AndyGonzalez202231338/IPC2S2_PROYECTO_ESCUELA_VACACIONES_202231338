@@ -3,16 +3,7 @@ import { isPlatformBrowser } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { Observable, tap } from "rxjs";
 import { RestConstants } from "../../shared/rest-appi/rest-constants";
-
-
-export interface User {
-  idUsuario: number;
-  email: string;
-  password: string;
-  nombreCompleto: string;
-  estado: 'ACTIVO' | 'INACTIVO';
-  fechaCreacion: string;
-}
+import { User } from "../../models/user/user";
 
 
 export interface LoginResponse {
@@ -46,7 +37,6 @@ export class LoginService {
 
   login(email: string, password: string): Observable<LoginResponse> {
     const loginData = { email, password };
-
     return this.httpClient.post<LoginResponse>(
       `${this.restConstants.getApiURL()}auth/login`,
       loginData
@@ -76,7 +66,6 @@ export class LoginService {
   }
 
   logout(): void {
-    console.log('Cerrando sesión del usuario:');
     this.currentUser = null;
     localStorage.removeItem('currentUser');
   }

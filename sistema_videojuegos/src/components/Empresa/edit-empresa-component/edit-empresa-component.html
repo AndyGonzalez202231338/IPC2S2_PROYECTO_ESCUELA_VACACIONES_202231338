@@ -1,0 +1,168 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <!-- Header -->
+      <div class="mb-4">
+        <button class="btn btn-outline-secondary btn-sm mb-3" (click)="cancelEdit()">
+          <i class="fas fa-arrow-left me-1"></i> Volver a Empresas
+        </button>
+        
+        <h1 class="h2 text-primary">
+          <i class="fas fa-edit me-2"></i>Editar Empresa
+        </h1>
+        <p class="text-muted">
+          Modifique los datos de la empresa. Solo puede editar el nombre y descripción.
+        </p>
+        <hr>
+      </div>
+
+      <!-- Alertas -->
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+      </div>
+
+      <!-- Loading de datos -->
+      <div *ngIf="loadingData" class="card shadow-sm">
+        <div class="card-body p-5 text-center">
+          <div class="spinner-border text-primary mb-3" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="text-muted">Cargando información de la empresa...</p>
+        </div>
+      </div>
+
+      <!-- Formulario -->
+      <div *ngIf="!loadingData && empresaOriginal" class="card shadow-sm">
+        <div class="card-header bg-light">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="fas fa-building me-2"></i>Empresa ID: #{{ empresaId }}
+            </h5>
+          </div>
+        </div>
+        
+        <div class="card-body p-4">
+          <form [formGroup]="empresaForm" (ngSubmit)="onSubmit()" novalidate>
+            
+            <!-- Información de solo lectura -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">ID de Empresa</label>
+                  <input type="text" class="form-control" [value]="empresaId" readonly>
+                </div>
+              </div>
+            </div>
+
+            <!-- Nombre de la Empresa -->
+            <div class="mb-4">
+              <label for="nombre" class="form-label fw-semibold">
+                Nombre de la Empresa <span class="text-danger">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="nombre"
+                class="form-control form-control-lg"
+                formControlName="nombre"
+                [class.is-invalid]="nombre?.invalid && (nombre?.touched || nombre?.dirty)"
+                placeholder="Ingrese el nombre comercial de la empresa"
+              >
+              <div *ngIf="nombre?.invalid && (nombre?.touched || nombre?.dirty)" class="invalid-feedback">
+                <div *ngIf="nombre?.errors?.['required']">El nombre de la empresa es obligatorio</div>
+                <div *ngIf="nombre?.errors?.['maxlength']">El nombre no puede exceder los 100 caracteres</div>
+              </div>
+              <small class="form-text text-muted">
+                <span *ngIf="empresaOriginal.nombre !== nombre?.value" class="text-info">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Valor original: "{{ empresaOriginal.nombre }}"
+                </span>
+              </small>
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-4">
+              <label for="descripcion" class="form-label fw-semibold">
+                Descripción <span class="text-danger">*</span>
+              </label>
+              <textarea 
+                id="descripcion"
+                class="form-control"
+                formControlName="descripcion"
+                [class.is-invalid]="descripcion?.invalid && (descripcion?.touched || descripcion?.dirty)"
+                rows="4"
+                placeholder="Describa la actividad principal, misión y visión de la empresa..."
+              ></textarea>
+              <div *ngIf="descripcion?.invalid && (descripcion?.touched || descripcion?.dirty)" class="invalid-feedback">
+                <div *ngIf="descripcion?.errors?.['required']">La descripción es obligatoria</div>
+                <div *ngIf="descripcion?.errors?.['maxlength']">La descripción no puede exceder los 500 caracteres</div>
+              </div>
+              <small class="form-text text-muted">
+                <span *ngIf="empresaOriginal.descripcion !== descripcion?.value" class="text-info">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Valor original: "{{ empresaOriginal.descripcion }}"
+                </span>
+              </small>
+            </div>
+
+            <!-- Información adicional (solo lectura) -->
+            <div class="alert alert-info mb-4">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle fa-lg me-3"></i>
+                <div>
+                  <h6 class="alert-heading mb-1">Información importante</h6>
+                  <p class="mb-0">
+                    Solo puede modificar el nombre y descripción de la empresa. Para cambiar el administrador 
+                    o información adicional, contacte al administrador del sistema.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex justify-content-between pt-3 border-top">
+              <div>
+                <button type="button" class="btn btn-outline-secondary me-2" (click)="resetForm()" [disabled]="isLoading || !hasChanges()">
+                  <i class="fas fa-undo me-1"></i> Deshacer Cambios
+                </button>
+                <button type="button" class="btn btn-outline-danger" (click)="cancelEdit()" [disabled]="isLoading">
+                  <i class="fas fa-times me-1"></i> Cancelar
+                </button>
+              </div>
+              
+              <button type="submit" 
+                      class="btn btn-primary" 
+                      [disabled]="isLoading || !hasChanges() || !empresaForm.valid">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+                <i *ngIf="!isLoading" class="fas fa-save me-1"></i>
+                {{ isLoading ? 'Guardando...' : 'Guardar Cambios' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Error al cargar empresa -->
+      <div *ngIf="!loadingData && !empresaOriginal" class="card border-danger">
+        <div class="card-body p-5 text-center">
+          <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+          <h3 class="card-title text-danger mb-3">Empresa no encontrada</h3>
+          <p class="card-text mb-4">
+            No se pudo encontrar la empresa con ID: {{ empresaId }}.
+            Será redirigido a la lista de empresas en unos segundos.
+          </p>
+          <button class="btn btn-primary" [routerLink]="['/empresas']">
+            <i class="fas fa-list me-1"></i> Volver a la lista
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

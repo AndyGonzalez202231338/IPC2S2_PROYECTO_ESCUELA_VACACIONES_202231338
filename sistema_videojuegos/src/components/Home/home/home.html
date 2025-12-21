@@ -1,0 +1,46 @@
+<ng-container *ngIf="currentUser"> 
+  <ng-container [ngSwitch]="currentUser.rol.nombre"> 
+    <app-header-admin-sistema *ngSwitchCase="'ADMINISTRADOR DE SISTEMA'"></app-header-admin-sistema>  
+    <app-header *ngSwitchCase="'COMUN'"></app-header> 
+    <app-header *ngSwitchDefault></app-header> 
+  </ng-container>
+</ng-container>
+
+<div class="container-fluid home-container">
+  <div class="row justify-content-center">
+    
+    <!-- Contenido central - Mismo ancho que header/footer -->
+    <div class="col-12">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12">
+            <h1 >Bienvenido al Home</h1>
+            
+            <!-- Mostrar información del usuario si está logueado -->
+            <div *ngIf="currentUser" class="user-info alert alert-success">
+              <div>
+                <h3>¡Inicio de sesión exitoso!</h3>
+                <p><strong>Nombre:</strong> {{ currentUser.nombre }}</p>
+                <p><strong>Email:</strong> {{ currentUser.correo }}</p>
+                <p><strong>Rol:</strong> {{ currentUser.rol.nombre }}</p>
+                <p><strong>Tines acceso a:</strong> {{ currentUser.rol.descripcion }}</p>
+              </div>
+            </div>
+            
+            <div *ngIf="!currentUser" class="alert alert-warning text-center">
+              <p>No hay usuario logueado</p>
+            </div>
+            
+            <!-- Contenido principal -->
+            <div class="mt-4">
+              <h2>Contenido Principal</h2>
+              <p>Este es el contenido de tu aplicación...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
