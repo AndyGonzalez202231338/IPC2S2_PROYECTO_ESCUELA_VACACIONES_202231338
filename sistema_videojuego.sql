@@ -32,14 +32,21 @@ CREATE TABLE IF NOT EXISTS empresa (
     descripcion TEXT
 );
 
-CREATE TABLE IF NOT EXISTS comision (
+CREATE TABLE comision (
     id_comision INT AUTO_INCREMENT PRIMARY KEY,
     id_empresa INT NOT NULL,
     porcentaje DECIMAL(10,2) NOT NULL,
     fecha_inicio DATE NOT NULL,
-    fecha_final DATE NULL,
-    FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa)
-);
+    fecha_final DATE DEFAULT NULL,
+    tipo_comision ENUM('global', 'especifica') NOT NULL DEFAULT 'global',
+    INDEX idx_comision_empresa (id_empresa),
+    CONSTRAINT fk_comision_empresa
+        FOREIGN KEY (id_empresa)
+        REFERENCES empresa(id_empresa)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);-- al borrar una empresa se borran sus comisiones
+
 
 CREATE TABLE IF NOT EXISTS usuario (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,32 +65,49 @@ CREATE TABLE IF NOT EXISTS usuario (
 );
 
 
-CREATE TABLE IF NOT EXISTS grupo (
+CREATE TABLE grupo (
     id_grupo INT AUTO_INCREMENT PRIMARY KEY,
     id_creador INT NOT NULL,
     nombre VARCHAR(100) NOT NULL,
-    cantidad_participantes INT NULL,
-    FOREIGN KEY (id_creador) REFERENCES usuario(id_usuario)
-);
+    cantidad_participantes INT DEFAULT 0,
+    INDEX idx_grupo_creador (id_creador),
+    CONSTRAINT fk_grupo_creador
+        FOREIGN KEY (id_creador)
+        REFERENCES usuario(id_usuario)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);-- solo un creador de grupo puede borrar el grupo
 
-CREATE TABLE IF NOT EXISTS grupo_usuario (
+CREATE TABLE grupo_usuario (
     id_grupo INT NOT NULL,
     id_usuario INT NOT NULL,
-    FOREIGN KEY (id_grupo) REFERENCES grupo(id_grupo),
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+    KEY fk_grupo_usuario_grupo (id_grupo),
+    KEY fk_grupo_usuario_usuario (id_usuario),
+    CONSTRAINT fk_grupo_usuario_grupo
+        FOREIGN KEY (id_grupo)
+        REFERENCES grupo (id_grupo)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_grupo_usuario_usuario
+        FOREIGN KEY (id_usuario)
+        REFERENCES usuario (id_usuario)
+        ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS videojuego (
-    id_videojuego INT AUTO_INCREMENT PRIMARY KEY,
-    id_empresa INT NOT NULL,
-    titulo VARCHAR (200) NOT NULL,
-    descripcion TEXT NOT NULL,
-    recursos_minimos TEXT NOT NULL,
-    precio DECIMAL(10,2) NOT NULL,
-    clasificacion_edad ENUM('E', 'T', 'M') NOT NULL,
-    fecha_lanzamiento DATE NOT NULL,
-    FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa)
+  id_videojuego int NOT NULL AUTO_INCREMENT,
+  id_empresa int NOT NULL,
+  titulo varchar(200) NOT NULL,
+  descripcion text NOT NULL,
+  recursos_minimos text NOT NULL,
+  precio decimal(10,2) NOT NULL,
+  clasificacion_edad enum('E','T','M') NOT NULL,
+  fecha_lanzamiento date NOT NULL,
+  comentarios_bloqueados tinyint(1) DEFAULT '0',
+  PRIMARY KEY (id_videojuego),
+  KEY id_empresa (id_empresa),
+  CONSTRAINT videojuego_ibfk_1 FOREIGN KEY (id_empresa) REFERENCES empresa (id_empresa)
 );
+
 
 CREATE TABLE IF NOT EXISTS categoria (
     id_categoria INT AUTO_INCREMENT PRIMARY KEY,
@@ -138,23 +162,30 @@ CREATE TABLE IF NOT EXISTS instalacion_juego (
     FOREIGN KEY (id_biblioteca) REFERENCES biblioteca_usuario(id_biblioteca)
 );
 
-CREATE TABLE IF NOT EXISTS reseña (
-    id_reseña INT AUTO_INCREMENT PRIMARY KEY,
-    id_biblioteca INT NOT NULL,
-    calificacion INT NOT NULL,
-    comentario VARCHAR(250) NOT NULL,
-    fecha_hora DATETIME NOT NULL,
-    FOREIGN KEY (id_biblioteca) REFERENCES biblioteca_usuario(id_biblioteca)
+CREATE TABLE IF NOT EXISTS comentario (
+  id_comentario int NOT NULL AUTO_INCREMENT,
+  id_usuario int NOT NULL,
+  id_biblioteca int NOT NULL,
+  comentario text NOT NULL,
+  fecha_hora datetime NOT NULL,
+  PRIMARY KEY (id_comentario),
+  KEY id_usuario (id_usuario),
+  KEY id_biblioteca (id_biblioteca),
+  CONSTRAINT comentario_ibfk_1 FOREIGN KEY (id_usuario) REFERENCES usuario (id_usuario),
+  CONSTRAINT comentario_ibfk_2 FOREIGN KEY (id_biblioteca) REFERENCES biblioteca_usuario (id_biblioteca)
 );
 
-CREATE TABLE IF NOT EXISTS respuesta (
-    id_respuesta INT AUTO_INCREMENT PRIMARY KEY,
-    id_reseña INT NOT NULL,
-    id_usuario INT NOT NULL,
-    comentario VARCHAR(250) NOT NULL,
-    fecha_hora DATETIME NOT NULL,
-    FOREIGN KEY (id_reseña) REFERENCES reseña(id_reseña),
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+CREATE TABLE IF NOT EXISTS calificacion (
+  id_calificacion int NOT NULL AUTO_INCREMENT,
+  id_usuario int NOT NULL,
+  id_biblioteca int NOT NULL,
+  calificacion int NOT NULL,
+  fecha_hora datetime NOT NULL,
+  PRIMARY KEY (id_calificacion),
+  UNIQUE KEY unique_calificacion_usuario_biblioteca (id_usuario,id_biblioteca),
+  KEY id_biblioteca (id_biblioteca),
+  CONSTRAINT calificacion_ibfk_1 FOREIGN KEY (id_usuario) REFERENCES usuario (id_usuario),
+  CONSTRAINT calificacion_ibfk_2 FOREIGN KEY (id_biblioteca) REFERENCES `biblioteca_usuario` (id_biblioteca)
 );
 
 CREATE TABLE IF NOT EXISTS sistema (
@@ -187,6 +218,12 @@ INSERT INTO rol (nombre, descripcion) VALUES
 ('ADMINISTRADOR DE SISTEMA', 'Usuario encargado de crear empresas, categorias de juegos y reportes globales de ganancias'),
 ('ADMINISTRADOR DE EMPRESA', 'Ususario encargado de crear videojuegos, ocultar comentarios y reportes de ventas y reseñas'),
 ('COMUN', 'Usuario final del sistema, compra juegos, interactua con reseñas y forma grupos de usuarios. Tiene acceso a historial de comra y comentarios realizados');
+
+-- inserts configuraciones de sistema
+INSERT INTO sistema (configuracion, valor, descripcion, fecha_inicio, fecha_final) VALUES
+('COMISION_GLOBAL', '2', 'Porcentaje de comisión global para todas las ventas', '2025-12-14', '2026-11-21'),
+('EDAD_MENORES', '16', 'Edad considerada para menores', '2025-12-14', NULL),
+('MAX_MIEMBROS_GRUPO', '6', 'Máximo número de miembros por grupo familiar', '2025-12-14', NULL);
 
 -- Insertar usuario, el usuario debe ser borrado luego de crear un usuario real como administrador
 INSERT INTO usuario (correo, id_rol, id_empresa, nombre, password, fecha_nacimiento, pais, telefono, saldo_cartera, avatar)

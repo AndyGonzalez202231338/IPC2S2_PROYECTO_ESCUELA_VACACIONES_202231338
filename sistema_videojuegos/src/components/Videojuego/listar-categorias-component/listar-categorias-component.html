@@ -1,0 +1,102 @@
+<!-- listar-categorias-component.html -->
+<app-header-admin-sistema></app-header-admin-sistema>
+
+<div class="container-fluid mt-4">
+  <!-- Encabezado -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1 class="h2 mb-0">
+        <i class="fas fa-tags me-2"></i>Gestión de Categorías
+      </h1>
+      <p class="text-muted">Administra las categorías disponibles en el sistema</p>
+    </div>
+    <div class="col-md-4 text-end">
+      <button class="btn btn-primary" (click)="navigateToCreate()">
+        <i class="fas fa-plus-circle me-1"></i> Nueva Categoría
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensajes de estado -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+      </div>
+      
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i> {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2 text-muted">Cargando categorías...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && categorias.length === 0" class="text-center py-5">
+    <i class="fas fa-tags display-1 text-muted mb-3"></i>
+    <h4 class="mb-3">No hay categorías registradas</h4>
+    <p class="text-muted mb-4">No se encontraron categorías en el sistema.</p>
+    <button class="btn btn-primary" (click)="navigateToCreate()">
+      <i class="fas fa-plus-circle me-1"></i> Crear la primera categoría
+    </button>
+  </div>
+
+  <!-- Cards de categorías -->
+  <div *ngIf="!loading && categorias.length > 0" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <div class="col" *ngFor="let categoria of categorias">
+      <div class="card h-100 shadow-sm border">
+        <div class="card-header bg-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 text-dark">
+              <i class="fas fa-tag me-2 text-primary"></i>
+              {{ categoria.nombre }}
+            </h5>
+            <span class="badge bg-secondary">#{{ categoria.id_categoria }}</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Descripción:</h6>
+          <p class="card-text" *ngIf="categoria.descripcion && categoria.descripcion.trim() !== ''">
+            {{ categoria.descripcion }}
+          </p>
+          <p class="card-text text-muted fst-italic" *ngIf="!categoria.descripcion || categoria.descripcion.trim() === ''">
+            Sin descripción
+          </p>
+        </div>
+        <div class="card-footer bg-white border-top">
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-sm btn-outline-warning" 
+                    (click)="navigateToEdit(categoria.id_categoria)">
+              <i class="fas fa-edit me-1"></i> Editar
+            </button>
+            <button class="btn btn-sm btn-outline-danger" 
+                    (click)="deleteCategoria(categoria.id_categoria, categoria.nombre)">
+              <i class="fas fa-trash me-1"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contador -->
+  <div *ngIf="!loading && categorias.length > 0" class="mt-4 text-center">
+    <div class="text-muted">
+      Mostrando <strong>{{ categorias.length }}</strong> categoría{{ categorias.length !== 1 ? 's' : '' }}
+    </div>
+    <button class="btn btn-sm btn-outline-secondary mt-2" (click)="loadCategorias()">
+      <i class="fas fa-sync-alt me-1"></i> Actualizar lista
+    </button>
+  </div>
+</div>
+
+<app-footer></app-footer>
