@@ -8,6 +8,8 @@ import { ComisionesEmpresaComponent } from '../components/Empresa/comisiones-emp
 import { EditEmpresaComponent } from '../components/Empresa/edit-empresa-component/edit-empresa-component';
 import { ListarConfiguracionesComponent } from '../components/Configuracion/listar-configuraciones-component/listar-configuraciones-component';
 import { EditarConfiguracionComponent } from '../components/Configuracion/editar-configuracion-component/editar-configuracion-component';
+import { ListarCategoriasComponent } from '../components/Videojuego/listar-categorias-component/listar-categorias-component';
+import { FormCategoriaComponent } from '../components/Videojuego/form-categoria-component/form-categoria-component';
 
 export const routes: Routes = [
 
@@ -57,6 +59,18 @@ export const routes: Routes = [
   { 
     path: 'sistema/configuraciones/editar/:id', 
     component: EditarConfiguracionComponent 
+  },
+  { 
+    path: 'categorias', 
+    component: ListarCategoriasComponent 
+  },
+  { 
+    path: 'categorias/crear', 
+    component: FormCategoriaComponent 
+  },
+  { 
+    path: 'categorias/editar/:id', 
+    component: FormCategoriaComponent 
   },
 
         // Ruta comodín
