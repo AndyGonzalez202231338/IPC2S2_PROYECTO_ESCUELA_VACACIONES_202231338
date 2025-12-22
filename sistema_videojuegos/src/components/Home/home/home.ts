@@ -6,6 +6,8 @@ import { HeaderAdminSistema } from '../../Header/header-admin-sistema/header-adm
 import { User } from '../../../models/user/user';
 import { LoginService } from '../../../services/Login/login.services';
 import { Footer } from '../../footer/footer';
+import { HeaderAdminEmpresa } from '../../Header/header-admin-empresa/header-admin-empresa';
+
 
 @Component({
   selector: 'app-home',
@@ -14,7 +16,8 @@ import { Footer } from '../../footer/footer';
     CommonModule,
     Header, 
     Footer, 
-    HeaderAdminSistema
+    HeaderAdminSistema,
+    HeaderAdminEmpresa    
   ],
   templateUrl: './home.html',
   styleUrls: ['./home.css']

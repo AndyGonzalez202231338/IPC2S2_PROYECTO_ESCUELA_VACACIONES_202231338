@@ -81,7 +81,7 @@ export class CountsService {
         nombre: usuario.nombre,
         password: usuario.password,
         id_rol: usuario.id_rol,
-        id_empresa: null,  // Siempre null para nuevo usuario
+        id_empresa: usuario.id_empresa || null,  // Siempre null para nuevo usuario
         fecha_nacimiento: fechaNacimiento, 
         pais: usuario.pais || null,  // null en lugar de string vacío
         telefono: usuario.telefono || null,  // null en lugar de string vacío

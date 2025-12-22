@@ -1,0 +1,116 @@
+<app-header-admin-empresa></app-header-admin-empresa>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+          <h3 class="card-title mb-0">
+            <i class="bi bi-person-plus me-2"></i>
+            Crear Nuevo Administrador
+          </h3>
+        </div>
+        
+        <div class="card-body p-4">
+          @if(isLoading) {
+          <div class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+              </div>
+              <p class="mt-2">Creando administrador...</p>
+          </div>
+          } @else {
+              @if(operationDone) {
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  <i class="bi bi-check-circle-fill me-2"></i>
+                  <div>
+                      <strong>¡Administrador creado con éxito!</strong>
+                  </div>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              }
+
+              <form [formGroup]="adminUserForm" (ngSubmit)="submit()" class="needs-validation" novalidate>
+                  
+                  <div class="row g-3">
+                      <!-- Nombre -->
+                      <div class="col-12">
+                          <label for="nombre" class="form-label fw-semibold">Nombre Completo <span class="text-danger">*</span></label>
+                          <input type="text" class="form-control" id="nombre" formControlName="nombre"
+                                 placeholder="Ingrese el nombre completo"
+                                 [class.is-invalid]="adminUserForm.controls['nombre'].invalid && adminUserForm.controls['nombre'].touched">
+                          @if (adminUserForm.controls['nombre'].invalid && adminUserForm.controls['nombre'].touched) {
+                          <div class="invalid-feedback">
+                              Nombre es requerido (máximo 100 caracteres)
+                          </div>
+                          }
+                      </div>
+
+                      <!-- Correo electrónico -->
+                      <div class="col-md-6">
+                          <label for="correo" class="form-label fw-semibold">Correo <span class="text-danger">*</span></label>
+                          <input type="email" class="form-control" id="correo" formControlName="correo"
+                                 placeholder="ejemplo@empresa.com"
+                                 [class.is-invalid]="adminUserForm.controls['correo'].invalid && adminUserForm.controls['correo'].touched">
+                          @if (adminUserForm.controls['correo'].invalid && adminUserForm.controls['correo'].touched) {
+                          <div class="invalid-feedback">
+                              Por favor ingrese un correo electrónico válido
+                          </div>
+                          }
+                      </div>
+
+                      <!-- Contraseña -->
+                      <div class="col-md-6">
+                          <label for="password" class="form-label fw-semibold">Contraseña <span class="text-danger">*</span></label>
+                          <input type="password" class="form-control" id="password" formControlName="password"
+                                 placeholder="Mínimo 6 caracteres"
+                                 [class.is-invalid]="adminUserForm.controls['password'].invalid && adminUserForm.controls['password'].touched">
+                          @if (adminUserForm.controls['password'].invalid && adminUserForm.controls['password'].touched) {
+                          <div class="invalid-feedback">
+                              La contraseña debe tener entre 6 y 100 caracteres
+                          </div>
+                          }
+                      </div>
+
+                      <!-- Fecha de Nacimiento -->
+                      <div class="col-12">
+                          <label for="fecha_nacimiento" class="form-label fw-semibold">
+                              Fecha de Nacimiento <span class="text-danger">*</span>
+                          </label>
+                          <input type="date" class="form-control" id="fecha_nacimiento" formControlName="fecha_nacimiento"
+                                 [class.is-invalid]="adminUserForm.controls['fecha_nacimiento'].invalid && adminUserForm.controls['fecha_nacimiento'].touched">
+                          @if (adminUserForm.controls['fecha_nacimiento'].invalid && adminUserForm.controls['fecha_nacimiento'].touched) {
+                          <div class="invalid-feedback">
+                              La fecha de nacimiento es obligatoria
+                          </div>
+                          }
+                      </div>
+
+                      <!-- Información -->
+                      <div class="alert alert-info mt-2">
+                          <i class="bi bi-info-circle-fill me-2"></i>
+                          <small>
+                              Este administrador será asociado automáticamente a la misma empresa que usted.
+                              Los campos de país y teléfono no son requeridos para administradores.
+                          </small>
+                      </div>
+                  </div>
+
+                  <!-- Botones -->
+                  <div class="d-grid gap-2 d-md-flex justify-content-between mt-4 pt-3 border-top">
+                      <button class="btn btn-outline-secondary" type="button" (click)="adminUserForm.reset()" [disabled]="isLoading">
+                        <i class="bi bi-x-circle me-1"></i>
+                          Limpiar Formulario
+                      </button>
+                      <button class="btn btn-primary px-4" [disabled]="adminUserForm.invalid || isLoading">
+                          <i class="bi bi-check-circle me-1"></i>
+                          Crear Administrador
+                      </button>
+                  </div>
+              </form>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>
