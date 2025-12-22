@@ -1,6 +1,7 @@
 <ng-container *ngIf="currentUser"> 
   <ng-container [ngSwitch]="currentUser.rol.nombre"> 
     <app-header-admin-sistema *ngSwitchCase="'ADMINISTRADOR DE SISTEMA'"></app-header-admin-sistema>  
+    <app-header-admin-empresa *ngSwitchCase="'ADMINISTRADOR DE EMPRESA'"></app-header-admin-empresa>
     <app-header *ngSwitchCase="'COMUN'"></app-header> 
     <app-header *ngSwitchDefault></app-header> 
   </ng-container>
