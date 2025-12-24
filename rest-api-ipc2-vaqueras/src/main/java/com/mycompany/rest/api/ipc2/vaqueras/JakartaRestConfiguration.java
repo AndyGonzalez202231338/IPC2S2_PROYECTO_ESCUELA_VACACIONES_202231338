@@ -20,6 +20,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import sistema.resources.SistemaResource;
 import usuario.resources.SaldoResource;
+import videojuego.resources.MultimediaResource;
 import videojuego.resources.VideojuegoResource;
 
 @ApplicationPath("api-ipc2-vaqueras/v1")
@@ -43,6 +44,7 @@ public class JakartaRestConfiguration extends ResourceConfig {
         register(ComentarioResource.class);
         register(RespuestaComentarioResource.class);
         register(InstalacionJuegoResource.class);
+        register(MultimediaResource.class);
         register(MultiPartFeature.class);
 
         property(ServerProperties.TRACING, "ALL");

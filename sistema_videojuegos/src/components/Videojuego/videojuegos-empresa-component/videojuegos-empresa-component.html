@@ -19,6 +19,61 @@
     </div>
   </div>
 
+    <!-- BOTONES DE BLOQUEO/DESBLOQUEO -->
+  @if (!isLoading && videojuegos.length > 0) {
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card border-primary">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1">
+                  <i class="bi bi-chat-dots me-2"></i>
+                  Gestión de Comentarios
+                </h5>
+                <p class="card-text text-muted mb-0">
+                  {{ todosComentariosBloqueados 
+                     ? 'Los comentarios están bloqueados para todos los videojuegos' 
+                     : 'Los comentarios están habilitados' }}
+                </p>
+              </div>
+              
+              <div class="d-flex gap-2">
+                @if (!todosComentariosBloqueados) {
+                  <button 
+                    class="btn btn-danger" 
+                    (click)="bloquearTodosComentarios()"
+                    [disabled]="estaBloqueando">
+                    @if (estaBloqueando) {
+                      <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                      Procesando...
+                    } @else {
+                      <i class="bi bi-lock me-1"></i>
+                      Bloquear Todos los Comentarios
+                    }
+                  </button>
+                } @else {
+                  <button 
+                    class="btn btn-success" 
+                    (click)="desbloquearTodosComentarios()"
+                    [disabled]="estaBloqueando">
+                    @if (estaBloqueando) {
+                      <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                      Procesando...
+                    } @else {
+                      <i class="bi bi-unlock me-1"></i>
+                      Desbloquear Todos los Comentarios
+                    }
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
   <!-- Mensajes de error -->
   @if (errorMessage) {
     <div class="row mb-3">
@@ -132,6 +187,10 @@
                 <button class="btn btn-outline-primary" (click)="verDetalle(videojuego)">
                   <i class="bi bi-eye me-1"></i>
                   Ver Detalles
+                </button>
+                <button class="btn btn-sm btn-outline-primary" (click)="editarVideojuego(videojuego.id_videojuego)">
+                <i class="bi bi-pencil"></i>
+                  Editar Videojuego
                 </button>
               </div>
             </div>

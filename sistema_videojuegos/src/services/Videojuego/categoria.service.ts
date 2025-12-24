@@ -28,6 +28,16 @@ export class CategoriaService {
     );
   }
 
+  //categorias de un videojuego por id
+  getCategoriasByVideojuegoId(videojuegoId: number): Observable<Categoria[]> {
+    const url = `${this.apiUrl}videojuegos/${videojuegoId}/categorias`;
+    console.log('URL para obtener categorías por videojuego ID:', url);
+    
+    return this.http.get<Categoria[]>(url).pipe(
+      catchError(this.handleError)
+    );
+  } 
+
   /**
    * Obtiene una categoría por ID
    */

@@ -1,0 +1,418 @@
+<app-header-admin-empresa></app-header-admin-empresa>
+
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <!-- Header -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h1 class="h2 mb-0">
+                <i class="bi bi-plus-circle me-2 text-primary"></i>
+                Crear Nuevo Videojuego
+              </h1>
+              <p class="text-muted mb-0">Completa el formulario para agregar un nuevo videojuego</p>
+            </div>
+            <button class="btn btn-outline-secondary" (click)="volver()">
+              <i class="bi bi-arrow-left me-1"></i>
+              Volver
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensajes -->
+      @if (errorMessage) {
+        <div class="row mb-3">
+          <div class="col-12">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              {{ errorMessage }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (successMessage) {
+        <div class="row mb-3">
+          <div class="col-12">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              {{ successMessage }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Formulario -->
+      <form [formGroup]="videojuegoForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-info-circle me-2"></i>
+              Información Básica
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <!-- Título -->
+              <div class="col-md-6 mb-3">
+                <label for="titulo" class="form-label">
+                  Título <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="titulo"
+                  formControlName="titulo"
+                  class="form-control"
+                  [class.is-invalid]="f['titulo'].invalid && f['titulo'].touched"
+                  placeholder="Ej: Super Mario Bros"
+                >
+                @if (f['titulo'].invalid && f['titulo'].touched) {
+                  <div class="invalid-feedback">
+                    @if (f['titulo'].errors?.['required']) {
+                      <div>El título es requerido</div>
+                    }
+                    @if (f['titulo'].errors?.['minlength']) {
+                      <div>Mínimo 3 caracteres</div>
+                    }
+                    @if (f['titulo'].errors?.['maxlength']) {
+                      <div>Máximo 100 caracteres</div>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- Precio -->
+              <div class="col-md-6 mb-3">
+                <label for="precio" class="form-label">
+                  Precio (Q) <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">Q</span>
+                  <input
+                    type="number"
+                    id="precio"
+                    formControlName="precio"
+                    class="form-control"
+                    [class.is-invalid]="f['precio'].invalid && f['precio'].touched"
+                    step="0.01"
+                    min="0"
+                    placeholder="0.00"
+                  >
+                </div>
+                @if (f['precio'].invalid && f['precio'].touched) {
+                  <div class="invalid-feedback">
+                    @if (f['precio'].errors?.['required']) {
+                      <div>El precio es requerido</div>
+                    }
+                    @if (f['precio'].errors?.['min']) {
+                      <div>El precio debe ser mayor o igual a 0</div>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- Fecha de Lanzamiento -->
+              <div class="col-md-6 mb-3">
+                <label for="fecha_lanzamiento" class="form-label">
+                  Fecha de Lanzamiento <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="fecha_lanzamiento"
+                  formControlName="fecha_lanzamiento"
+                  class="form-control"
+                  [class.is-invalid]="f['fecha_lanzamiento'].invalid && f['fecha_lanzamiento'].touched"
+                >
+                @if (f['fecha_lanzamiento'].invalid && f['fecha_lanzamiento'].touched) {
+                  <div class="invalid-feedback">
+                    La fecha de lanzamiento es requerida
+                  </div>
+                }
+              </div>
+
+              <!-- Clasificación de Edad -->
+              <div class="col-md-6 mb-3">
+                <label for="clasificacion_edad" class="form-label">
+                  Clasificación de Edad <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="clasificacion_edad"
+                  formControlName="clasificacion_edad"
+                  class="form-select"
+                  [class.is-invalid]="f['clasificacion_edad'].invalid && f['clasificacion_edad'].touched"
+                >
+                  <option value="E">E - Everyone (Para todos)</option>
+                  <option value="T">T - Teen (Adolescentes)</option>
+                  <option value="M">M - Mature (Maduro +18)</option>
+                </select>
+                @if (f['clasificacion_edad'].invalid && f['clasificacion_edad'].touched) {
+                  <div class="invalid-feedback">
+                    La clasificación de edad es requerida
+                  </div>
+                }
+              </div>
+
+              <!-- Descripción -->
+              <div class="col-12 mb-3">
+                <label for="descripcion" class="form-label">
+                  Descripción <span class="text-danger">*</span>
+                </label>
+                <textarea
+                  id="descripcion"
+                  formControlName="descripcion"
+                  class="form-control"
+                  [class.is-invalid]="f['descripcion'].invalid && f['descripcion'].touched"
+                  rows="4"
+                  placeholder="Describe el videojuego..."
+                ></textarea>
+                @if (f['descripcion'].invalid && f['descripcion'].touched) {
+                  <div class="invalid-feedback">
+                    @if (f['descripcion'].errors?.['required']) {
+                      <div>La descripción es requerida</div>
+                    }
+                    @if (f['descripcion'].errors?.['minlength']) {
+                      <div>Mínimo 10 caracteres</div>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- Recursos Mínimos -->
+              <div class="col-12 mb-3">
+                <label for="recursos_minimos" class="form-label">
+                  Recursos Mínimos <span class="text-danger">*</span>
+                </label>
+                <textarea
+                  id="recursos_minimos"
+                  formControlName="recursos_minimos"
+                  class="form-control"
+                  [class.is-invalid]="f['recursos_minimos'].invalid && f['recursos_minimos'].touched"
+                  rows="3"
+                  placeholder="Ej: Procesador: Intel i5, RAM: 8GB, Gráficos: GTX 1060..."
+                ></textarea>
+                @if (f['recursos_minimos'].invalid && f['recursos_minimos'].touched) {
+                  <div class="invalid-feedback">
+                    Los recursos mínimos son requeridos
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN CORREGIDA DE CATEGORÍAS -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-tags me-2"></i>
+              Categorías
+              @if (categorias.length > 0) {
+                <span class="badge bg-light text-dark ms-2">
+                  {{ categorias.length }} disponible{{ categorias.length !== 1 ? 's' : '' }}
+                </span>
+              }
+            </h5>
+          </div>
+          <div class="card-body">
+            <!-- Estado de carga -->
+            @if (isLoadingCategorias) {
+              <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2 text-muted">Cargando categorías...</p>
+              </div>
+            }
+            
+            <!-- Sin categorías disponibles -->
+            @else if (categorias.length === 0) {
+              <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                No hay categorías disponibles. Contacta al administrador.
+              </div>
+            }
+            
+            <!-- Lista de categorías -->
+            @else {
+              <!-- Contador de seleccionadas -->
+              <div class="mb-3">
+                <div class="alert alert-light border">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <i class="bi bi-info-circle me-2"></i>
+                      <small class="text-muted">
+                        Selecciona las categorías que correspondan a tu videojuego
+                      </small>
+                    </div>
+                    <div>
+                      <span class="badge bg-primary">
+                        {{ videojuegoForm.get('categorias_ids')?.value?.length || 0 }} seleccionada{{ (videojuegoForm.get('categorias_ids')?.value?.length || 0) !== 1 ? 's' : '' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Grid de categorías SIMPLIFICADO -->
+              <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                @for (categoria of categorias; track categoria.id_categoria) {
+                  <div class="col">
+                    <div class="form-check p-3 border rounded hover-card"
+                         [class.border-primary]="isCategoriaSelected(categoria.id_categoria)"
+                         (click)="toggleCategoria(categoria.id_categoria)"
+                         style="cursor: pointer;">
+                      <input
+                        type="checkbox"
+                        [id]="'categoria-' + categoria.id_categoria"
+                        class="form-check-input me-2"
+                        [checked]="isCategoriaSelected(categoria.id_categoria)"
+                        (change)="toggleCategoria(categoria.id_categoria)"
+                        style="cursor: pointer;"
+                      >
+                      <label [for]="'categoria-' + categoria.id_categoria" 
+                             class="form-check-label w-100" 
+                             style="cursor: pointer;">
+                        <div class="fw-bold">{{ categoria.nombre }}</div>
+                        @if (categoria.descripcion) {
+                          <small class="text-muted d-block mt-1 text-truncate">
+                            {{ (categoria.descripcion.length > 60) ? (categoria.descripcion.substring(0, 60) + '...') : categoria.descripcion }}
+                          </small>
+                        }
+                      </label>
+                    </div>
+                  </div>
+                }
+              </div>
+              
+              <!-- Mostrar categorías seleccionadas -->
+              @if (videojuegoForm.get('categorias_ids')?.value?.length > 0) {
+                <div class="mt-4">
+                  <h6 class="mb-2">
+                    <i class="bi bi-check-circle text-success me-2"></i>
+                    Categorías seleccionadas:
+                  </h6>
+                  <div class="d-flex flex-wrap gap-2">
+                    <!-- CORREGIDO: Usar variable local del iterador -->
+                    @for (id of videojuegoForm.get('categorias_ids')?.value; track id) {
+                      @let categoriaSeleccionada = getCategoriaPorId(id);
+                      @if (categoriaSeleccionada) {
+                        <span class="badge bg-primary py-2 px-3">
+                          <i class="bi bi-tag me-1"></i>
+                          {{ categoriaSeleccionada.nombre }}
+                          <button type="button" 
+                                  class="btn-close btn-close-white ms-2" 
+                                  style="font-size: 0.6rem;"
+                                  (click)="toggleCategoria(id); $event.stopPropagation()"
+                                  aria-label="Remover"></button>
+                        </span>
+                      }
+                    }
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+
+        <!-- Sección de Imágenes -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-images me-2"></i>
+              Imágenes (Opcional)
+              <span class="badge bg-light text-dark ms-2">
+                {{ imagenesBase64.length }} / {{ maxImagenes }}
+              </span>
+            </h5>
+          </div>
+          <div class="card-body">
+            <!-- Input para subir imágenes -->
+            <div class="mb-4">
+              <label class="form-label">Subir Imágenes</label>
+              <div class="input-group">
+                <input
+                  type="file"
+                  class="form-control"
+                  (change)="onFileSelected($event)"
+                  accept="image/*"
+                  multiple
+                >
+                <button class="btn btn-outline-secondary" type="button" disabled>
+                  <i class="bi bi-upload"></i>
+                </button>
+              </div>
+              <small class="form-text text-muted">
+                Puedes subir hasta {{ maxImagenes }} imágenes. Formatos aceptados: JPG, PNG, GIF. Tamaño máximo: 5MB por imagen.
+              </small>
+            </div>
+
+            <!-- Vista previa de imágenes -->
+            @if (imagenesBase64.length > 0) {
+              <div class="row">
+                @for (imagen of imagenesBase64; track $index) {
+                  <div class="col-md-3 mb-3">
+                    <div class="card">
+                      <div class="card-body p-2 text-center">
+                        <img 
+                          [src]="'data:image/jpeg;base64,' + imagen" 
+                          class="img-fluid rounded mb-2" 
+                          style="height: 100px; object-fit: cover;"
+                          [alt]="'Imagen ' + ($index + 1)"
+                        >
+                        <p class="small text-truncate mb-1">{{ getFileName($index) }}</p>
+                        <button 
+                          type="button" 
+                          class="btn btn-sm btn-outline-danger"
+                          (click)="eliminarImagen($index)"
+                        >
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                No hay imágenes seleccionadas. Puedes agregar imágenes para mostrar en el videojuego.
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="row">
+          <div class="col-12">
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-outline-secondary" (click)="volver()">
+                <i class="bi bi-x-circle me-1"></i>
+                Cancelar
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="videojuegoForm.invalid || isLoading"
+              >
+                @if (isLoading) {
+                  <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  Creando...
+                } @else {
+                  <i class="bi bi-check-circle me-1"></i>
+                  Crear Videojuego
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

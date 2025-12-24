@@ -221,6 +221,14 @@ public class VideojuegoCrudService {
 
         return videojuegoDB.obtenerCategoriasAprobadas(idVideojuego);
     }
+    
+    public List<Categoria> getCategorias(int idVideojuego) throws EntityNotFoundException {
+        // Verificar que el videojuego existe
+        getVideojuegoById(idVideojuego, false);
+
+        return videojuegoDB.obtenerCategorias(idVideojuego);
+    }
+
 
     public boolean actualizarEstadoCategoria(int idVideojuego, int idCategoria, String estado)
             throws EntityNotFoundException {

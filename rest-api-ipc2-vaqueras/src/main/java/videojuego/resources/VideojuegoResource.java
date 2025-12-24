@@ -224,6 +224,28 @@ public class VideojuegoResource {
                     .build();
         }
     }
+    
+    @GET
+    @Path("{id}/categorias")
+    public Response getCategorias(@PathParam("id") int id) {
+        try {
+            VideojuegoCrudService videojuegoService = new VideojuegoCrudService();
+            List<categoria.models.Categoria> categorias = videojuegoService.getCategorias(id);
+            List<categoria.dtos.CategoriaResponse> categoriasResponse = categorias.stream()
+                    .map(categoria.dtos.CategoriaResponse::new)
+                    .toList();
+            return Response.ok(categoriasResponse).build();
+        } catch (EntityNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\": \"" + e.getMessage() + "\"}")
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\": \"Error interno del servidor\"}")
+                    .build();
+        }
+    }
 
     @PUT
     @Path("{idVideojuego}/categorias/{idCategoria}/estado")
