@@ -41,7 +41,7 @@ public class VideojuegoDB {
         + "FROM videojuego ORDER BY fecha_lanzamiento DESC";
 
     private static final String ACTUALIZAR_VIDEOJUEGO_QUERY
-        = "UPDATE videojuego SET id_empresa = ?, titulo = ?, descripcion = ?, recursos_minimos = ?, "
+        = "UPDATE videojuego SET titulo = ?, descripcion = ?, recursos_minimos = ?, "
         + "precio = ?, clasificacion_edad = ?, fecha_lanzamiento = ?, comentarios_bloqueados = ? WHERE id_videojuego = ?";
 
     private static final String ELIMINAR_VIDEOJUEGO_QUERY
@@ -270,15 +270,14 @@ public class VideojuegoDB {
     Connection connection = DBConnectionSingleton.getInstance().getConnection();
 
     try (PreparedStatement update = connection.prepareStatement(ACTUALIZAR_VIDEOJUEGO_QUERY)) {
-        update.setInt(1, videojuego.getId_empresa());
-        update.setString(2, videojuego.getTitulo());
-        update.setString(3, videojuego.getDescripcion());
-        update.setString(4, videojuego.getRecursos_minimos());
-        update.setBigDecimal(5, videojuego.getPrecio());
-        update.setString(6, videojuego.getClasificacion_edad());
-        update.setDate(7, new Date(videojuego.getFecha_lanzamiento().getTime()));
-        update.setBoolean(8, videojuego.isComentarios_bloqueados()); // Nuevo campo
-        update.setInt(9, videojuego.getId_videojuego());
+        update.setString(1, videojuego.getTitulo());
+        update.setString(2, videojuego.getDescripcion());
+        update.setString(3, videojuego.getRecursos_minimos());
+        update.setBigDecimal(4, videojuego.getPrecio());
+        update.setString(5, videojuego.getClasificacion_edad());
+        update.setDate(6, new Date(videojuego.getFecha_lanzamiento().getTime()));
+        update.setBoolean(7, videojuego.isComentarios_bloqueados());
+        update.setInt(8, videojuego.getId_videojuego());  // El WHERE está en posición 8 ahora
 
         int affectedRows = update.executeUpdate();
         return affectedRows > 0;
@@ -433,6 +432,30 @@ public class VideojuegoDB {
         Connection connection = DBConnectionSingleton.getInstance().getConnection();
 
         try (PreparedStatement query = connection.prepareStatement(OBTENER_CATEGORIAS_APROBADAS_POR_VIDEOJUEGO_QUERY)) {
+            query.setInt(1, idVideojuego);
+            ResultSet resultSet = query.executeQuery();
+
+            while (resultSet.next()) {
+                Categoria categoria = new Categoria(
+                        resultSet.getInt("id_categoria"),
+                        resultSet.getString("nombre"),
+                        resultSet.getString("descripcion")
+                );
+                categorias.add(categoria);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return categorias;
+    }
+    
+    public List<Categoria> obtenerCategorias(int idVideojuego) {
+        List<Categoria> categorias = new ArrayList<>();
+        Connection connection = DBConnectionSingleton.getInstance().getConnection();
+
+        try (PreparedStatement query = connection.prepareStatement(OBTENER_CATEGORIAS_POR_VIDEOJUEGO_QUERY)) {
             query.setInt(1, idVideojuego);
             ResultSet resultSet = query.executeQuery();
 

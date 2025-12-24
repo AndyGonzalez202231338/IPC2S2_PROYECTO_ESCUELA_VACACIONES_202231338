@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RestConstants } from '../../shared/rest-appi/rest-constants';
-import { Videojuego } from '../../models/videojuego/videojuego';
+import { UpdateVideojuegoRequest, Videojuego } from '../../models/videojuego/videojuego';
 
 
 
@@ -42,8 +42,8 @@ export class VideojuegoService {
     );
   }
 
-  
-  public actualizarVideojuego(id: number, videojuego: any): Observable<Videojuego> {
+
+    public actualizarVideojuego(id: number, videojuego: UpdateVideojuegoRequest): Observable<Videojuego> {
     return this.httpClient.put<Videojuego>(
       `${this.restConstants.getApiURL()}videojuegos/${id}`,
       videojuego
@@ -55,5 +55,15 @@ export class VideojuegoService {
     return this.httpClient.delete(
       `${this.restConstants.getApiURL()}videojuegos/${id}`
     );
+  }
+
+  bloquearComentariosTodosVideojuegosEmpresa(idEmpresa: number): Observable<any> {
+    const url = `${this.restConstants.getApiURL()}videojuegos/empresa/${idEmpresa}/bloquear-comentarios-todos`;
+    return this.httpClient.put(url, {});
+  }
+
+  desbloquearComentariosTodosVideojuegosEmpresa(idEmpresa: number): Observable<any> {
+    const url = `${this.restConstants.getApiURL()}videojuegos/empresa/${idEmpresa}/desbloquear-comentarios-todos`;
+    return this.httpClient.put(url, {});
   }
 }

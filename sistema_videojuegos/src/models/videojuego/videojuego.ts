@@ -25,5 +25,18 @@ export interface NewVideojuegoRequest {
   precio: number;
   clasificacion_edad: string;
   fecha_lanzamiento: string;
-  comentarios_bloqueados?: boolean;
+  comentarios_bloqueados: boolean;
+  categorias_ids: number[];
 }
+
+export interface UpdateVideojuegoRequest {
+  titulo: string;
+  descripcion: string;
+  recursos_minimos: string;
+  precio: number;
+  clasificacion_edad: string;
+  fecha_lanzamiento: string;
+  comentarios_bloqueados: boolean;
+  categorias_ids: number[];
+}
+
