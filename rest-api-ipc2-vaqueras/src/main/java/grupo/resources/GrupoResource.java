@@ -63,9 +63,22 @@ public class GrupoResource {
                     "Error en la base de datos: " + e.getMessage());
         }
     }
+    
+    @OPTIONS
+    @Path("{any: .*}")
+    public Response handleOptions() {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "http://localhost:4200")
+                .header("Access-Control-Allow-Headers", "X-User-ID, Content-Type, Authorization")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
+                .header("Access-Control-Allow-Credentials", "true")
+                .header("Access-Control-Max-Age", "86400")
+                .build();
+    }
 
     @DELETE
     @Path("/{idGrupo}/participantes/{idUsuario}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response eliminarParticipante(
             @PathParam("idGrupo") int idGrupo,
             @PathParam("idUsuario") int idUsuario,
@@ -76,17 +89,24 @@ public class GrupoResource {
                     idGrupo, idUsuario, idUsuarioSolicitante);
 
             if (eliminado) {
-                return Response.noContent().build();
+                return Response.ok()
+                        .entity("{\"success\": true, \"message\": \"Participante eliminado\"}")
+                        .build();
             } else {
-                return buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
-                        "No se pudo eliminar el participante");
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("{\"error\": \"No se pudo eliminar el participante\"}")
+                        .build();
             }
 
         } catch (IllegalArgumentException e) {
-            return buildErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\": \"" + e.getMessage() + "\"}")
+                    .build();
         } catch (SQLException e) {
-            return buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
-                    "Error en la base de datos: " + e.getMessage());
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\": \"Error en la base de datos: " + e.getMessage() + "\"}")
+                    .build();
         }
     }
 

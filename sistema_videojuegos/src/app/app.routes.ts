@@ -18,6 +18,7 @@ import { CarteraUsuarioComponent } from '../components/Usuario/cartera-usuario-c
 import { ComprarVideojuegoComponent } from '../components/Videojuego/comprar-videojuego-component/comprar-videojuego-component';
 import { DetalleVideojuegoComponent } from '../components/Videojuego/detalle-videojuego-component/detalle-videojuego-component';
 import { TiendaVideojuegosComponent } from '../components/Videojuego/tienda-videojuegos-component/tienda-videojuegos-component';
+import { GruposComponent } from '../components/Grupo/grupos-component/grupos-component';
 
 export const routes: Routes = [
 
@@ -112,6 +113,10 @@ export const routes: Routes = [
   {
     path: 'videojuego/detalle/:id',
     component: DetalleVideojuegoComponent
+  },
+  {
+    path: 'grupos',
+    component: GruposComponent
   },
 
 
