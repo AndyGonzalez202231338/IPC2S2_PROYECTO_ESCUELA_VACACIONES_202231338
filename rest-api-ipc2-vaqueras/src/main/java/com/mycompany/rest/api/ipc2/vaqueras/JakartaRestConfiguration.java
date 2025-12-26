@@ -46,9 +46,11 @@ public class JakartaRestConfiguration extends ResourceConfig {
         register(InstalacionJuegoResource.class);
         register(MultimediaResource.class);
         register(MultiPartFeature.class);
-
+        
+        property(ServerProperties.PROCESSING_RESPONSE_ERRORS_ENABLED, true);
         property(ServerProperties.TRACING, "ALL");
         property(ServerProperties.TRACING_THRESHOLD, "VERBOSE");
         
+         property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, true);
     }
 }
