@@ -8,7 +8,7 @@ package user.dtos;
  *
  * @author andy
  */
-public class OperacionSaldoRequest {
+    public class OperacionSaldoRequest {
     private int id_usuario;
     private double monto;
 

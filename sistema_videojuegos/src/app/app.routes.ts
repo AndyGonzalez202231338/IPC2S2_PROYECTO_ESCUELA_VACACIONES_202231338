@@ -14,6 +14,10 @@ import { CrearUsuarioEmpresaComponent } from '../components/Empresa/crear-usuari
 import { VideojuegosEmpresaComponent } from '../components/Videojuego/videojuegos-empresa-component/videojuegos-empresa-component';
 import { CrearVideojuegoComponent } from '../components/Videojuego/crear-videojuego-component/crear-videojuego-component';
 import { EditarVideojuegoComponent } from '../components/Videojuego/editar-videojuego-component/editar-videojuego-component';
+import { CarteraUsuarioComponent } from '../components/Usuario/cartera-usuario-component/cartera-usuario-component';
+import { ComprarVideojuegoComponent } from '../components/Videojuego/comprar-videojuego-component/comprar-videojuego-component';
+import { DetalleVideojuegoComponent } from '../components/Videojuego/detalle-videojuego-component/detalle-videojuego-component';
+import { TiendaVideojuegosComponent } from '../components/Videojuego/tienda-videojuegos-component/tienda-videojuegos-component';
 
 export const routes: Routes = [
 
@@ -92,6 +96,24 @@ export const routes: Routes = [
     path: 'empresa/videojuegos/editar/:id', 
     component: EditarVideojuegoComponent 
   },
+  //usuario header
+  {
+    path: 'usuario-cartera',
+    component: CarteraUsuarioComponent
+  },
+  { 
+    path: 'tienda', 
+    component: TiendaVideojuegosComponent 
+  },
+  { 
+    path: 'videojuego/comprar/:id', // Ruta alternativa
+    component: ComprarVideojuegoComponent 
+  },
+  {
+    path: 'videojuego/detalle/:id',
+    component: DetalleVideojuegoComponent
+  },
+
 
         // Ruta comodín
     { 

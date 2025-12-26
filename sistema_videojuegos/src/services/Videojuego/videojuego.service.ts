@@ -20,6 +20,12 @@ export class VideojuegoService {
     );
   }
 
+  public getAllVideojuegos(): Observable<Videojuego[]> {
+    return this.httpClient.get<Videojuego[]>(
+      `${this.restConstants.getApiURL()}videojuegos`
+    );
+  } 
+
   
   public getVideojuegoById(id: number): Observable<Videojuego> {
     return this.httpClient.get<Videojuego>(

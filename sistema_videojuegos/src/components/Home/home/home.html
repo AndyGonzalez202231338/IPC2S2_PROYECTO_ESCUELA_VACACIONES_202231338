@@ -33,11 +33,38 @@
             </div>
             
             <!-- Contenido principal -->
-            <div class="mt-4">
-              <h2>Contenido Principal</h2>
-              <p>Este es el contenido de tu aplicación...</p>
-            </div>
-          </div>
+            <!-- home.html -->
+<div *ngIf="currentUser?.rol?.nombre === 'COMUN'" class="main-content">
+  <!-- Tarjeta de bienvenida con enlace a la tienda -->
+  <div class="card shadow-lg border-0">
+    <div class="card-body text-center py-5">
+      <div class="display-1 text-primary mb-4">
+        <i class="bi bi-controller"></i>
+      </div>
+      <h2 class="card-title mb-3">¡Bienvenido a la Tienda de Videojuegos!</h2>
+      <p class="card-text text-muted mb-4">
+        Explora nuestra amplia colección de videojuegos de todas las empresas desarrolladoras.
+        Encuentra tus juegos favoritos y comienza a jugar hoy mismo.
+      </p>
+      <div class="d-grid gap-3 d-md-block">
+        <a [routerLink]="['/tienda']" class="btn btn-primary btn-lg px-5">
+          <i class="bi bi-shop me-2"></i>
+          Ir a la Tienda
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vista previa de algunos videojuegos -->
+  <div class="mt-5">
+    <h3 class="mb-4">Videojuegos Destacados</h3>
+    <!-- Aquí podrías mostrar algunos videojuegos destacados si quieres -->
+    <div class="alert alert-info">
+      <i class="bi bi-info-circle me-2"></i>
+      Visita nuestra tienda para ver todos los videojuegos disponibles.
+    </div>
+  </div>
+</div>
         </div>
       </div>
     </div>

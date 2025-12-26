@@ -8,6 +8,7 @@ import compra.dtos.CompraResponse;
 import compra.dtos.NewCompraRequest;
 import compra.services.CompraCrudService;
 import exceptions.CompraDataInvalidException;
+import exceptions.EdadNoValidaException;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityNotFoundException;
 import exceptions.SaldoInsuficienteException;
@@ -31,7 +32,7 @@ import java.util.Map;
 @Path("compras")
 @Produces(MediaType.APPLICATION_JSON)
 public class CompraResource {
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -39,41 +40,44 @@ public class CompraResource {
         try {
             CompraCrudService compraService = new CompraCrudService();
             compra.models.Compra compraCreada = compraService.createCompra(compraRequest);
-            
+
             CompraResponse response = new CompraResponse(compraCreada);
-            
+
             return Response.status(Response.Status.CREATED)
                     .entity(response)
                     .build();
+        } catch (EdadNoValidaException e) {
+            // Usar 403 (Forbidden) para errores de edad
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity("{\"error\": \"" + e.getMessage().replace("\"", "\\\"") + "\"}")
+                    .build();
         } catch (CompraDataInvalidException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"error\": \"" + e.getMessage() + "\"}")
+                    .entity("{\"error\": \"" + e.getMessage().replace("\"", "\\\"") + "\"}")
                     .build();
         } catch (EntityNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\": \"" + e.getMessage() + "\"}")
+                    .entity("{\"error\": \"" + e.getMessage().replace("\"", "\\\"") + "\"}")
                     .build();
         } catch (EntityAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
-                    .entity("{\"error\": \"" + e.getMessage() + "\"}")
+                    .entity("{\"error\": \"" + e.getMessage().replace("\"", "\\\"") + "\"}")
                     .build();
         } catch (SaldoInsuficienteException e) {
             return Response.status(Response.Status.PAYMENT_REQUIRED)
-                    .entity("{\"error\": \"" + e.getMessage() + "\"}")
+                    .entity("{\"error\": \"" + e.getMessage().replace("\"", "\\\"") + "\"}")
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\": \"Error interno del servidor: " + e.getMessage() + "\"}")
+                    .entity("{\"error\": \"Error interno del servidor: " + e.getMessage().replace("\"", "\\\"") + "\"}")
                     .build();
         }
     }
-    
 
-    
-    
-    @GET
-    public Response getAllCompras() {
+
+@GET
+public Response getAllCompras() {
         try {
             CompraCrudService compraService = new CompraCrudService();
             List<CompraResponse> compras = compraService.getAllCompras()
@@ -90,8 +94,8 @@ public class CompraResource {
     }
     
     @GET
-    @Path("{id}")
-    public Response getCompraById(@PathParam("id") int id) {
+@Path("{id}")
+public Response getCompraById(@PathParam("id") int id) {
         try {
             CompraCrudService compraService = new CompraCrudService();
             compra.models.Compra compra = compraService.getCompraById(id);
@@ -109,8 +113,8 @@ public class CompraResource {
     }
     
     @GET
-    @Path("usuario/{idUsuario}")
-    public Response getComprasByUsuario(@PathParam("idUsuario") int idUsuario) {
+@Path("usuario/{idUsuario}")
+public Response getComprasByUsuario(@PathParam("idUsuario") int idUsuario) {
         try {
             CompraCrudService compraService = new CompraCrudService();
             List<CompraResponse> compras = compraService.getComprasByUsuario(idUsuario)
