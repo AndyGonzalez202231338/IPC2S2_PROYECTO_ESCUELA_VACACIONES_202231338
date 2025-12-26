@@ -1,0 +1,144 @@
+<app-header></app-header>
+
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- Saldo actual -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-wallet2 me-2"></i>
+            Mi Cartera Digital
+          </h5>
+        </div>
+        <div class="card-body text-center py-5">
+          <div class="mb-4">
+            <small class="text-muted">Saldo disponible</small>
+            <div class="display-3 fw-bold text-success mb-3">
+              {{ formatearPrecio(saldoActual) }}
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2 d-md-block">
+            <button class="btn btn-outline-primary" (click)="navegarACompras()">
+              <i class="bi bi-shop me-1"></i>
+              Ir a Comprar Videojuegos
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario de recarga -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-plus-circle me-2"></i>
+            Recargar Saldo
+          </h5>
+        </div>
+        <div class="card-body">
+          <!-- Mensajes -->
+          @if (errorMessage) {
+            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              {{ errorMessage }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          }
+
+          @if (successMessage) {
+            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              {{ successMessage }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          }
+
+          <!-- Montos predefinidos -->
+          <div class="mb-4">
+            <label class="form-label">Recarga rápida:</label>
+            <div class="row g-2">
+              @for (monto of montosPredefinidos; track monto) {
+                <div class="col-4 col-md-2">
+                  <button type="button" 
+                          class="btn btn-outline-primary w-100"
+                          (click)="seleccionarMontoPredefinido(monto)">
+                    Q{{ monto }}
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Formulario -->
+          <form [formGroup]="recargaForm" (ngSubmit)="onSubmit()">
+            <!-- Monto personalizado -->
+            <div class="mb-4">
+              <label for="monto" class="form-label">
+                Monto personalizado (Q) <span class="text-danger">*</span>
+              </label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text">Q</span>
+                <input type="number"
+                       id="monto"
+                       formControlName="monto"
+                       class="form-control"
+                       [class.is-invalid]="f['monto'].invalid && f['monto'].touched"
+                       step="0.01"
+                       min="1"
+                       max="10000"
+                       placeholder="0.00">
+              </div>
+              @if (f['monto'].invalid && f['monto'].touched) {
+                <div class="invalid-feedback d-block">
+                  @if (f['monto'].errors?.['required']) {
+                    <div>El monto es requerido</div>
+                  }
+                  @if (f['monto'].errors?.['min']) {
+                    <div>El monto mínimo es Q1.00</div>
+                  }
+                  @if (f['monto'].errors?.['max']) {
+                    <div>El monto máximo es Q10,000.00</div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Botón de recarga -->
+            <div class="d-grid">
+              <button type="submit"
+                      class="btn btn-success btn-lg py-3"
+                      [disabled]="recargaForm.invalid || isLoading">
+                @if (isLoading) {
+                  <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  Procesando...
+                } @else {
+                  <i class="bi bi-lightning-charge me-2"></i>
+                  Recargar Saldo
+                }
+              </button>
+            </div>
+          </form>
+
+          <!-- Información -->
+          <div class="alert alert-info mt-4">
+            <div class="d-flex">
+              <i class="bi bi-info-circle me-2 mt-1"></i>
+              <div>
+                <small>
+                  <strong>Información importante:</strong><br>
+                  1. Las recargas se procesan de inmediato.<br>
+                  2. Tu saldo estará disponible para compras al instante.<br>
+                  3. El monto mínimo de recarga es Q1.00.<br>
+                  4. El monto máximo por transacción es Q10,000.00.
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

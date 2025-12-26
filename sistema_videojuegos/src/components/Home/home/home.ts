@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Header } from '../../Header/header/header';
 import { HeaderAdminSistema } from '../../Header/header-admin-sistema/header-admin-sistema';
 import { User } from '../../../models/user/user';
 import { LoginService } from '../../../services/Login/login.services';
 import { Footer } from '../../footer/footer';
 import { HeaderAdminEmpresa } from '../../Header/header-admin-empresa/header-admin-empresa';
+
 
 
 @Component({
@@ -17,7 +18,8 @@ import { HeaderAdminEmpresa } from '../../Header/header-admin-empresa/header-adm
     Header, 
     Footer, 
     HeaderAdminSistema,
-    HeaderAdminEmpresa    
+    HeaderAdminEmpresa,
+    RouterLink
   ],
   templateUrl: './home.html',
   styleUrls: ['./home.css']

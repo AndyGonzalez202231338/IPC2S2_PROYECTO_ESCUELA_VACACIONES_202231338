@@ -1,0 +1,363 @@
+<app-header></app-header>
+
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <!-- Header -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h1 class="h2 mb-0">
+                <i class="bi bi-cart-check me-2 text-primary"></i>
+                Confirmar Compra
+              </h1>
+              <p class="text-muted mb-0">Revisa los detalles antes de completar tu compra</p>
+            </div>
+            <button class="btn btn-outline-secondary" (click)="volverATienda()">
+              <i class="bi bi-arrow-left me-1"></i>
+              Volver a la Tienda
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensajes de error -->
+      @if (errorMessage) {
+      <div class="row mb-3">
+        <div class="col-12">
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {{ errorMessage }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Mensajes de éxito -->
+      @if (successMessage) {
+      <div class="row mb-3">
+        <div class="col-12">
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {{ successMessage }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Loading -->
+      @if (isLoading) {
+      <div class="row">
+        <div class="col-12 text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-3 text-muted">Cargando información del videojuego...</p>
+        </div>
+      </div>
+      }
+
+      <!-- Contenido principal -->
+      @if (!isLoading && videojuego) {
+      <div class="row">
+        <!-- Columna izquierda: Información del videojuego -->
+        <div class="col-lg-8">
+          <!-- Tarjeta del videojuego -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">
+                <i class="bi bi-controller me-2"></i>
+                Videojuego a Comprar
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <!-- Imagen (placeholder) -->
+                <div class="col-md-4 mb-3 mb-md-0">
+                  <div class="bg-dark text-center rounded p-4">
+                    <i class="bi bi-controller text-light" style="font-size: 4rem;"></i>
+                  </div>
+                </div>
+
+                <!-- Información -->
+                <div class="col-md-8">
+                  <h4 class="mb-3">{{ videojuego.titulo }}</h4>
+
+                  <!-- Precio destacado -->
+                  <div class="alert alert-success mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <small class="text-muted">Precio:</small>
+                        <div class="display-6 fw-bold">{{ formatearPrecio(videojuego.precio) }}</div>
+                      </div>
+                      @if (videojuego.comentarios_bloqueados) {
+                      <span class="badge bg-danger">
+                        <i class="bi bi-lock me-1"></i> No disponible
+                      </span>
+                      } @else {
+                      <span class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i> Disponible
+                      </span>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Descripción -->
+                  <div class="mb-3">
+                    <h6>Descripción</h6>
+                    <p class="text-muted">{{ videojuego.descripcion || 'Sin descripción' }}</p>
+                  </div>
+
+                  <!-- Información adicional -->
+                  <div class="row">
+                    <div class="col-md-6 mb-2">
+                      <small class="text-muted">Clasificación:</small>
+                      <div class="fw-bold">{{ videojuego.clasificacion_edad || 'N/A' }}</div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                      <small class="text-muted">Fecha de lanzamiento:</small>
+                      <div class="fw-bold">{{ formatearFecha(videojuego.fecha_lanzamiento) }}</div>
+                    </div>
+                    <div class="col-12 mb-2">
+                      <small class="text-muted">Requisitos mínimos:</small>
+                      <div class="fw-bold">{{ videojuego.recursos_minimos || 'No especificado' }}</div>
+                    </div>
+                  </div>
+
+                  <!-- Categorías -->
+                  @if (videojuego.categorias && videojuego.categorias.length > 0) {
+                  <div class="mt-3">
+                    <h6>Categorías</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                      @for (categoria of videojuego.categorias; track categoria.id_categoria) {
+                      <span class="badge bg-light text-dark border">
+                        {{ categoria.nombre }}
+                      </span>
+                      }
+                    </div>
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información de la empresa -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+              <h5 class="mb-0">
+                <i class="bi bi-building me-2"></i>
+                Empresa Desarrolladora
+              </h5>
+            </div>
+            <div class="card-body">
+              @if (isLoadingEmpresa) {
+              <div class="text-center py-3">
+                <div class="spinner-border spinner-border-sm text-info" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+                <span class="ms-2">Cargando información de la empresa...</span>
+              </div>
+              } @else if (empresa) {
+              <div class="row">
+                <div class="col-md-8">
+                  <h5 class="mb-2">{{ empresa.nombre }}</h5>
+                  @if (empresa.descripcion) {
+                  <p class="text-muted">{{ empresa.descripcion }}</p>
+                  }
+                  <div class="mt-3">
+                    <small class="text-muted">ID Empresa:</small>
+                    <div class="fw-bold">#{{ empresa.id_empresa }}</div>
+                  </div>
+                </div>
+                <div class="col-md-4 text-end">
+                  <div class="bg-light rounded p-3">
+                    <small class="text-muted d-block">Desarrollador oficial</small>
+                    <i class="bi bi-shield-check text-success" style="font-size: 3rem;"></i>
+                  </div>
+                </div>
+              </div>
+              } @else {
+              <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                No se pudo cargar la información de la empresa desarrolladora.
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna derecha: Resumen y confirmación -->
+        <div class="col-lg-4">
+          <div class="card shadow-sm sticky-top" style="top: 20px;">
+            <div class="card-header bg-success text-white">
+              <h5 class="mb-0">
+                <i class="bi bi-wallet2 me-2"></i>
+                Resumen de Compra
+              </h5>
+            </div>
+            <div class="card-body">
+              <!-- Saldo del usuario -->
+              <div class="alert alert-light border mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <small class="text-muted">Tu saldo disponible:</small>
+                    <div class="fw-bold fs-5 text-success">{{ formatearPrecio(saldoUsuario) }}</div>
+                  </div>
+                  @if (tieneSaldoSuficiente()) {
+                  <span class="badge bg-success">
+                    <i class="bi bi-check-circle me-1"></i> Suficiente
+                  </span>
+                  } @else {
+                  <span class="badge bg-danger">
+                    <i class="bi bi-x-circle me-1"></i> Insuficiente
+                  </span>
+                  }
+                </div>
+
+                @if (!tieneSaldoSuficiente()) {
+                <div class="mt-2">
+                  <small class="text-danger d-block">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    Te faltan {{ formatearPrecio(saldoFaltante) }}
+                  </small>
+                  <button class="btn btn-sm btn-outline-primary mt-2 w-100" (click)="recargarSaldo()">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Recargar Saldo
+                  </button>
+                </div>
+                }
+              </div>
+
+              <!-- Resumen de costos -->
+              <div class="mb-4">
+                <h6>Detalles del costo</h6>
+                <div class="list-group list-group-flush">
+                  <div class="list-group-item d-flex justify-content-between px-0">
+                    <span>Precio del videojuego:</span>
+                    <span class="fw-bold">{{ formatearPrecio(videojuego.precio) }}</span>
+                  </div>
+                  <div class="list-group-item d-flex justify-content-between px-0 border-top">
+                    <span class="fw-bold">Total a pagar:</span>
+                    <span class="fw-bold fs-5 text-success">{{ formatearPrecio(videojuego.precio) }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Formulario de confirmación -->
+              <form [formGroup]="compraForm" (ngSubmit)="realizarCompra()" class="mb-4">
+                <!-- Selección de fecha -->
+                <div class="mb-4">
+                  <label for="fecha_compra" class="form-label">
+                    <i class="bi bi-calendar me-1"></i>
+                    Fecha de Compra <span class="text-danger">*</span>
+                  </label>
+
+                  <!-- Input de fecha -->
+                  <div class="input-group">
+                    <input type="date" id="fecha_compra" formControlName="fecha_compra" class="form-control"
+                      [class.is-invalid]="f['fecha_compra'].invalid && f['fecha_compra'].touched" [min]="fechaMinima"
+                      [max]="fechaMaxima">
+                  </div>
+
+                  <!-- Mensajes de error -->
+                  @if (f['fecha_compra'].invalid && f['fecha_compra'].touched) {
+                  <div class="invalid-feedback d-block">
+                    {{ fechaError }}
+                  </div>
+                  }
+
+                  <!-- Información adicional -->
+                  <small class="form-text text-muted">
+                    Selecciona la fecha en la que realizas la compra. No se permiten fechas futuras.
+                  </small>
+                </div>
+
+                <!-- Términos y condiciones -->
+                <div class="form-check mb-3">
+                  <input type="checkbox" id="aceptarTerminos" formControlName="aceptarTerminos" class="form-check-input"
+                    [class.is-invalid]="f['aceptarTerminos'].invalid && f['aceptarTerminos'].touched">
+                  <label for="aceptarTerminos" class="form-check-label">
+                    <small>
+                      Acepto los
+                      <a href="#" class="text-primary">términos y condiciones</a>
+                      y la
+                      <a href="#" class="text-primary">política de privacidad</a>
+                    </small>
+                  </label>
+                  @if (f['aceptarTerminos'].invalid && f['aceptarTerminos'].touched) {
+                  <div class="invalid-feedback d-block">
+                    Debes aceptar los términos y condiciones
+                  </div>
+                  }
+                </div>
+
+                <!-- Confirmación final -->
+                <div class="form-check mb-4">
+                  <input type="checkbox" id="confirmarCompra" formControlName="confirmarCompra" class="form-check-input"
+                    [class.is-invalid]="f['confirmarCompra'].invalid && f['confirmarCompra'].touched">
+                  <label for="confirmarCompra" class="form-check-label">
+                    <small>Confirmo que deseo comprar este videojuego</small>
+                  </label>
+                  @if (f['confirmarCompra'].invalid && f['confirmarCompra'].touched) {
+                  <div class="invalid-feedback d-block">
+                    Debes confirmar la compra
+                  </div>
+                  }
+                </div>
+
+                <!-- Botón de compra -->
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-success btn-lg py-3"
+                    [disabled]="compraForm.invalid || isComprando || !tieneSaldoSuficiente() || videojuego.comentarios_bloqueados">
+                    @if (isComprando) {
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Procesando...
+                    } @else {
+                    <i class="bi bi-cart-check me-2"></i>
+                    Comprar Ahora
+                    }
+                  </button>
+                </div>
+              </form>
+
+              <!-- Información adicional -->
+              <div class="alert alert-info">
+                <small>
+                  <i class="bi bi-info-circle me-1"></i>
+                  <strong>Importante:</strong> El saldo será descontado automáticamente por el sistema
+                  cuando confirmes la compra. El videojuego estará disponible en tu biblioteca de inmediato.
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Si no hay videojuego -->
+      @if (!isLoading && !videojuego) {
+      <div class="row">
+        <div class="col-12">
+          <div class="card border-dashed">
+            <div class="card-body text-center py-5">
+              <i class="bi bi-exclamation-circle display-1 text-muted mb-3"></i>
+              <h3 class="h4 text-muted mb-3">Videojuego no encontrado</h3>
+              <p class="text-muted mb-4">El videojuego que buscas no existe o ha sido removido.</p>
+              <button class="btn btn-primary" (click)="volverATienda()">
+                <i class="bi bi-arrow-left me-1"></i>
+                Volver a la Tienda
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

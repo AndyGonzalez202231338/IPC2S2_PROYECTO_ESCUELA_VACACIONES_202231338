@@ -284,7 +284,6 @@ export class EditarVideojuegoComponent implements OnInit, OnDestroy {
   // Método para subir nuevas imágenes
   private subirNuevasImagenes(): void {
     if (!this.videojuegoId || this.nuevasImagenesBase64.length === 0) {
-      this.redirigirConExito();
       return;
     }
     
@@ -297,7 +296,7 @@ export class EditarVideojuegoComponent implements OnInit, OnDestroy {
     this.multimediaService.crearMultiplesImagenes(this.videojuegoId, requests).subscribe({
       next: () => {
         this.successMessage += ' Nuevas imágenes agregadas exitosamente.';
-        this.redirigirConExito();
+
       },
       error: (error) => {
         console.error('Error al subir nuevas imágenes:', error);
@@ -316,20 +315,12 @@ export class EditarVideojuegoComponent implements OnInit, OnDestroy {
     forkJoin(observables).subscribe({
       next: () => {
         this.successMessage += ' Nuevas imágenes agregadas exitosamente.';
-        this.redirigirConExito();
       },
       error: (error) => {
         console.error('Error al subir algunas imágenes:', error);
         this.successMessage += ' Videojuego actualizado, pero hubo problemas al agregar algunas imágenes.';
-        this.redirigirConExito();
       }
     });
-  }
-
-  private redirigirConExito(): void {
-    setTimeout(() => {
-      this.router.navigate(['/empresa/videojuegos']);
-    }, 2000);
   }
 
   // Envío del formulario
@@ -358,11 +349,13 @@ export class EditarVideojuegoComponent implements OnInit, OnDestroy {
         // Subir nuevas imágenes si hay
         this.subirNuevasImagenes();
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Error al actualizar videojuego:', error);
         this.errorMessage = error.message || 'Error al actualizar el videojuego.';
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -416,7 +409,7 @@ export class EditarVideojuegoComponent implements OnInit, OnDestroy {
   }
 
   volver(): void {
-    this.router.navigate(['/empresa/videojuegos']);
+    this.router.navigate(['/empresas/videojuegos']);
   }
 
   getFileName(index: number): string {
