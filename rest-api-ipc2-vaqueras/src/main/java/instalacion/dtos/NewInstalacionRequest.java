@@ -5,6 +5,7 @@ public class NewInstalacionRequest {
     private int id_videojuego;
     private String estado;
     private String tipo_adquisicion;
+    private int id_usuario;
 
     public NewInstalacionRequest() {
     }
@@ -15,6 +16,7 @@ public class NewInstalacionRequest {
         this.estado = estado;
         this.tipo_adquisicion = tipo_adquisicion;
     }
+
 
     public int getId_biblioteca() {
         return id_biblioteca;
@@ -47,4 +49,14 @@ public class NewInstalacionRequest {
     public void setTipo_adquisicion(String tipo_adquisicion) {
         this.tipo_adquisicion = tipo_adquisicion;
     }
+
+    public int getId_usuario() {
+        return id_usuario;
+    }
+
+    public void setId_usuario(int id_usuario) {
+        this.id_usuario = id_usuario;
+    }
+    
+        
 }
