@@ -8,7 +8,7 @@ import { NewUserRequest, Role, User } from "../../../models/counts/count";
 
 @Component({
   selector: 'app-user-form',
-  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, RouterLink],
+  imports: [NgFor, FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: './create-account-form.html',
 })
 export class CreateAccountComponent implements OnInit {

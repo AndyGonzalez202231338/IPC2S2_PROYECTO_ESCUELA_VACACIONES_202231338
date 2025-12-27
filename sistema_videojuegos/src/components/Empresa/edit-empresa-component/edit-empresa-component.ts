@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-edit-empresa-component',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, HeaderAdminSistema, Footer],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './edit-empresa-component.html',
   styleUrl: './edit-empresa-component.css',
 })

@@ -55,8 +55,8 @@ public class InstalacionJuegoDB {
     }
 
     public InstalacionJuego createInstalacion(InstalacionJuego instalacion) {
-        String sql = "INSERT INTO instalacion_juego (id_biblioteca, id_videojuego, estado, tipo_adquisicion) "
-                + "VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO instalacion_juego (id_biblioteca, id_videojuego, estado, tipo_adquisicion, id_usuario_instala) "
+                + "VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnectionSingleton.getInstance().getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -64,6 +64,7 @@ public class InstalacionJuegoDB {
             pstmt.setInt(2, instalacion.getId_videojuego());
             pstmt.setString(3, instalacion.getEstado());
             pstmt.setString(4, instalacion.getTipo_adquisicion());
+            pstmt.setInt(5, instalacion.getId_usuario());
 
             int affectedRows = pstmt.executeUpdate();
 
@@ -208,12 +209,16 @@ public class InstalacionJuegoDB {
 
     public List<InstalacionJuego> getInstalacionesByUsuario(int id_usuario) {
         List<InstalacionJuego> instalaciones = new ArrayList<>();
-        String sql = "SELECT ij.* FROM instalacion_juego ij "
-                + "JOIN biblioteca_usuario bu ON ij.id_biblioteca = bu.id_biblioteca "
-                + "WHERE bu.id_usuario = ?";
 
-        try (Connection conn = DBConnectionSingleton.getInstance().getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        String sql = """
+        SELECT ij.*
+        FROM instalacion_juego ij
+        WHERE ij.id_usuario_instala = ?
+          AND ij.estado = 'INSTALADO';
+    """;
 
+        try (
+                Connection conn = DBConnectionSingleton.getInstance().getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id_usuario);
             ResultSet rs = pstmt.executeQuery();
 
@@ -230,12 +235,12 @@ public class InstalacionJuegoDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return instalaciones;
     }
 
     public List<JuegoPrestable> getJuegosPrestablesPorGrupo(int id_usuario_solicitante) {
         List<JuegoPrestable> juegosPrestables = new ArrayList<>();
-
 
         String sql = "SELECT "
                 + "v.id_videojuego, "
@@ -303,8 +308,9 @@ public class InstalacionJuegoDB {
 
     /**
      * Obtener juegos prestables agrupados por grupo
+     *
      * @param id_usuario_solicitante
-     * @return 
+     * @return
      */
     public List<JuegoPrestable> getJuegosPrestablesAgrupados(int id_usuario_solicitante) {
         return getJuegosPrestablesPorGrupo(id_usuario_solicitante);
@@ -312,10 +318,11 @@ public class InstalacionJuegoDB {
 
     /**
      * Método para crear un préstamo en la biblioteca
+     *
      * @param id_usuario_prestatario
      * @param id_videojuego
      * @param id_usuario_propietario
-     * @return 
+     * @return
      */
     public boolean crearPrestamo(int id_usuario_prestatario, int id_videojuego, int id_usuario_propietario) {
         String sql = "INSERT INTO biblioteca_usuario (id_usuario, id_videojuego, id_compra, tipo_adquisicion) "

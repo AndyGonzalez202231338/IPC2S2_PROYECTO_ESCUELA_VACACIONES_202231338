@@ -1,0 +1,431 @@
+<app-header></app-header>
+
+<div class="container py-4">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">
+        <i class="bi bi-collection-play-fill me-2"></i>
+        Mi Biblioteca
+      </h1>
+      
+      <!-- Mensajes -->
+      @if (errorMessage) {
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+      </div>
+      }
+      
+      @if (successMessage) {
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+      </div>
+      }
+      
+      <!-- Panel de instalaciones -->
+      <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-download me-2"></i>
+            Mis Instalaciones
+          </h5>
+        </div>
+        <div class="card-body">
+          @if (isLoadingInstalaciones) {
+          <div class="text-center py-3">
+            <div class="spinner-border spinner-border-sm text-info" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <span class="ms-2">Cargando instalaciones...</span>
+          </div>
+          } @else if (instalacionesUsuario.length === 0) {
+          <div class="text-center py-3 text-muted">
+            <i class="bi bi-cloud-arrow-down display-6 d-block mb-2"></i>
+            <p class="mb-0">No tienes juegos instalados</p>
+          </div>
+          } @else {
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="alert alert-light">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <small class="text-muted">Total instalaciones:</small>
+                    <div class="fw-bold fs-4">{{ totalInstalaciones }}</div>
+                  </div>
+                  <i class="bi bi-download text-info" style="font-size: 2rem;"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="alert alert-light">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <small class="text-muted">Activas:</small>
+                    <div class="fw-bold fs-4">{{ instalacionesActivas.length }}</div>
+                  </div>
+                  <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Lista de instalaciones -->
+          <div class="mt-3">
+            <h6 class="mb-3">Juegos instalados:</h6>
+            <div class="list-group">
+              @for (instalacion of instalacionesUsuario; track instalacion.id_instalacion) {
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="badge {{instalacion.estado === 'INSTALADO' ? 'bg-success' : 'bg-secondary'}} me-2">
+                    {{ instalacion.estado === 'INSTALADO' ? 'ACTIVO' : 'INACTIVO' }}
+                  </span>
+                  <span class="badge {{instalacion.tipo_adquisicion === 'COMPRA' ? 'bg-primary' : 'bg-warning'}} me-2">
+                    {{ instalacion.tipo_adquisicion === 'COMPRA' ? 'COMPRADO' : 'PRESTADO' }}
+                  </span>
+                  <strong>Videojuego ID: {{ instalacion.id_videojuego }}</strong>
+                </div>
+                <button class="btn btn-sm btn-outline-danger" 
+                        (click)="desinstalarJuegoPorId(instalacion.id_instalacion)"
+                        [disabled]="isDesinstalando">
+                  <i class="bi bi-trash"></i> Desinstalar
+                </button>
+              </div>
+              }
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      
+      <!-- Pestañas -->
+      <div class="card mb-4">
+        <div class="card-header bg-light">
+          <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+              <button class="nav-link" 
+                      [class.active]="tabActive === 'biblioteca'"
+                      (click)="cambiarTab('biblioteca')">
+                <i class="bi bi-collection me-1"></i>
+                Mis Juegos Comprados
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" 
+                      [class.active]="tabActive === 'prestamos'"
+                      (click)="cambiarTab('prestamos')">
+                <i class="bi bi-arrow-left-right me-1"></i>
+                Juegos Disponibles para Préstamo
+                @if (juegosPrestables.length > 0) {
+                <span class="badge bg-warning ms-1">{{ juegosPrestables.length }}</span>
+                }
+              </button>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Contenido de las pestañas -->
+        <div class="card-body">
+          <!-- Búsqueda y filtros -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input type="text" class="form-control" 
+                       [(ngModel)]="terminoBusqueda" 
+                       placeholder="Buscar juegos..."
+                       (keyup.enter)="buscarJuegos()">
+                <button class="btn btn-primary" (click)="buscarJuegos()">
+                  Buscar
+                </button>
+              </div>
+            </div>
+            <div class="col-md-6 text-end">
+              @if (tabActive === 'biblioteca') {
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle" 
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                  Ordenar por: 
+                  @if (ordenarPor === 'fecha') { Fecha }
+                  @if (ordenarPor === 'titulo') { Título }
+                  @if (ordenarPor === 'precio') { Precio }
+                  <i class="bi bi-arrow-{{ordenAscendente ? 'up' : 'down'}} ms-1"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="javascript:void(0)" (click)="cambiarOrden('fecha')">
+                    Fecha {{ ordenarPor === 'fecha' && ordenAscendente ? '↑' : ordenarPor === 'fecha' ? '↓' : '' }}
+                  </a></li>
+                  <li><a class="dropdown-item" href="javascript:void(0)" (click)="cambiarOrden('titulo')">
+                    Título {{ ordenarPor === 'titulo' && ordenAscendente ? '↑' : ordenarPor === 'titulo' ? '↓' : '' }}
+                  </a></li>
+                  <li><a class="dropdown-item" href="javascript:void(0)" (click)="cambiarOrden('precio')">
+                    Precio {{ ordenarPor === 'precio' && ordenAscendente ? '↑' : ordenarPor === 'precio' ? '↓' : '' }}
+                  </a></li>
+                </ul>
+              </div>
+              }
+            </div>
+          </div>
+          
+          <!-- Pestaña: Mis Juegos Comprados -->
+          @if (tabActive === 'biblioteca') {
+          <div>
+            @if (isLoadingBiblioteca) {
+            <div class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+              <p class="mt-3 text-muted">Cargando tu biblioteca...</p>
+            </div>
+            } @else if (bibliotecaCompleta.length === 0) {
+            <div class="card border-dashed">
+              <div class="card-body text-center py-5">
+                <i class="bi bi-emoji-frown display-1 text-muted mb-3"></i>
+                <h3 class="h4 text-muted mb-3">
+                  @if (terminoBusqueda) {
+                  No se encontraron juegos
+                  } @else {
+                  Tu biblioteca está vacía
+                  }
+                </h3>
+                <p class="text-muted mb-4">
+                  @if (terminoBusqueda) {
+                  No hay juegos que coincidan con "{{ terminoBusqueda }}"
+                  } @else {
+                  Visita la tienda para adquirir nuevos juegos
+                  }
+                </p>
+                @if (!terminoBusqueda) {
+                <a routerLink="/tienda" class="btn btn-primary">
+                  <i class="bi bi-shop me-1"></i>
+                  Ir a la Tienda
+                </a>
+                }
+              </div>
+            </div>
+            } @else {
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+              @for (juego of juegosFiltrados; track juego.id_biblioteca) {
+              <div class="col">
+                <div class="card h-100 shadow-sm border-hover">
+                  <div class="card-body">
+                    <!-- Badges -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                      <span class="badge bg-success">
+                        <i class="bi bi-cart-check me-1"></i>
+                        Comprado
+                      </span>
+                      
+                      @if (estaInstalado(juego)) {
+                      <span class="badge bg-primary">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Instalado
+                      </span>
+                      }
+                    </div>
+                    
+                    <!-- Título y precio -->
+                    <h5 class="card-title mb-2">{{ juego.videojuego.titulo }}</h5>
+                    <p class="text-muted small mb-3">
+                      <i class="bi bi-calendar me-1"></i>
+                      Comprado: {{ formatearFecha(juego.compra.fecha_compra) }}
+                    </p>
+                    
+                    <!-- Información del juego -->
+                    <div class="mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small class="text-muted">Precio:</small>
+                        <small class="fw-bold">{{ formatearPrecio(juego.videojuego.precio) }}</small>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Clasificación:</small>
+                        <small class="fw-bold">{{ juego.videojuego.clasificacion_edad || 'N/A' }}</small>
+                      </div>
+                    </div>
+                    
+                    <!-- Botones de acción -->
+                    <div class="d-grid gap-2">
+                      @if (estaInstalado(juego)) {
+                      <button class="btn btn-outline-danger" 
+                              (click)="desinstalarJuego(juego)"
+                              [disabled]="isDesinstalando">
+                        @if (isDesinstalando) {
+                        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                        Desinstalando...
+                        } @else {
+                        <i class="bi bi-trash me-1"></i>
+                        Desinstalar
+                        }
+                      </button>
+                      } @else {
+                      <button class="btn btn-primary" 
+                              (click)="instalarJuegoComprado(juego)"
+                              [disabled]="isInstalando">
+                        @if (isInstalando) {
+                        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                        Instalando...
+                        } @else {
+                        <i class="bi bi-download me-1"></i>
+                        Instalar
+                        }
+                      </button>
+                      }
+                      
+                      <button class="btn btn-outline-secondary" 
+                              [routerLink]="['/videojuego', juego.videojuego.id_videojuego]">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Ver detalles
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              }
+            </div>
+            
+            <!-- Contador -->
+            <div class="mt-4 text-center text-muted">
+              <small>
+                Mostrando {{ juegosFiltrados.length }} de {{ bibliotecaCompleta.length }} juegos comprados
+              </small>
+            </div>
+            }
+          </div>
+          }
+          
+          <!-- Pestaña: Juegos para Préstamo -->
+          @if (tabActive === 'prestamos') {
+          <div>
+            @if (isLoadingPrestables) {
+            <div class="text-center py-5">
+              <div class="spinner-border text-warning" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+              <p class="mt-3 text-muted">Buscando juegos disponibles para préstamo...</p>
+            </div>
+            } @else if (juegosPrestables.length === 0) {
+            <div class="card border-dashed">
+              <div class="card-body text-center py-5">
+                <i class="bi bi-people display-1 text-muted mb-3"></i>
+                <h3 class="h4 text-muted mb-3">No hay juegos disponibles para préstamo</h3>
+                <p class="text-muted mb-4">
+                  Únete a un grupo para ver juegos que otros miembros han compartido
+                </p>
+                <a routerLink="/grupos" class="btn btn-warning">
+                  <i class="bi bi-people-fill me-1"></i>
+                  Ver Mis Grupos
+                </a>
+              </div>
+            </div>
+            } @else {
+            <!-- Información -->
+            <div class="alert alert-info mb-4">
+              <h6><i class="bi bi-info-circle me-2"></i>Información importante</h6>
+              <ul class="mb-0">
+                <li>Estos son juegos que otros miembros de tus grupos han comprado y compartido</li>
+                <li>Solo puedes instalar un juego prestado a la vez por grupo</li>
+              </ul>
+            </div>
+            
+            <!-- Lista de juegos prestables -->
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Juego</th>
+                    <th>Descripción</th>
+                    <th>Propietario</th>
+                    <th>Grupo</th>
+                    <th>Clasificación</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (juego of juegosPrestablesFiltrados; track juego.id_videojuego) {
+                  <tr>
+                    <td>
+                      <strong>{{ juego.titulo }}</strong>
+                    </td>
+                    <td>
+                      <small class="text-muted">{{ juego.descripcion || 'Sin descripción' }}</small>
+                    </td>
+                    <td>
+                      <div>
+                        <strong>{{ juego.nombre_propietario || 'Usuario ' + juego.id_usuario_propietario }}</strong>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-secondary">{{ juego.nombre_grupo || 'Grupo ' + juego.id_grupo }}</span>
+                    </td>
+                    <td>
+                      <span class="badge bg-info">{{ juego.clasificacion_edad || 'N/A' }}</span>
+                    </td>
+                    <td>
+                      @if (juego.ya_prestado) {
+                      <span class="badge bg-danger">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Ya prestado
+                      </span>
+                      } @else if (juegoPrestableEstaInstalado(juego)) {
+                      <span class="badge bg-primary">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Instalado
+                      </span>
+                      } @else {
+                      <span class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Disponible
+                      </span>
+                      }
+                    </td>
+                    <td>
+                      @if (juegoPrestableEstaInstalado(juego)) {
+                      <button class="btn btn-sm btn-outline-danger" disabled>
+                        <i class="bi bi-trash me-1"></i>
+                        Ya instalado
+                      </button>
+                      } @else if (!juego.ya_prestado) {
+                      <button class="btn btn-sm btn-warning" 
+                              (click)="instalarJuegoPrestado(juego)"
+                              [disabled]="isInstalando">
+                        @if (isInstalando) {
+                        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                        } @else {
+                        <i class="bi bi-download me-1"></i>
+                        }
+                        Instalar
+                      </button>
+                      } @else {
+                      <button class="btn btn-sm btn-outline-secondary" disabled>
+                        <i class="bi bi-lock me-1"></i>
+                        No disponible
+                      </button>
+                      }
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Contador -->
+            <div class="mt-4 text-center text-muted">
+              <small>
+                Mostrando {{ juegosPrestablesFiltrados.length }} de {{ juegosPrestables.length }} juegos disponibles para préstamo
+              </small>
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

@@ -74,17 +74,9 @@ public class InstalacionJuegoCrudService {
         
         // Obtener el tipo de adquisición de la biblioteca
         String tipoAdquisicionBiblioteca = instalacionJuegoDB.getTipoAdquisicionDeBiblioteca(request.getId_biblioteca());
-        if (tipoAdquisicionBiblioteca == null) {
-            throw new InstalacionDataInvalidException("Biblioteca no encontrada");
-        }
-        
-        // Verificar que el tipo de adquisición coincida
-        if (!tipoAdquisicionBiblioteca.equals(request.getTipo_adquisicion())) {
-            throw new InstalacionDataInvalidException("El tipo de adquisición no coincide con la biblioteca");
-        }
         
         // Validar reglas de negocio para juegos prestados
-        if (tipoAdquisicionBiblioteca.equals("PRESTAMO") && request.getEstado().equals("INSTALADO")) {
+        if (request.getTipo_adquisicion().equals("PRESTAMO") && request.getEstado().equals("INSTALADO")) {
             // Verificar si ya tiene un juego prestado instalado
             if (instalacionJuegoDB.tieneInstalacionPrestadaActiva(id_usuario)) {
                 throw new InstalacionRestrictionException(
@@ -101,6 +93,8 @@ public class InstalacionJuegoCrudService {
             request.getEstado(),
             request.getTipo_adquisicion()
         );
+        // guardando el usuario que lo instala
+        nuevaInstalacion.setId_usuario(request.getId_usuario());
 
         InstalacionJuego instalacionCreada = instalacionJuegoDB.createInstalacion(nuevaInstalacion);
 
@@ -128,18 +122,9 @@ public class InstalacionJuegoCrudService {
         }
         
         // Obtener el tipo de adquisición de la biblioteca
-        String tipoAdquisicionBiblioteca = instalacionJuegoDB.getTipoAdquisicionDeBiblioteca(request.getId_biblioteca());
-        if (tipoAdquisicionBiblioteca == null) {
-            throw new InstalacionDataInvalidException("Biblioteca no encontrada");
-        }
-        
-        // Verificar que el tipo de adquisición coincida
-        if (!tipoAdquisicionBiblioteca.equals(request.getTipo_adquisicion())) {
-            throw new InstalacionDataInvalidException("El tipo de adquisición no coincide con la biblioteca");
-        }
         
         // Validar reglas de negocio para juegos prestados
-        if (tipoAdquisicionBiblioteca.equals("PRESTAMO") && request.getEstado().equals("INSTALADO")) {
+        if (request.getEstado().equals("INSTALADO")) {
             // Verificar si ya tiene otro juego prestado instalado (excluyendo esta instalación)
             // Primero, descontamos esta instalación si ya estaba instalada
             if (!instalacionExistente.getEstado().equals("INSTALADO")) {
@@ -190,7 +175,7 @@ public class InstalacionJuegoCrudService {
         return !instalacionJuegoDB.tieneInstalacionPrestadaActiva(id_usuario);
     }
 
-    public InstalacionJuego instalarJuegoComprado(int id_usuario, int id_videojuego) 
+    public InstalacionJuego instalarJuegoComprado(int id_usuario, int id_videojuego, int id_usuario_instala) 
             throws InstalacionDataInvalidException, InstalacionRestrictionException {
         
         // Verificar si el usuario tiene el juego comprado en su biblioteca
@@ -211,11 +196,13 @@ public class InstalacionJuegoCrudService {
             "INSTALADO",
             "COMPRA"
         );
+        
+        request.setId_usuario(id_usuario_instala);
 
         return createInstalacion(request);
     }
 
-    public InstalacionJuego instalarJuegoPrestado(int id_usuario, int id_videojuego) 
+    public InstalacionJuego instalarJuegoPrestado(int id_usuario, int id_videojuego, int id_usuario_instala) 
             throws InstalacionDataInvalidException, InstalacionRestrictionException {
         
         // Verificar restricción de juego prestado
@@ -227,12 +214,7 @@ public class InstalacionJuegoCrudService {
         }
         
         
-        if (!instalacionJuegoDB.existeBibliotecaParaUsuarioYJuego(id_usuario, id_videojuego, "PRESTAMO")) {
-            throw new InstalacionDataInvalidException("No tienes este juego prestado en tu biblioteca");
-        }
-        
-        
-        Integer id_biblioteca = instalacionJuegoDB.getIdBibliotecaParaUsuarioYJuego(id_usuario, id_videojuego, "PRESTAMO");
+        Integer id_biblioteca = instalacionJuegoDB.getIdBibliotecaParaUsuarioYJuego(id_usuario, id_videojuego, "COMPRA");
         if (id_biblioteca == null) {
             throw new InstalacionDataInvalidException("Error al obtener la biblioteca");
         }
@@ -244,7 +226,9 @@ public class InstalacionJuegoCrudService {
             "INSTALADO",
             "PRESTAMO"
         );
-
+        
+        request.setId_usuario(id_usuario_instala);
+        
         return createInstalacion(request);
     }
 

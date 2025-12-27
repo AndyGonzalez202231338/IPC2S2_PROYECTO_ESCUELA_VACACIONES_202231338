@@ -19,6 +19,7 @@ import { ComprarVideojuegoComponent } from '../components/Videojuego/comprar-vid
 import { DetalleVideojuegoComponent } from '../components/Videojuego/detalle-videojuego-component/detalle-videojuego-component';
 import { TiendaVideojuegosComponent } from '../components/Videojuego/tienda-videojuegos-component/tienda-videojuegos-component';
 import { GruposComponent } from '../components/Grupo/grupos-component/grupos-component';
+import { BibliotecaComponent } from '../components/Usuario/biblioteca-component/biblioteca-component';
 
 export const routes: Routes = [
 
@@ -117,6 +118,10 @@ export const routes: Routes = [
   {
     path: 'grupos',
     component: GruposComponent
+  },
+  {
+    path: 'biblioteca',
+    component: BibliotecaComponent
   },
 
 

@@ -105,12 +105,12 @@ public class InstalacionJuegoResource {
     }
 
     @POST
-    @Path("instalar-comprado/{id_usuario}/{id_videojuego}")
+    @Path("instalar-comprado/{id_usuario}/{id_videojuego}/{id_usuario_instala}")
     public Response instalarJuegoComprado(@PathParam("id_usuario") int id_usuario,
-            @PathParam("id_videojuego") int id_videojuego) {
+            @PathParam("id_videojuego") int id_videojuego, @PathParam("id_usuario_instala") int id_usuario_instala) {
         try {
             InstalacionJuegoCrudService service = new InstalacionJuegoCrudService();
-            InstalacionJuego instalacion = service.instalarJuegoComprado(id_usuario, id_videojuego);
+            InstalacionJuego instalacion = service.instalarJuegoComprado(id_usuario, id_videojuego, id_usuario_instala);
             return Response.status(Response.Status.CREATED)
                     .entity(new InstalacionResponse(instalacion))
                     .build();
@@ -131,12 +131,12 @@ public class InstalacionJuegoResource {
     }
 
     @POST
-    @Path("instalar-prestado/{id_usuario}/{id_videojuego}")
+    @Path("instalar-prestado/{id_usuario}/{id_videojuego}/{id_usuario_instala}")
     public Response instalarJuegoPrestado(@PathParam("id_usuario") int id_usuario,
-            @PathParam("id_videojuego") int id_videojuego) {
+            @PathParam("id_videojuego") int id_videojuego, @PathParam("id_usuario_instala") int id_usuario_instala) {
         try {
             InstalacionJuegoCrudService service = new InstalacionJuegoCrudService();
-            InstalacionJuego instalacion = service.instalarJuegoPrestado(id_usuario, id_videojuego);
+            InstalacionJuego instalacion = service.instalarJuegoPrestado(id_usuario, id_videojuego, id_usuario_instala);
             return Response.status(Response.Status.CREATED)
                     .entity(new InstalacionResponse(instalacion))
                     .build();
