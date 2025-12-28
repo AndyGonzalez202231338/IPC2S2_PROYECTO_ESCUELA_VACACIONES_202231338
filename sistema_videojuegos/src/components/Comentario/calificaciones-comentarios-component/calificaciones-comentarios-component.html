@@ -1,0 +1,239 @@
+<div class="calificaciones-comentarios-container">
+    <!-- Título -->
+    @if (mostrarTitulo) {
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0">
+            <i class="bi bi-stars text-warning me-2"></i>
+            {{ tituloComponente }}
+        </h4>
+        <button class="btn btn-sm btn-outline-secondary" (click)="recargar()" [disabled]="isLoading">
+            <i class="bi bi-arrow-clockwise me-1"></i>
+            Actualizar
+        </button>
+    </div>
+    }
+
+    <!-- Loading -->
+    @if (isLoading) {
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-3 text-muted">Cargando calificaciones...</p>
+    </div>
+    }
+
+    <!-- Error -->
+    @if (errorMessage) {
+    <div class="alert alert-warning mb-4">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        {{ errorMessage }}
+        <button class="btn btn-sm btn-outline-warning ms-2" (click)="recargar()">
+            Reintentar
+        </button>
+    </div>
+    }
+
+    <!-- NOTA FINAL SIMPLE -->
+    @if (notaFinalData && !isLoading) {
+    <div class="card mb-4 border-warning">
+        <div class="card-header bg-warning text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-star-fill me-2"></i>
+                Calificación Final del Juego
+            </h5>
+        </div>
+        <div class="card-body text-center py-4">
+            <!-- Número grande -->
+            <div class="nota-final-grande mb-3">
+                <div class="display-1 fw-bold text-warning">
+                    {{ notaFinalData.notaFinal.toFixed(1) }}
+                    <small class="fs-4 text-muted">/5</small>
+                </div>
+            </div>
+            
+            <!-- Info simple -->
+            <div class="row mt-4">
+                <div class="col-md-6 mb-3">
+                    <div class="card bg-light">
+                        <div class="card-body py-3">
+                            <div class="fs-2 fw-bold text-primary">
+                                {{ notaFinalData.totalCalificaciones }}
+                            </div>
+                            <div class="text-muted small">
+                                <i class="bi bi-star me-1"></i>
+                                Calificaciones
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="card bg-light">
+                        <div class="card-body py-3">
+                            <div class="text-muted small">
+                                <i class="bi bi-chat-left-text me-1"></i>
+                                Comentarios
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pie de nota -->
+            <div class="mt-3">
+                <small class="text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Calificación basada en el promedio de todas las valoraciones de usuarios
+                </small>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Si no hay calificaciones -->
+    @if (!notaFinalData && !isLoading) {
+    <div class="card mb-4">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-star display-1 text-muted mb-3"></i>
+            <h4 class="text-muted mb-3">Sin calificaciones aún</h4>
+            <p class="text-muted mb-0">
+                Sé el primero en calificar este juego
+            </p>
+        </div>
+    </div>
+    }
+
+    <!-- Filtros y ordenamiento (si hay datos) -->
+    @if (mostrarFiltros && !isLoading && datosCombinados.length > 0) {
+    <div class="card mb-4">
+        <div class="card-body py-2">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <small class="text-muted me-2">Ordenar por:</small>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" 
+                            class="btn btn-outline-secondary"
+                            [class.active]="ordenarPor === 'fecha'"
+                            (click)="cambiarOrden('fecha')">
+                        <i class="bi bi-calendar me-1"></i>
+                        Fecha
+                        <i class="bi bi-arrow-{{ordenDescendente ? 'down' : 'up'}} ms-1"></i>
+                    </button>
+                    <button type="button" 
+                            class="btn btn-outline-secondary"
+                            [class.active]="ordenarPor === 'calificacion'"
+                            (click)="cambiarOrden('calificacion')">
+                        <i class="bi bi-star me-1"></i>
+                        Calificación
+                        <i class="bi bi-arrow-{{ordenDescendente ? 'down' : 'up'}} ms-1"></i>
+                    </button>
+                </div>
+
+                <div class="vr mx-2"></div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" 
+                           type="checkbox" 
+                           id="filtroComentarios"
+                           [checked]="mostrarSoloConComentarios"
+                           (change)="toggleFiltroComentarios()">
+                    <label class="form-check-label small" for="filtroComentarios">
+                        Solo con comentarios
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Lista de comentarios (igual que antes) -->
+    @if (!isLoading && datosFiltrados.length > 0) {
+    <div class="comentarios-lista">
+        @for (item of datosFiltrados; track item.id_usuario) {
+        <div class="comentario-item card mb-3">
+            <div class="card-body">
+                <!-- Encabezado del comentario -->
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-placeholder bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 40px; height: 40px;">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <div>
+                                <strong class="d-block">Usuario #{{ item.id_usuario }}</strong>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock me-1"></i>
+                                    {{ formatearFecha(item.fecha_combinada) }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Calificación del usuario -->
+                    @if (item.calificacion) {
+                    <div class="calificacion-badge">
+                        <div class="estrellas-calificacion">
+                            @for (i of [1,2,3,4,5]; track i) {
+                            <i class="bi bi-star-fill {{i <= item.calificacion.calificacion ? 'text-warning' : 'text-secondary'}} me-1"></i>
+                            }
+                        </div>
+                        <div class="text-center mt-1">
+                            <span class="badge bg-warning">{{ item.calificacion.calificacion }}/5</span>
+                        </div>
+                    </div>
+                    }
+                </div>
+
+                <!-- Comentario del usuario -->
+                @if (item.comentario) {
+                <div class="comentario-contenido mt-3">
+                    <div class="d-flex">
+                        <div class="me-3" style="min-width: 40px;">
+                            <i class="bi bi-chat-left-quote text-info"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="mb-0">{{ item.comentario.comentario }}</p>
+                        </div>
+                    </div>
+                </div>
+                } @else {
+                <div class="alert alert-light border mt-3">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Este usuario solo calificó el juego
+                </div>
+                }
+            </div>
+        </div>
+        }
+    </div>
+
+    <!-- Botón Ver Más -->
+    @if (mostrarBotonVerTodos) {
+    <div class="text-center mt-4">
+        <button class="btn btn-outline-primary" (click)="toggleMostrarCompleto()">
+            @if (mostrarCompleto) {
+            <i class="bi bi-chevron-up me-1"></i>
+            Mostrar menos
+            } @else {
+            <i class="bi bi-chevron-down me-1"></i>
+            Mostrar todos los {{ datosCombinados.length }} comentarios
+            }
+        </button>
+    </div>
+    }
+    }
+
+    <!-- Sin comentarios -->
+    @if (!isLoading && datosCombinados.length === 0 && notaFinalData) {
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-chat-left-text display-1 text-muted mb-3"></i>
+            <h4 class="text-muted mb-3">Sin comentarios aún</h4>
+            <p class="text-muted mb-0">
+                Sé el primero en comentar este juego
+            </p>
+        </div>
+    </div>
+    }
+</div>

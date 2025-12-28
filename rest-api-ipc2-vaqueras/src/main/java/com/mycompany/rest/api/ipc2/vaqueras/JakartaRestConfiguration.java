@@ -18,6 +18,7 @@ import usuario.resources.UsersResource;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import reportes.sistema.comision.global.ReporteGananciasGlobalesResource;
 import sistema.resources.SistemaResource;
 import usuario.resources.SaldoResource;
 import videojuego.resources.MultimediaResource;
@@ -45,6 +46,7 @@ public class JakartaRestConfiguration extends ResourceConfig {
         register(RespuestaComentarioResource.class);
         register(InstalacionJuegoResource.class);
         register(MultimediaResource.class);
+        register(ReporteGananciasGlobalesResource.class);
         register(MultiPartFeature.class);
         
         property(ServerProperties.PROCESSING_RESPONSE_ERRORS_ENABLED, true);

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports 
+              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" 
+              name="ReporteGananciasGlobales" 
+              pageWidth="595" 
+              pageHeight="842" 
+              columnWidth="535" 
+              leftMargin="30" 
+              rightMargin="30" 
+              topMargin="20" 
+              bottomMargin="20">
+    
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+    <property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
+    
+    <parameter name="fechaInicio" class="java.util.Date"/>
+    <parameter name="fechaFin" class="java.util.Date"/>
+    <parameter name="totalIngresoSistema" class="java.lang.Double"/>
+    <parameter name="totalComisionPlataforma" class="java.lang.Double"/>
+    <parameter name="totalVentasEmpresas" class="java.lang.Double"/>
+    
+    <queryString>
+        <![CDATA[]]>
+    </queryString>
+    
+    <field name="empresa" class="java.lang.String"/>
+    <field name="totalVentasEmpresa" class="java.lang.Double"/>
+    <field name="comisionPlataforma" class="java.lang.Double"/>
+    
+    <title>
+        <band height="120">
+            <!-- CENTRO UNIVERSITARIO DE OCCIDENTE (CUNOC) -->
+            <staticText>
+                <reportElement x="0" y="0" width="535" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[CENTRO UNIVERSITARIO DE OCCIDENTE (CUNOC)]]></text>
+            </staticText>
+            
+            <!-- ESCUELA DE VACACIONES -->
+            <staticText>
+                <reportElement x="0" y="20" width="535" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[ESCUELA DE VACACIONES]]></text>
+            </staticText>
+            
+            <!-- REPORTE GANANCIAS GLOBALES (SISTEMA) -->
+            <staticText>
+                <reportElement x="0" y="40" width="535" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="16" isBold="true"/>
+                </textElement>
+                <text><![CDATA[REPORTE GANANCIAS GLOBALES (SISTEMA)]]></text>
+            </staticText>
+            
+            <!-- Línea separadora -->
+            <line>
+                <reportElement x="0" y="65" width="535" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="2.0"/>
+                </graphicElement>
+            </line>
+            
+            <!-- Período -->
+            <textField>
+                <reportElement x="0" y="70" width="535" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[
+                    ($P{fechaInicio} != null && $P{fechaFin} != null) 
+                        ? "Período: " + 
+                          new java.text.SimpleDateFormat("dd/MM/yyyy").format($P{fechaInicio}) + 
+                          " al " + 
+                          new java.text.SimpleDateFormat("dd/MM/yyyy").format($P{fechaFin})
+                        : "Período: Histórico Completo"
+                ]]></textFieldExpression>
+            </textField>
+            
+            <!-- Fecha de generación -->
+            <textField pattern="dd/MM/yyyy HH:mm:ss">
+                <reportElement x="400" y="90" width="135" height="20"/>
+                <textElement textAlignment="Right">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            
+            <staticText>
+                <reportElement x="300" y="90" width="100" height="20"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[Generado:]]></text>
+            </staticText>
+        </band>
+    </title>
+    
+    <columnHeader>
+        <band height="40">
+            <!-- Fondo gris para encabezados -->
+            <rectangle>
+                <reportElement x="0" y="0" width="535" height="35" backcolor="#CCCCCC"/>
+            </rectangle>
+            
+            <!-- EMPRESA -->
+            <staticText>
+                <reportElement x="0" y="5" width="200" height="25"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[EMPRESA]]></text>
+            </staticText>
+            
+            <!-- VENTAS EMPRESA -->
+            <staticText>
+                <reportElement x="200" y="5" width="110" height="25"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[VENTAS EMPRESA]]></text>
+            </staticText>
+            
+            <!-- COMISIÓN SISTEMA -->
+            <staticText>
+                <reportElement x="310" y="5" width="110" height="25"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[COMISIÓN SISTEMA]]></text>
+            </staticText>
+            
+            <!-- TOTAL INGRESO -->
+            <staticText>
+                <reportElement x="420" y="5" width="115" height="25"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[TOTAL INGRESO]]></text>
+            </staticText>
+            
+            <!-- Línea inferior -->
+            <line>
+                <reportElement x="0" y="35" width="535" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="1.0"/>
+                </graphicElement>
+            </line>
+        </band>
+    </columnHeader>
+    
+    <detail>
+        <band height="30">
+            <!-- Empresa -->
+            <textField>
+                <reportElement x="0" y="0" width="200" height="30"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Ventas Empresa -->
+            <textField pattern="Q#,##0.00">
+                <reportElement x="200" y="0" width="110" height="30"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{totalVentasEmpresa}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Comisión Sistema -->
+            <textField pattern="Q#,##0.00">
+                <reportElement x="310" y="0" width="110" height="30"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{comisionPlataforma}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Total Ingreso -->
+            <textField pattern="Q#,##0.00">
+                <reportElement x="420" y="0" width="115" height="30"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{totalVentasEmpresa} + $F{comisionPlataforma}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Línea separadora -->
+            <line>
+                <reportElement x="0" y="29" width="535" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="0.5" lineColor="#CCCCCC"/>
+                </graphicElement>
+            </line>
+        </band>
+    </detail>
+    
+    <summary>
+        <band height="150">
+            <!-- Línea separadora -->
+            <line>
+                <reportElement x="0" y="0" width="535" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="2.0"/>
+                </graphicElement>
+            </line>
+            
+            <!-- TOTALES GENERALES -->
+            <staticText>
+                <reportElement x="0" y="20" width="200" height="25"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[TOTALES GENERALES]]></text>
+            </staticText>
+            
+            <!-- Total Ventas a Empresas -->
+            <staticText>
+                <reportElement x="200" y="20" width="200" height="25"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total Ventas a Empresas:]]></text>
+            </staticText>
+            
+            <textField pattern="Q#,##0.00">
+                <reportElement x="400" y="20" width="135" height="25"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{totalVentasEmpresas}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Total Comisión Plataforma -->
+            <staticText>
+                <reportElement x="200" y="45" width="200" height="25"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total Comisión Plataforma:]]></text>
+            </staticText>
+            
+            <textField pattern="Q#,##0.00">
+                <reportElement x="400" y="45" width="135" height="25"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{totalComisionPlataforma}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Línea doble -->
+            <line>
+                <reportElement x="200" y="75" width="335" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="1.0"/>
+                </graphicElement>
+            </line>
+            
+            <line>
+                <reportElement x="200" y="77" width="335" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="1.0"/>
+                </graphicElement>
+            </line>
+            
+            <!-- TOTAL INGRESO SISTEMA -->
+            <staticText>
+                <reportElement x="200" y="85" width="200" height="30"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[TOTAL INGRESO SISTEMA:]]></text>
+            </staticText>
+            
+            <textField pattern="Q#,##0.00">
+                <reportElement x="400" y="85" width="135" height="30"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{totalIngresoSistema}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Pie de página -->
+            <staticText>
+                <reportElement x="0" y="130" width="535" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="10" isItalic="true"/>
+                </textElement>
+                <text><![CDATA[Reporte generado automáticamente por el Sistema de Gestión de Videojuegos]]></text>
+            </staticText>
+        </band>
+    </summary>
+</jasperReport>

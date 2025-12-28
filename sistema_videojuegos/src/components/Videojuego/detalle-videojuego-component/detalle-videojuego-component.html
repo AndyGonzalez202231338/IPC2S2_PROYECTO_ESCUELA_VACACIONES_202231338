@@ -291,6 +291,52 @@
       </div>
     </div>
   }
+
+  <!-- Sección de Calificaciones y Comentarios -->
+@if (videojuego && mostrarCalificaciones) {
+  <div class="row mt-5">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-warning text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+              <i class="bi bi-stars me-2"></i>
+              Calificaciones y Comentarios
+            </h4>
+            <span class="badge bg-light text-dark">
+              <i class="bi bi-people me-1"></i>
+              Opiniones de la comunidad
+            </span>
+          </div>
+        </div>
+        <div class="card-body">
+          <!-- Componente de calificaciones y comentarios -->
+          <!-- Componente de calificaciones y comentarios -->
+<app-calificaciones-comentarios
+    [videojuegoId]="videojuego.id_videojuego"
+    [mostrarTitulo]="false">
+</app-calificaciones-comentarios>
+        </div>
+        <div class="card-footer text-muted small">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <i class="bi bi-info-circle me-1"></i>
+              Las calificaciones y comentarios son de usuarios que han jugado este videojuego.
+            </div>
+            @if (currentUser) {
+              <button class="btn btn-sm btn-outline-primary" 
+                      [routerLink]="['/biblioteca']"
+                      *ngIf="!videojuego.comentarios_bloqueados">
+                <i class="bi bi-star me-1"></i>
+                Calificar desde mi biblioteca
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
 </div>
 
 <app-footer></app-footer>

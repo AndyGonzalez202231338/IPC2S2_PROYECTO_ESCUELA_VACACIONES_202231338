@@ -7,7 +7,7 @@
         <i class="bi bi-collection-play-fill me-2"></i>
         Mi Biblioteca
       </h1>
-      
+
       <!-- Mensajes -->
       @if (errorMessage) {
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -16,7 +16,7 @@
         <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
       </div>
       }
-      
+
       @if (successMessage) {
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="bi bi-check-circle-fill me-2"></i>
@@ -24,7 +24,7 @@
         <button type="button" class="btn-close" (click)="successMessage = ''"></button>
       </div>
       }
-      
+
       <!-- Panel de instalaciones -->
       <div class="card mb-4">
         <div class="card-header bg-info text-white">
@@ -71,7 +71,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Lista de instalaciones -->
           <div class="mt-3">
             <h6 class="mb-3">Juegos instalados:</h6>
@@ -87,9 +87,8 @@
                   </span>
                   <strong>Videojuego ID: {{ instalacion.id_videojuego }}</strong>
                 </div>
-                <button class="btn btn-sm btn-outline-danger" 
-                        (click)="desinstalarJuegoPorId(instalacion.id_instalacion)"
-                        [disabled]="isDesinstalando">
+                <button class="btn btn-sm btn-outline-danger"
+                  (click)="desinstalarJuegoPorId(instalacion.id_instalacion)" [disabled]="isDesinstalando">
                   <i class="bi bi-trash"></i> Desinstalar
                 </button>
               </div>
@@ -99,23 +98,19 @@
           }
         </div>
       </div>
-      
+
       <!-- Pestañas -->
       <div class="card mb-4">
         <div class="card-header bg-light">
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
-              <button class="nav-link" 
-                      [class.active]="tabActive === 'biblioteca'"
-                      (click)="cambiarTab('biblioteca')">
+              <button class="nav-link" [class.active]="tabActive === 'biblioteca'" (click)="cambiarTab('biblioteca')">
                 <i class="bi bi-collection me-1"></i>
                 Mis Juegos Comprados
               </button>
             </li>
             <li class="nav-item">
-              <button class="nav-link" 
-                      [class.active]="tabActive === 'prestamos'"
-                      (click)="cambiarTab('prestamos')">
+              <button class="nav-link" [class.active]="tabActive === 'prestamos'" (click)="cambiarTab('prestamos')">
                 <i class="bi bi-arrow-left-right me-1"></i>
                 Juegos Disponibles para Préstamo
                 @if (juegosPrestables.length > 0) {
@@ -125,7 +120,7 @@
             </li>
           </ul>
         </div>
-        
+
         <!-- Contenido de las pestañas -->
         <div class="card-body">
           <!-- Búsqueda y filtros -->
@@ -135,10 +130,8 @@
                 <span class="input-group-text">
                   <i class="bi bi-search"></i>
                 </span>
-                <input type="text" class="form-control" 
-                       [(ngModel)]="terminoBusqueda" 
-                       placeholder="Buscar juegos..."
-                       (keyup.enter)="buscarJuegos()">
+                <input type="text" class="form-control" [(ngModel)]="terminoBusqueda" placeholder="Buscar juegos..."
+                  (keyup.enter)="buscarJuegos()">
                 <button class="btn btn-primary" (click)="buscarJuegos()">
                   Buscar
                 </button>
@@ -147,9 +140,9 @@
             <div class="col-md-6 text-end">
               @if (tabActive === 'biblioteca') {
               <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-secondary dropdown-toggle" 
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                  Ordenar por: 
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Ordenar por:
                   @if (ordenarPor === 'fecha') { Fecha }
                   @if (ordenarPor === 'titulo') { Título }
                   @if (ordenarPor === 'precio') { Precio }
@@ -157,20 +150,20 @@
                 </button>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="javascript:void(0)" (click)="cambiarOrden('fecha')">
-                    Fecha {{ ordenarPor === 'fecha' && ordenAscendente ? '↑' : ordenarPor === 'fecha' ? '↓' : '' }}
-                  </a></li>
+                      Fecha {{ ordenarPor === 'fecha' && ordenAscendente ? '↑' : ordenarPor === 'fecha' ? '↓' : '' }}
+                    </a></li>
                   <li><a class="dropdown-item" href="javascript:void(0)" (click)="cambiarOrden('titulo')">
-                    Título {{ ordenarPor === 'titulo' && ordenAscendente ? '↑' : ordenarPor === 'titulo' ? '↓' : '' }}
-                  </a></li>
+                      Título {{ ordenarPor === 'titulo' && ordenAscendente ? '↑' : ordenarPor === 'titulo' ? '↓' : '' }}
+                    </a></li>
                   <li><a class="dropdown-item" href="javascript:void(0)" (click)="cambiarOrden('precio')">
-                    Precio {{ ordenarPor === 'precio' && ordenAscendente ? '↑' : ordenarPor === 'precio' ? '↓' : '' }}
-                  </a></li>
+                      Precio {{ ordenarPor === 'precio' && ordenAscendente ? '↑' : ordenarPor === 'precio' ? '↓' : '' }}
+                    </a></li>
                 </ul>
               </div>
               }
             </div>
           </div>
-          
+
           <!-- Pestaña: Mis Juegos Comprados -->
           @if (tabActive === 'biblioteca') {
           <div>
@@ -219,7 +212,7 @@
                         <i class="bi bi-cart-check me-1"></i>
                         Comprado
                       </span>
-                      
+
                       @if (estaInstalado(juego)) {
                       <span class="badge bg-primary">
                         <i class="bi bi-check-circle me-1"></i>
@@ -227,14 +220,14 @@
                       </span>
                       }
                     </div>
-                    
+
                     <!-- Título y precio -->
                     <h5 class="card-title mb-2">{{ juego.videojuego.titulo }}</h5>
                     <p class="text-muted small mb-3">
                       <i class="bi bi-calendar me-1"></i>
                       Comprado: {{ formatearFecha(juego.compra.fecha_compra) }}
                     </p>
-                    
+
                     <!-- Información del juego -->
                     <div class="mb-3">
                       <div class="d-flex justify-content-between align-items-center mb-1">
@@ -246,13 +239,12 @@
                         <small class="fw-bold">{{ juego.videojuego.clasificacion_edad || 'N/A' }}</small>
                       </div>
                     </div>
-                    
+
                     <!-- Botones de acción -->
                     <div class="d-grid gap-2">
                       @if (estaInstalado(juego)) {
-                      <button class="btn btn-outline-danger" 
-                              (click)="desinstalarJuego(juego)"
-                              [disabled]="isDesinstalando">
+                      <button class="btn btn-outline-danger" (click)="desinstalarJuego(juego)"
+                        [disabled]="isDesinstalando">
                         @if (isDesinstalando) {
                         <span class="spinner-border spinner-border-sm me-1" role="status"></span>
                         Desinstalando...
@@ -262,9 +254,7 @@
                         }
                       </button>
                       } @else {
-                      <button class="btn btn-primary" 
-                              (click)="instalarJuegoComprado(juego)"
-                              [disabled]="isInstalando">
+                      <button class="btn btn-primary" (click)="instalarJuegoComprado(juego)" [disabled]="isInstalando">
                         @if (isInstalando) {
                         <span class="spinner-border spinner-border-sm me-1" role="status"></span>
                         Instalando...
@@ -274,19 +264,51 @@
                         }
                       </button>
                       }
-                      
-                      <button class="btn btn-outline-secondary" 
-                              [routerLink]="['/videojuego', juego.videojuego.id_videojuego]">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Ver detalles
+                      <!-- Botón para calificar/comentar -->
+                      <!-- Botón para calificar/comentar -->
+                      <button class="btn btn-info btn-sm" (click)="mostrarCalificarJuego(juego)"
+                        [disabled]="!estaInstalado(juego)">
+                        <i class="bi bi-star-fill me-1"></i>
+                        @if (juegoSeleccionadoParaCalificar?.id_biblioteca === juego.id_biblioteca &&
+                        mostrarFormCalificacion) {
+                        Ocultar
+                        } @else {
+                        Calificar/Comentar
+                        }
                       </button>
+                      <!-- Formulario de calificación (fuera del card) -->
+                @if (juegoSeleccionadoParaCalificar?.id_biblioteca === juego.id_biblioteca && mostrarFormCalificacion) {
+                <div class="mt-3">
+                  <div class="card border-info">
+                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                      <h6 class="mb-0">
+                        <i class="bi bi-star-fill me-2"></i>
+                        Calificar y Comentar: {{ juegoSeleccionadoParaCalificar.videojuego.titulo }}
+                      </h6>
+                      <button type="button" class="btn-close btn-close-white" (click)="cerrarCalificacion()"></button>
+                    </div>
+                    <div class="card-body">
+                      <app-calificar-juego [juegoId]="juegoSeleccionadoParaCalificar.videojuego.id_videojuego"
+                        [bibliotecaId]="juegoSeleccionadoParaCalificar.id_biblioteca"
+                        [tituloJuego]="juegoSeleccionadoParaCalificar.videojuego.titulo"
+                        (calificacionCreada)="onCalificacionCreada()" (comentarioCreado)="onComentarioCreado()"
+                        (cancelar)="cerrarCalificacion()">
+                      </app-calificar-juego>
                     </div>
                   </div>
                 </div>
+                }
+
+                    </div>
+                  </div>
+                </div>
+                
               </div>
               }
             </div>
+
             
+
             <!-- Contador -->
             <div class="mt-4 text-center text-muted">
               <small>
@@ -296,7 +318,7 @@
             }
           </div>
           }
-          
+
           <!-- Pestaña: Juegos para Préstamo -->
           @if (tabActive === 'prestamos') {
           <div>
@@ -330,7 +352,7 @@
                 <li>Solo puedes instalar un juego prestado a la vez por grupo</li>
               </ul>
             </div>
-            
+
             <!-- Lista de juegos prestables -->
             <div class="table-responsive">
               <table class="table table-hover">
@@ -390,9 +412,8 @@
                         Ya instalado
                       </button>
                       } @else if (!juego.ya_prestado) {
-                      <button class="btn btn-sm btn-warning" 
-                              (click)="instalarJuegoPrestado(juego)"
-                              [disabled]="isInstalando">
+                      <button class="btn btn-sm btn-warning" (click)="instalarJuegoPrestado(juego)"
+                        [disabled]="isInstalando">
                         @if (isInstalando) {
                         <span class="spinner-border spinner-border-sm me-1" role="status"></span>
                         } @else {
@@ -412,11 +433,13 @@
                 </tbody>
               </table>
             </div>
-            
+
             <!-- Contador -->
             <div class="mt-4 text-center text-muted">
               <small>
-                Mostrando {{ juegosPrestablesFiltrados.length }} de {{ juegosPrestables.length }} juegos disponibles para préstamo
+                Mostrando {{ juegosPrestablesFiltrados.length }} de {{ juegosPrestables.length }} juegos disponibles
+                para
+                préstamo
               </small>
             </div>
             }

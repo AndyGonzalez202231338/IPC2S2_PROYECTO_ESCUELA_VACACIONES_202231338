@@ -1,7 +1,7 @@
 package comentario.services;
 
-
 import comentario.dto.CalificacionRequest;
+import comentario.dto.VideojuegoNotaResponse;
 import comentario.model.Calificacion;
 import db.CalificacionDB;
 import exceptions.CalificacionDataInvalidException;
@@ -19,17 +19,19 @@ public class CalificacionCrudService {
 
     /**
      * Obtiene todas las calificaciones de una biblioteca
+     *
      * @param idBiblioteca
-     * @return 
+     * @return
      */
     public List<Calificacion> getCalificacionesPorBiblioteca(int idBiblioteca) {
         return calificacionDB.getCalificacionesPorBiblioteca(idBiblioteca);
     }
-    
+
     /**
      * Obtiene todas las calificaciones a un videojuego
+     *
      * @param idVideojuego
-     * @return 
+     * @return
      */
     public List<Calificacion> getCalificacionesPorVideojuego(int idVideojuego) {
         if (idVideojuego <= 0) {
@@ -40,9 +42,10 @@ public class CalificacionCrudService {
 
     /**
      * Obtiene una calificación realizada, por medio de ID
+     *
      * @param id
      * @return
-     * @throws EntityNotFoundException 
+     * @throws EntityNotFoundException
      */
     public Calificacion getCalificacionById(int id) throws EntityNotFoundException {
         Calificacion calificacion = calificacionDB.getCalificacionById(id);
@@ -54,18 +57,19 @@ public class CalificacionCrudService {
 
     /**
      * Obtiene la calificación de un usuario específico para una biblioteca
+     *
      * @param idUsuario
      * @param idBiblioteca
      * @return
-     * @throws EntityNotFoundException 
+     * @throws EntityNotFoundException
      */
-    public Calificacion getCalificacionPorUsuarioYBiblioteca(int idUsuario, int idBiblioteca) 
+    public Calificacion getCalificacionPorUsuarioYBiblioteca(int idUsuario, int idBiblioteca)
             throws EntityNotFoundException {
         Calificacion calificacion = calificacionDB.getCalificacionPorUsuarioYBiblioteca(idUsuario, idBiblioteca);
         if (calificacion == null) {
             throw new EntityNotFoundException(
-                "Calificación no encontrada para usuario ID: " + idUsuario + 
-                " y biblioteca ID: " + idBiblioteca
+                    "Calificación no encontrada para usuario ID: " + idUsuario
+                    + " y biblioteca ID: " + idBiblioteca
             );
         }
         return calificacion;
@@ -73,14 +77,15 @@ public class CalificacionCrudService {
 
     /**
      * Valida los datos de entrada para una calificación
+     *
      * @param idUsuario
      * @param idBiblioteca
      * @param calificacion
-     * @throws CalificacionDataInvalidException 
+     * @throws CalificacionDataInvalidException
      */
-    private void validarDatosCalificacion(int idUsuario, int idBiblioteca, int calificacion) 
+    private void validarDatosCalificacion(int idUsuario, int idBiblioteca, int calificacion)
             throws CalificacionDataInvalidException {
-        
+
         if (idUsuario <= 0) {
             throw new CalificacionDataInvalidException("El ID de usuario debe ser mayor a 0");
         }
@@ -96,59 +101,61 @@ public class CalificacionCrudService {
 
     /**
      * Crea una nueva calificación o actualiza una existente
+     *
      * @param calificacionRequest
      * @return
-     * @throws CalificacionDataInvalidException 
+     * @throws CalificacionDataInvalidException
      */
     public Calificacion createCalificacion(CalificacionRequest calificacionRequest)
             throws CalificacionDataInvalidException {
 
         validarDatosCalificacion(
-            calificacionRequest.getId_usuario(),
-            calificacionRequest.getId_biblioteca(),
-            calificacionRequest.getCalificacion()
+                calificacionRequest.getId_usuario(),
+                calificacionRequest.getId_biblioteca(),
+                calificacionRequest.getCalificacion()
         );
 
         int idUsuario = calificacionRequest.getId_usuario();
         int idBiblioteca = calificacionRequest.getId_biblioteca();
-        
+
         Calificacion calificacionExistente = calificacionDB.getCalificacionPorUsuarioYBiblioteca(
-            idUsuario, idBiblioteca
+                idUsuario, idBiblioteca
         );
 
         Calificacion calificacion;
-        
+
         if (calificacionExistente != null) {
 
             calificacionExistente.setCalificacion(calificacionRequest.getCalificacion());
             calificacionExistente.setFecha_hora(LocalDateTime.now());
-            
+
             calificacion = new Calificacion(
-                idUsuario,
-                idBiblioteca,
-                calificacionRequest.getCalificacion(),
-                LocalDateTime.now()
+                    idUsuario,
+                    idBiblioteca,
+                    calificacionRequest.getCalificacion(),
+                    LocalDateTime.now()
             );
 
         } else {
-            
+
             calificacion = new Calificacion(
-                idUsuario,
-                idBiblioteca,
-                calificacionRequest.getCalificacion(),
-                LocalDateTime.now()
+                    idUsuario,
+                    idBiblioteca,
+                    calificacionRequest.getCalificacion(),
+                    LocalDateTime.now()
             );
         }
 
         Calificacion calificacionCreada = calificacionDB.createCalificacion(calificacion);
-        
+
         return calificacionCreada;
     }
 
     /**
      * Obtiene el promedio de calificaciones de una biblioteca
+     *
      * @param idBiblioteca
-     * @return 
+     * @return
      */
     public double getPromedioCalificacionesPorBiblioteca(int idBiblioteca) {
         Double promedio = calificacionDB.getPromedioCalificacionesPorBiblioteca(idBiblioteca);
@@ -157,8 +164,9 @@ public class CalificacionCrudService {
 
     /**
      * Obtiene el total de calificaciones de una biblioteca
+     *
      * @param idBiblioteca
-     * @return 
+     * @return
      */
     public int getTotalCalificacionesPorBiblioteca(int idBiblioteca) {
         return calificacionDB.getTotalCalificacionesPorBiblioteca(idBiblioteca);
@@ -166,12 +174,43 @@ public class CalificacionCrudService {
 
     /**
      * Verifica si un usuario ya calificó una biblioteca
+     *
      * @param idUsuario
      * @param idBiblioteca
-     * @return 
+     * @return
      */
     public boolean usuarioYaCalificoBiblioteca(int idUsuario, int idBiblioteca) {
         return calificacionDB.existeCalificacionPorUsuarioYBiblioteca(idUsuario, idBiblioteca);
     }
+
+    public double getNotaFinalVideojuego(int idVideojuego) {
+        double promedio = calificacionDB.getPromedioCalificacionesPorVideojuego(idVideojuego);
+        int total = calificacionDB.getTotalCalificacionesPorVideojuego(idVideojuego);
+
+        if (total == 0) {
+            return 0.0;
+        }
+
+        double factor;
+        if (total == 1) {
+            factor = 0.6;
+        } else if (total == 2) {
+            factor = 0.75;
+        } else if (total <= 4) {
+            factor = 0.9;
+        } else {
+            factor = 1.0;
+        }
+
+        return Math.round(promedio * factor * 100.0) / 100.0;
+    }
+
+    public int getTotalCalificacionesPorVideojuego(int idVideojuego) {
+        return calificacionDB.getTotalCalificacionesPorVideojuego(idVideojuego);
+    }
     
+    public List<VideojuegoNotaResponse> getVideojuegosConNotas() {
+        return calificacionDB.getVideojuegosConNotaFinal();
+    }
+
 }

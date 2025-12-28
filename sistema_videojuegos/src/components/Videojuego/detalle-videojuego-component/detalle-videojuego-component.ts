@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Videojuego } from '../../../models/videojuego/videojuego';
 import { Categoria } from '../../../models/videojuego/videojuego';
 import { MultimediaResponse } from '../../../models/videojuego/multimedia';
@@ -11,10 +11,11 @@ import { LoginService } from '../../../services/Login/login.services';
 import { Header } from '../../Header/header/header';
 import { Footer } from '../../footer/footer';
 import { EmpresaService } from '../../../services/Empresa/empresa.service';
+import { CalificacionesComentariosComponent } from '../../Comentario/calificaciones-comentarios-component/calificaciones-comentarios-component';
 
 @Component({
   selector: 'app-detalle-videojuego',
-  imports: [CommonModule, Header, Footer],
+  imports: [RouterLink, CommonModule, Header, Footer, CalificacionesComentariosComponent],
   templateUrl: './detalle-videojuego-component.html',
   styleUrls: ['./detalle-videojuego-component.css']
 })
@@ -36,6 +37,8 @@ export class DetalleVideojuegoComponent implements OnInit {
   imagenActiva = 0;
   carruselAutoPlay = true;
   intervaloAutoPlay: any;
+
+  mostrarCalificaciones = true;
 
   constructor(
     private route: ActivatedRoute,
