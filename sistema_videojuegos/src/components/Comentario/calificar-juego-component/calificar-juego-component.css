@@ -1,0 +1,43 @@
+.calificar-container {
+  padding: 20px;
+  min-height: 200px; /* Altura mínima para evitar saltos */
+}
+
+.estrellas-seleccion {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 40px;
+  margin: 20px 0;
+}
+
+.estrella-btn {
+  background: none;
+  border: none;
+  font-size: 40px;
+  color: #ddd;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.estrella-btn:hover {
+  color: #ffc107;
+  transform: scale(1.2);
+}
+
+.estrella-btn.seleccionada {
+  color: #ffc107;
+  transform: scale(1.1);
+}
+
+/* Evitar parpadeo durante la carga */
+.calificar-form, .comentar-form {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.calificar-form.loading, .comentar-form.loading {
+  opacity: 0.7;
+}

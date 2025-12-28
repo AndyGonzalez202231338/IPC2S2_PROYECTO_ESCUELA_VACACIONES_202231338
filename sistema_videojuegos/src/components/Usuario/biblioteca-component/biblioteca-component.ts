@@ -9,10 +9,11 @@ import { Header } from '../../Header/header/header';
 import { Footer } from '../../footer/footer';
 import { BibliotecaResponse, BibliotecaService } from '../../../services/Usuario/biblioteca.service';
 import { GrupoPrestable, InstalacionResponse, InstalacionService, JuegoPrestable, JuegosPrestablesAgrupados } from '../../../services/Usuario/instalacion.service';
+import { CalificarJuegoComponent } from '../../Comentario/calificar-juego-component/calificar-juego-component';
 
 @Component({
   selector: 'app-biblioteca',
-  imports: [CommonModule, FormsModule, RouterModule, Header, Footer],
+  imports: [CommonModule, FormsModule, RouterModule, Header, Footer, CalificarJuegoComponent],
   templateUrl: './biblioteca-component.html',
   styleUrl: './biblioteca-component.css'
 })
@@ -27,6 +28,10 @@ export class BibliotecaComponent implements OnInit {
   
   // Juegos disponibles para préstamo (de otros usuarios del grupo)
   juegosPrestables: JuegoPrestable[] = [];
+
+  //comentarios
+  juegoSeleccionadoParaCalificar: any = null;
+  mostrarFormCalificacion = false;
   
   // Estados
   isLoadingBiblioteca = false;
@@ -355,5 +360,58 @@ export class BibliotecaComponent implements OnInit {
       );
     }
     return this.juegosPrestables;
+  }
+
+ mostrarCalificarJuego(juego: any): void {
+    console.log('Mostrar calificación para:', juego);
+    
+    // Verificar si el juego está instalado
+    if (!this.estaInstalado(juego)) {
+      this.errorMessage = 'Debes instalar el juego primero para poder calificarlo';
+      setTimeout(() => this.errorMessage = '', 3000);
+      return;
+    }
+    
+    // Toggle del formulario
+    if (this.juegoSeleccionadoParaCalificar?.id_biblioteca === juego.id_biblioteca && 
+        this.mostrarFormCalificacion) {
+      // Ocultar si es el mismo juego
+      this.mostrarFormCalificacion = false;
+      this.juegoSeleccionadoParaCalificar = null;
+    } else {
+      // Mostrar formulario para este juego
+      this.juegoSeleccionadoParaCalificar = juego;
+      this.mostrarFormCalificacion = true;
+    }
+    
+    this.cdr.detectChanges();
+  }
+
+  cerrarCalificacion(): void {
+    this.mostrarFormCalificacion = false;
+    this.juegoSeleccionadoParaCalificar = null;
+    this.cdr.detectChanges();
+  }
+
+  onCalificacionCreada(): void {
+    this.successMessage = '¡Calificación enviada con éxito!';
+    this.cerrarCalificacion();
+    this.cdr.detectChanges();
+    
+    setTimeout(() => {
+      this.successMessage = '';
+      this.cdr.detectChanges();
+    }, 3000);
+  }
+
+  onComentarioCreado(): void {
+    this.successMessage = '¡Comentario enviado con éxito!';
+    this.cerrarCalificacion();
+    this.cdr.detectChanges();
+    
+    setTimeout(() => {
+      this.successMessage = '';
+      this.cdr.detectChanges();
+    }, 3000);
   }
 }
