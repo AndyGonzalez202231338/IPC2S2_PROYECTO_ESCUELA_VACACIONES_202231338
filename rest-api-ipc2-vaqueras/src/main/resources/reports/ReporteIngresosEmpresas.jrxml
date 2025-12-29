@@ -1,0 +1,116 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="ReporteIngresosEmpresas" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a437e46a-db89-4d78-9ee4-b26ad3f1d127">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
+	<parameter name="periodoTexto" class="java.lang.String"/>
+	<parameter name="totalEmpresas" class="java.lang.Integer"/>
+	<parameter name="totalTransacciones" class="java.lang.Integer"/>
+	<parameter name="totalVentasTodasEmpresas" class="java.lang.Double"/>
+	<parameter name="totalComisionTodasEmpresas" class="java.lang.Double"/>
+	<parameter name="totalIngresoSistema" class="java.lang.Double"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="empresa" class="java.lang.String"/>
+	<field name="totalVentas" class="java.lang.Double"/>
+	<field name="totalComision" class="java.lang.Double"/>
+	<field name="totalTransacciones" class="java.lang.Integer"/>
+	<title height="130">
+		<element kind="staticText" uuid="7b7dd77b-2056-4e8e-907c-abcd88da43e8" x="0" y="0" width="555" height="20" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[CENTRO UNIVERSITARIO DE OCCIDENTE (CUNOC)]]></text>
+		</element>
+		<element kind="staticText" uuid="a7a235b8-dda2-4257-8476-c13bca12fa2a" x="0" y="20" width="555" height="20" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[ESCUELA DE VACACIONES]]></text>
+		</element>
+		<element kind="staticText" uuid="f4a293de-949b-4e28-be51-5a17d886414d" x="0" y="40" width="555" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[REPORTE INGRESOS POR EMPRESA (SISTEMA)]]></text>
+		</element>
+		<element kind="line" uuid="2e90cb30-a3af-42b9-b339-022c182a5699" x="0" y="65" width="555" height="1">
+			<pen lineWidth="2.0"/>
+		</element>
+		<element kind="textField" uuid="b5b3162e-0764-4857-9b27-bc5bbea998f3" x="0" y="70" width="555" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA[$P{periodoTexto}]]></expression>
+		</element>
+		<element kind="textField" uuid="969e2389-e434-4322-ad68-1c1461711ed3" x="0" y="90" width="555" height="20" fontSize="10.0" hTextAlign="Center">
+			<expression><![CDATA["Total Empresas: " + $P{totalEmpresas} + " | Total Transacciones: " + $P{totalTransacciones}]]></expression>
+		</element>
+		<element kind="textField" uuid="211f287a-b776-4a94-92b7-b4cc5ec4f195" x="420" y="110" width="135" height="20" fontSize="9.0" pattern="dd/MM/yyyy HH:mm:ss" hTextAlign="Right">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+		<element kind="staticText" uuid="3a24260d-ebf5-456f-9bf6-54d0ffc59884" x="320" y="110" width="100" height="20" fontSize="9.0">
+			<text><![CDATA[Generado:]]></text>
+		</element>
+	</title>
+	<columnHeader height="35">
+		<element kind="staticText" uuid="337c01a5-4413-47b1-a7a1-32e9c901999a" x="0" y="5" width="150" height="25" fontSize="12.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[EMPRESA]]></text>
+		</element>
+		<element kind="staticText" uuid="36ff13bb-de92-427b-9150-14e2a18c7d68" x="150" y="5" width="80" height="25" fontSize="12.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[TRANSACC.]]></text>
+		</element>
+		<element kind="staticText" uuid="0bbccbc0-49b4-4369-b152-0bf575768022" x="230" y="5" width="100" height="25" fontSize="12.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[TOTAL VENTAS]]></text>
+		</element>
+		<element kind="staticText" uuid="5ac892c4-81eb-4100-b72b-790b135f9777" x="330" y="5" width="100" height="25" fontSize="12.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[COMISIÓN SISTEMA]]></text>
+		</element>
+		<element kind="staticText" uuid="a9b0a105-dbcf-4f7c-b7a9-5cdd51eea20d" x="430" y="5" width="125" height="25" fontSize="12.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[TOTAL INGRESO]]></text>
+		</element>
+		<element kind="line" uuid="8143747d-55c5-4d19-ad53-613870f1ad09" x="0" y="34" width="555" height="1">
+			<pen lineWidth="1.0"/>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="25">
+			<element kind="textField" uuid="abc3415a-d609-49d8-925f-7843cb503f62" x="0" y="0" width="150" height="25" fontSize="10.0" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{empresa}]]></expression>
+			</element>
+			<element kind="textField" uuid="f36cf849-0f2b-4ab4-841a-215decfd4224" x="150" y="0" width="80" height="25" fontSize="10.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{totalTransacciones}]]></expression>
+			</element>
+			<element kind="textField" uuid="f841da2b-b85a-4a20-b064-8773a796f5bc" x="230" y="0" width="100" height="25" fontSize="10.0" pattern="Q#,##0.00" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{totalVentas}]]></expression>
+			</element>
+			<element kind="textField" uuid="ccf34057-d999-47a3-8c7a-7101016456ba" x="330" y="0" width="100" height="25" fontSize="10.0" pattern="Q#,##0.00" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{totalComision}]]></expression>
+			</element>
+			<element kind="textField" uuid="01a6b16e-3b87-48e6-89e6-4079e04602bf" x="430" y="0" width="125" height="25" fontSize="10.0" pattern="Q#,##0.00" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{totalVentas} + $F{totalComision}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<summary height="150">
+		<element kind="line" uuid="ee3dda7c-dbe6-46ab-aef5-b22e2f39823c" x="0" y="0" width="555" height="1">
+			<pen lineWidth="2.0"/>
+		</element>
+		<element kind="staticText" uuid="cb5e808c-96a5-4eeb-b9ef-8185e1a61721" x="0" y="20" width="200" height="25" fontSize="12.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[TOTALES GENERALES]]></text>
+		</element>
+		<element kind="staticText" uuid="e9335230-7382-4b00-931b-bdf452557ece" x="200" y="20" width="200" height="25" fontSize="11.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[Total Ventas Empresas:]]></text>
+		</element>
+		<element kind="textField" uuid="d4dbfc87-9e73-43cd-a29f-83cd85ac061f" x="400" y="20" width="155" height="25" fontSize="11.0" pattern="Q#,##0.00" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$P{totalVentasTodasEmpresas}]]></expression>
+		</element>
+		<element kind="staticText" uuid="36a25c17-7e87-4125-ae43-3d28746ad785" x="200" y="45" width="200" height="25" fontSize="11.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[Total Comisión Sistema:]]></text>
+		</element>
+		<element kind="textField" uuid="b53bd0b9-0888-4e81-9e8b-9da67959831c" x="400" y="45" width="155" height="25" fontSize="11.0" pattern="Q#,##0.00" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$P{totalComisionTodasEmpresas}]]></expression>
+		</element>
+		<element kind="line" uuid="7424d7f4-db86-45cb-81fd-7b039a28db4c" x="200" y="75" width="355" height="1">
+			<pen lineWidth="1.0"/>
+		</element>
+		<element kind="line" uuid="a82f84aa-f56c-4eab-9c80-cd0fe4a51cf2" x="200" y="77" width="355" height="1">
+			<pen lineWidth="1.0"/>
+		</element>
+		<element kind="staticText" uuid="823a42e2-630e-400a-b86f-499806d7971e" x="200" y="85" width="200" height="30" fontSize="12.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[TOTAL INGRESO SISTEMA:]]></text>
+		</element>
+		<element kind="textField" uuid="c1c80943-83eb-47d7-a962-b1225ad0f58b" x="400" y="85" width="155" height="30" fontSize="12.0" pattern="Q#,##0.00" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$P{totalIngresoSistema}]]></expression>
+		</element>
+		<element kind="staticText" uuid="776878a3-9458-42f2-a42d-c5b19586bf8d" x="0" y="130" width="555" height="20" fontSize="10.0" italic="true" hTextAlign="Center">
+			<text><![CDATA[Reporte generado automáticamente por el Sistema de Gestión de Videojuegos]]></text>
+		</element>
+	</summary>
+</jasperReport>

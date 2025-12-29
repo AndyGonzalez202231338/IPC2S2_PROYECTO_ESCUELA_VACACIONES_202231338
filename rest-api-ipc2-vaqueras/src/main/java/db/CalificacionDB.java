@@ -309,12 +309,12 @@ public class CalificacionDB {
     }
 
     private static final String VIDEOJUEGOS_CON_NOTA_QUERY
-            = "SELECT v.id_videojuego, v.nombre, "
+            = "SELECT v.id_videojuego, v.titulo, "
             + "AVG(c.calificacion) AS nota, COUNT(c.id_calificacion) AS total "
             + "FROM videojuego v "
             + "LEFT JOIN biblioteca_usuario bu ON v.id_videojuego = bu.id_videojuego "
             + "LEFT JOIN calificacion c ON bu.id_biblioteca = c.id_biblioteca "
-            + "GROUP BY v.id_videojuego, v.nombre";
+            + "GROUP BY v.id_videojuego, v.titulo";
 
     public List<VideojuegoNotaResponse> getVideojuegosConNotaFinal() {
         List<VideojuegoNotaResponse> lista = new ArrayList<>();
@@ -325,11 +325,11 @@ public class CalificacionDB {
 
             while (rs.next()) {
                 lista.add(new VideojuegoNotaResponse(
-                        rs.getInt("id_videojuego"),
-                        rs.getString("nombre"),
-                        rs.getDouble("nota"),
-                        rs.getInt("total")
-                ));
+            rs.getInt("id_videojuego"),
+            rs.getString("titulo"),
+            rs.getDouble("nota"),
+            rs.getInt("total")
+            ));
             }
         } catch (SQLException e) {
             e.printStackTrace();

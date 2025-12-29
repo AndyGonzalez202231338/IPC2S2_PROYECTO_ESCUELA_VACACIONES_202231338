@@ -1,0 +1,81 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="ReporteRankingUsuarios" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="328792be-63e7-48fb-af43-9405b00c8a5f">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
+	<parameter name="periodoTexto" class="java.lang.String"/>
+	<parameter name="limite" class="java.lang.Integer"/>
+	<parameter name="usuariosComprasDataSource" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="usuariosCalificacionesDataSource" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="totalCompras" class="java.lang.Integer"/>
+	<parameter name="totalCalificaciones" class="java.lang.Integer"/>
+	<query language="sql"><![CDATA[]]></query>
+	<title height="120">
+		<element kind="staticText" uuid="f19630f9-1085-490f-a862-f097c5db781f" x="0" y="0" width="555" height="20" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[CENTRO UNIVERSITARIO DE OCCIDENTE (CUNOC)]]></text>
+		</element>
+		<element kind="staticText" uuid="1c348c17-f9c5-4151-b6a4-22de8000c839" x="0" y="20" width="555" height="20" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[ESCUELA DE VACACIONES]]></text>
+		</element>
+		<element kind="staticText" uuid="c270069e-c8fc-4508-9bd8-5c1dc159b46c" x="0" y="40" width="555" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[RANKING DE USUARIOS (SISTEMA)]]></text>
+		</element>
+		<element kind="line" uuid="e49f479e-0100-47b3-9105-4d914d88adf7" x="0" y="65" width="555" height="1">
+			<pen lineWidth="2.0"/>
+		</element>
+		<element kind="textField" uuid="56c44d15-3373-43d9-a6d5-f542021fa819" x="0" y="70" width="555" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA[$P{periodoTexto}]]></expression>
+		</element>
+		<element kind="textField" uuid="74fd5958-c7c4-4845-9861-4f2551daefea" x="0" y="90" width="555" height="20" fontSize="10.0" hTextAlign="Center">
+			<expression><![CDATA["Top " + $P{limite} + " usuarios por categoría"]]></expression>
+		</element>
+		<element kind="textField" uuid="145016a0-b863-4741-a928-1e1f2ceef733" x="420" y="100" width="135" height="20" fontSize="9.0" pattern="dd/MM/yyyy HH:mm:ss" hTextAlign="Right">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+		<element kind="staticText" uuid="f0eb87c8-a146-4fd7-bfee-10594ef358bf" x="320" y="100" width="100" height="20" fontSize="9.0">
+			<text><![CDATA[Generado:]]></text>
+		</element>
+	</title>
+	<pageHeader height="40">
+		<element kind="staticText" uuid="823d1e28-5c77-4ff5-8d1e-30675c6dc1e5" x="0" y="0" width="555" height="25" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[USUARIOS CON MÁS JUEGOS COMPRADOS]]></text>
+		</element>
+	</pageHeader>
+	<detail>
+		<band height="30">
+			<element kind="subreport" uuid="7273d329-dfec-4422-8803-ffd23e7406f2" x="0" y="0" width="555" height="30">
+				<dataSourceExpression><![CDATA[$P{usuariosComprasDataSource}]]></dataSourceExpression>
+				<expression><![CDATA["reports/SubreporteCompras.jasper"]]></expression>
+			</element>
+		</band>
+	</detail>
+	<summary height="350">
+		<element kind="line" uuid="f544174f-8c83-4acb-8338-07be18083f7f" x="0" y="20" width="555" height="1">
+			<pen lineWidth="1.5"/>
+		</element>
+		<element kind="staticText" uuid="37282b7d-0b8c-4823-b153-0fee429b1505" x="0" y="30" width="555" height="25" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[USUARIOS CON MÁS CALIFICACIONES]]></text>
+		</element>
+		<element kind="subreport" uuid="381b561e-ed83-42bf-b781-9f49e9fffb7e" x="0" y="60" width="555" height="30">
+			<dataSourceExpression><![CDATA[$P{usuariosCalificacionesDataSource}]]></dataSourceExpression>
+			<expression><![CDATA["reports/SubreporteCalificaciones.jasper"]]></expression>
+		</element>
+		<element kind="staticText" uuid="ac37d688-5669-4984-abd2-dbdd8b66ead4" x="0" y="250" width="555" height="20" fontSize="11.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[RESUMEN]]></text>
+		</element>
+		<element kind="staticText" uuid="609cefd2-4310-4f70-b4ad-8eaea481fff0" x="100" y="270" width="200" height="20" fontSize="10.0">
+			<text><![CDATA[Total usuarios en compras:]]></text>
+		</element>
+		<element kind="textField" uuid="a5ff92ba-49dc-46e2-9b8c-a4ae7a9d3f47" x="300" y="270" width="50" height="20" fontSize="10.0" bold="true">
+			<expression><![CDATA[$P{totalCompras}]]></expression>
+		</element>
+		<element kind="staticText" uuid="2088e5b4-30bc-4a9b-a5e5-19758bb511a5" x="100" y="290" width="200" height="20" fontSize="10.0">
+			<text><![CDATA[Total usuarios en calificaciones:]]></text>
+		</element>
+		<element kind="textField" uuid="3281fbf9-9da6-4675-a9cd-3b4f29e04fb2" x="300" y="290" width="50" height="20" fontSize="10.0" bold="true">
+			<expression><![CDATA[$P{totalCalificaciones}]]></expression>
+		</element>
+		<element kind="staticText" uuid="4032fbb4-845a-47bb-8199-f8fe7f111466" x="0" y="320" width="555" height="20" fontSize="9.0" italic="true" hTextAlign="Center">
+			<text><![CDATA[Reporte generado automáticamente por el Sistema de Gestión de Videojuegos]]></text>
+		</element>
+	</summary>
+</jasperReport>
