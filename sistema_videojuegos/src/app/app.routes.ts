@@ -20,6 +20,7 @@ import { DetalleVideojuegoComponent } from '../components/Videojuego/detalle-vid
 import { TiendaVideojuegosComponent } from '../components/Videojuego/tienda-videojuegos-component/tienda-videojuegos-component';
 import { GruposComponent } from '../components/Grupo/grupos-component/grupos-component';
 import { BibliotecaComponent } from '../components/Usuario/biblioteca-component/biblioteca-component';
+import { ReportesSistemaComponent } from '../components/Reporte/reportes-sistema-component/reportes-sistema-component';
 
 export const routes: Routes = [
 
@@ -82,6 +83,11 @@ export const routes: Routes = [
     path: 'categorias/editar/:id', 
     component: FormCategoriaComponent 
   },
+  {
+    path: 'reportes-sistema',
+    component: ReportesSistemaComponent  
+  },
+  //empresas
   {
     path: 'empresas/crear-usuario',
     component: CrearUsuarioEmpresaComponent
