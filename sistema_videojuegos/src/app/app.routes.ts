@@ -21,6 +21,7 @@ import { TiendaVideojuegosComponent } from '../components/Videojuego/tienda-vide
 import { GruposComponent } from '../components/Grupo/grupos-component/grupos-component';
 import { BibliotecaComponent } from '../components/Usuario/biblioteca-component/biblioteca-component';
 import { ReportesSistemaComponent } from '../components/Reporte/reportes-sistema-component/reportes-sistema-component';
+import { ReportesEmpresaComponent } from '../components/Reporte/reportes-empresa-component/reportes-empresa-component';
 
 export const routes: Routes = [
 
@@ -103,6 +104,10 @@ export const routes: Routes = [
   { 
     path: 'empresa/videojuegos/editar/:id', 
     component: EditarVideojuegoComponent 
+  },
+    {
+    path: 'reportes-empresa',
+    component: ReportesEmpresaComponent
   },
   //usuario header
   {

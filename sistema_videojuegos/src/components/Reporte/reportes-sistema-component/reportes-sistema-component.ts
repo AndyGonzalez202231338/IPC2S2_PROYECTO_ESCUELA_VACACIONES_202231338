@@ -33,10 +33,8 @@ export class ReportesSistemaComponent implements OnInit {
   clasificaciones = [
     { valor: '', etiqueta: 'Todas las clasificaciones' },
     { valor: 'E', etiqueta: 'Everyone (E)' },
-    { valor: 'E10+', etiqueta: 'Everyone 10+ (E10+)' },
     { valor: 'T', etiqueta: 'Teen (T)' },
     { valor: 'M', etiqueta: 'Mature (M)' },
-    { valor: 'AO', etiqueta: 'Adults Only (AO)' }
   ];
 
   // Categorías dinámicas desde el servicio
