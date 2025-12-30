@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with JasperReports Library version 6.20.0 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="ReportePrincipal"
+              pageWidth="595"
+              pageHeight="842"
+              columnWidth="555"
+              leftMargin="20"
+              rightMargin="20"
+              topMargin="20"
+              bottomMargin="20"
+              uuid="a1b2c3d4-e5f6-7890-1234-567890abcdef">
+    
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+    
+    <!-- Parámetros para el reporte principal -->
+    <parameter name="paramTitulo" class="java.lang.String">
+        <defaultValueExpression><![CDATA["Reporte Principal"]]></defaultValueExpression>
+    </parameter>
+    
+    <!-- Parámetro para subreporte 1 -->
+    <parameter name="SUBREPORT_DIR" class="java.lang.String">
+        <defaultValueExpression><![CDATA["src/main/resources/reports/"]]></defaultValueExpression>
+    </parameter>
+    
+    <!-- Campos del reporte principal -->
+    <field name="id" class="java.lang.Integer"/>
+    <field name="nombre" class="java.lang.String"/>
+    <field name="fecha" class="java.util.Date"/>
+    
+    <!-- Variables -->
+    <variable name="contador" class="java.lang.Integer" calculation="Count">
+        <variableExpression><![CDATA[$F{id}]]></variableExpression>
+    </variable>
+    
+    <!-- Background -->
+    <background>
+        <band height="0"/>
+    </background>
+    
+    <!-- Título -->
+    <title>
+        <band height="79">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="50" uuid="b2c3d4e5-f678-9012-3456-7890abcdef12"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="24" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Reporte Principal con Subreportes]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="0" y="50" width="555" height="20" uuid="c3d4e5f6-7890-1234-5678-90abcdef1234"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$P{paramTitulo}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    
+    <!-- Cabecera de página -->
+    <pageHeader>
+        <band height="35">
+            <staticText>
+                <reportElement x="0" y="10" width="100" height="20" uuid="d4e5f678-9012-3456-7890-abcdef123456"/>
+                <text><![CDATA[Página:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="50" y="10" width="50" height="20" uuid="e5f67890-1234-5678-90ab-cdef12345678"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy HH:mm">
+                <reportElement x="400" y="10" width="150" height="20" uuid="f6789012-3456-7890-abcd-ef1234567890"/>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+    
+    <!-- Detalle -->
+    <detail>
+        <band height="200">
+            <!-- Información principal -->
+            <frame>
+                <reportElement x="0" y="0" width="555" height="80" uuid="90123456-7890-abcd-ef12-34567890abcd"/>
+                <box>
+                    <pen lineWidth="0.5"/>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                
+                <staticText>
+                    <reportElement x="10" y="10" width="100" height="20" uuid="a2345678-90ab-cdef-1234-567890abcdef"/>
+                    <text><![CDATA[ID:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="40" y="10" width="50" height="20" uuid="b3456789-0abc-def1-2345-67890abcdef1"/>
+                    <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+                </textField>
+                
+                <staticText>
+                    <reportElement x="120" y="10" width="100" height="20" uuid="c4567890-abcd-ef12-3456-7890abcdef12"/>
+                    <text><![CDATA[Nombre:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="180" y="10" width="200" height="20" uuid="d567890a-bcde-f123-4567-890abcdef123"/>
+                    <textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+                </textField>
+                
+                <staticText>
+                    <reportElement x="10" y="40" width="100" height="20" uuid="e67890ab-cdef-1234-5678-90abcdef1234"/>
+                    <text><![CDATA[Fecha:]]></text>
+                </staticText>
+                <textField pattern="dd/MM/yyyy">
+                    <reportElement x="40" y="40" width="100" height="20" uuid="f7890abc-def1-2345-6789-0abcdef12345"/>
+                    <textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+                </textField>
+            </frame>
+            
+            <!-- Primer Subreporte -->
+            <subreport>
+                <reportElement x="0" y="90" width="275" height="50" uuid="890abcde-f123-4567-890a-bcdef1234567"/>
+                <parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+                <subreportParameter name="paramIdPrincipal">
+                    <subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
+                </subreportParameter>
+                <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                <subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreporte1.jasper"]]></subreportExpression>
+            </subreport>
+            
+            <!-- Segundo Subreporte -->
+            <subreport>
+                <reportElement x="280" y="90" width="275" height="50" uuid="90abcdef-1234-5678-90ab-cdef12345678"/>
+                <parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+                <subreportParameter name="paramNombrePrincipal">
+                    <subreportParameterExpression><![CDATA[$F{nombre}]]></subreportParameterExpression>
+                </subreportParameter>
+                <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                <subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreporte2.jasper"]]></subreportExpression>
+            </subreport>
+            
+            <!-- Línea separadora -->
+            <line>
+                <reportElement x="0" y="190" width="555" height="1" uuid="abcdef12-3456-7890-abcd-ef1234567890"/>
+                <graphicElement>
+                    <pen lineWidth="0.5"/>
+                </graphicElement>
+            </line>
+        </band>
+    </detail>
+    
+    <!-- Pie de página -->
+    <pageFooter>
+        <band height="30">
+            <staticText>
+                <reportElement x="0" y="10" width="300" height="15" uuid="bcdef123-4567-890a-bcde-f12345678901"/>
+                <text><![CDATA[Reporte generado con JasperReports]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="400" y="10" width="155" height="15" uuid="cdef1234-5678-90ab-cdef-123456789012"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de " + $V{PAGE_COUNT}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+    
+    <!-- Resumen -->
+    <summary>
+        <band height="60">
+            <staticText>
+                <reportElement x="0" y="10" width="150" height="20" uuid="def12345-6789-0abc-def1-234567890123"/>
+                <text><![CDATA[Total de registros:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="10" width="50" height="20" uuid="ef123456-7890-abcd-ef12-345678901234"/>
+                <textFieldExpression><![CDATA[$V{contador}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

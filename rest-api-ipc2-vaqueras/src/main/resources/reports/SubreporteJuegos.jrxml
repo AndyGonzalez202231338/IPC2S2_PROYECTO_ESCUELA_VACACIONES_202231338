@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="SubreporteJuegos"
+              pageWidth="500"
+              pageHeight="842"
+              columnWidth="480"
+              leftMargin="10"
+              rightMargin="10"
+              topMargin="10"
+              bottomMargin="10"
+              uuid="789e0123-e89b-12d3-a456-426614174100">
+    
+    <parameter name="juegosDataSource" class="net.sf.jasperreports.engine.JRDataSource"/>
+    
+    <!-- NOMBRES EXACTOS como en tu clase Java -->
+    <field name="tituloJuego" class="java.lang.String"/>
+    <field name="totalCalificaciones" class="java.lang.Integer"/>
+    <field name="promedioRating" class="java.lang.Double"/>
+    <field name="peorCalificacion" class="java.lang.Integer"/>
+    <field name="mejorCalificacion" class="java.lang.Integer"/>
+    
+    <background>
+        <band height="0"/>
+    </background>
+    
+    <title>
+        <band height="0"/>
+    </title>
+    
+    <pageHeader>
+        <band height="0"/>
+    </pageHeader>
+    
+    <columnHeader>
+        <band height="30">
+            <rectangle>
+                <reportElement x="0" y="0" width="480" height="30" uuid="890e1234-e89b-12d3-a456-426614174101"/>
+                <graphicElement>
+                    <pen lineWidth="0.5"/>
+                </graphicElement>
+            </rectangle>
+            
+            <staticText>
+                <reportElement x="5" y="5" width="180" height="20" uuid="901e2345-e89b-12d3-a456-426614174102"/>
+                <textElement>
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[JUEGO]]></text>
+            </staticText>
+            
+            <staticText>
+                <reportElement x="190" y="5" width="60" height="20" uuid="012e3456-e89b-12d3-a456-426614174103"/>
+                <textElement textAlignment="Center">
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[TOTAL]]></text>
+            </staticText>
+            
+            <staticText>
+                <reportElement x="255" y="5" width="60" height="20" uuid="123e4567-e89b-12d3-a456-426614174104"/>
+                <textElement textAlignment="Center">
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[PROMEDIO]]></text>
+            </staticText>
+            
+            <staticText>
+                <reportElement x="320" y="5" width="80" height="20" uuid="234e5678-e89b-12d3-a456-426614174105"/>
+                <textElement textAlignment="Center">
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[PEOR / MEJOR]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    
+    <detail>
+        <band height="25">
+            <rectangle>
+                <reportElement x="0" y="0" width="480" height="25" uuid="345e6789-e89b-12d3-a456-426614174106"/>
+                <graphicElement>
+                    <pen lineWidth="0.5"/>
+                </graphicElement>
+            </rectangle>
+            
+            <textField isStretchWithOverflow="true">
+                <reportElement x="5" y="0" width="180" height="25" uuid="456e7890-e89b-12d3-a456-426614174107"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="8"/>
+                </textElement>
+                <!-- IMPORTANTE: Usa $F{nombreCampo} exacto -->
+                <textFieldExpression><![CDATA[$F{tituloJuego}]]></textFieldExpression>
+            </textField>
+            
+            <textField>
+                <reportElement x="190" y="0" width="60" height="25" uuid="567e8901-e89b-12d3-a456-426614174108"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{totalCalificaciones}]]></textFieldExpression>
+            </textField>
+            
+            <textField>
+                <reportElement x="255" y="0" width="60" height="25" uuid="678e9012-e89b-12d3-a456-426614174109"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[String.format("%.1f", $F{promedioRating})]]></textFieldExpression>
+            </textField>
+            
+            <textField>
+                <reportElement x="320" y="0" width="80" height="25" uuid="789e0123-e89b-12d3-a456-426614174110"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{peorCalificacion} + " / " + $F{mejorCalificacion}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    
+    <columnFooter>
+        <band height="0"/>
+    </columnFooter>
+    
+    <pageFooter>
+        <band height="0"/>
+    </pageFooter>
+    
+    <summary>
+        <band height="0"/>
+    </summary>
+    
+    <noData>
+        <band height="50">
+            <staticText>
+                <reportElement x="0" y="10" width="480" height="30" uuid="890e1234-e89b-12d3-a456-426614174111"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="10" isItalic="true"/>
+                </textElement>
+                <text><![CDATA[No hay juegos con calificaciones en este período]]></text>
+            </staticText>
+        </band>
+    </noData>
+</jasperReport>

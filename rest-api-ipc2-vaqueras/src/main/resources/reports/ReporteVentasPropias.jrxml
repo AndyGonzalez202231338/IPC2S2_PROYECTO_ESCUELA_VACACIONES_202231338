@@ -1,0 +1,152 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="ReporteVentasPropias" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a14a6c37-10af-4f48-ba9a-03400c5c72bc">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
+	<parameter name="periodoTexto" class="java.lang.String"/>
+	<parameter name="nombreEmpresa" class="java.lang.String"/>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="totalVideojuegos" class="java.lang.Integer"/>
+	<parameter name="totalVentas" class="java.lang.Integer"/>
+	<parameter name="totalBruto" class="java.math.BigDecimal"/>
+	<parameter name="totalComision" class="java.math.BigDecimal"/>
+	<parameter name="totalNeto" class="java.math.BigDecimal"/>
+	<parameter name="porcentajeComisionAplicado" class="java.math.BigDecimal"/>
+	<parameter name="porcentajeComisionPromedio" class="java.math.BigDecimal"/>
+	<parameter name="fechaGeneracion" class="java.util.Date"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="tituloVideojuego" class="java.lang.String"/>
+	<field name="cantidadVentas" class="java.lang.Integer"/>
+	<field name="montoBruto" class="java.math.BigDecimal"/>
+	<field name="comisionPlataforma" class="java.math.BigDecimal"/>
+	<field name="ingresoNeto" class="java.math.BigDecimal"/>
+	<field name="porcentajeComision" class="java.math.BigDecimal"/>
+	<title height="180">
+		<element kind="staticText" uuid="ea11aee2-608d-455b-8760-99d5c6fd47ee" x="0" y="0" width="555" height="20" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[CENTRO UNIVERSITARIO DE OCCIDENTE (CUNOC)]]></text>
+		</element>
+		<element kind="staticText" uuid="b4e2951c-0f97-453a-933e-d6a634c51938" x="0" y="20" width="555" height="20" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[ESCUELA DE VACACIONES]]></text>
+		</element>
+		<element kind="staticText" uuid="c719c076-4857-4312-abf0-d040ce240659" x="0" y="40" width="555" height="25" fontSize="16.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[REPORTE DE VENTAS PROPIAS (EMPRESAS)]]></text>
+		</element>
+		<element kind="line" uuid="d9288d41-6b8d-4db8-a330-3141057278e2" x="0" y="70" width="555" height="1">
+			<pen lineWidth="2.0"/>
+		</element>
+		<element kind="staticText" uuid="ce0598bf-9bfe-4b4e-90ae-8428c54d3d2f" x="0" y="75" width="100" height="20" fontSize="12.0" bold="true">
+			<text><![CDATA[Empresa:]]></text>
+		</element>
+		<element kind="textField" uuid="1fcc7b5a-9f87-45fd-aff8-9c81cb58bcfb" x="100" y="75" width="455" height="20" fontSize="12.0">
+			<expression><![CDATA[$P{nombreEmpresa} != null ? $P{nombreEmpresa} : "Empresa ID: " + $P{idEmpresa}]]></expression>
+		</element>
+		<element kind="staticText" uuid="7cc4347d-a3ef-45cb-a764-a514bd08068c" x="0" y="95" width="150" height="20" fontSize="12.0" bold="true">
+			<text><![CDATA[Comisión aplicada:]]></text>
+		</element>
+		<element kind="textField" uuid="99eb6494-9a61-4f2d-933b-4919ff91f28d" x="150" y="95" width="100" height="20" fontSize="12.0">
+			<expression><![CDATA[$P{porcentajeComisionAplicado} != null ? 
+                    $P{porcentajeComisionAplicado}.toString() + "%" : "No especificado"]]></expression>
+		</element>
+		<element kind="textField" uuid="c718fa44-ef7d-4b1d-b4db-013bd5f817cc" x="0" y="115" width="555" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA[$P{periodoTexto}]]></expression>
+		</element>
+		<element kind="textField" uuid="a92f0425-f4c2-4300-bb5c-1d871d5a51a6" x="420" y="145" width="135" height="20" fontSize="9.0" pattern="dd/MM/yyyy HH:mm:ss" hTextAlign="Right">
+			<expression><![CDATA[$P{fechaGeneracion} != null ? $P{fechaGeneracion} : new java.util.Date()]]></expression>
+		</element>
+		<element kind="staticText" uuid="1a5f45ca-1629-4f10-b15b-b3110791108e" x="320" y="145" width="100" height="20" fontSize="9.0">
+			<text><![CDATA[Generado:]]></text>
+		</element>
+	</title>
+	<pageHeader height="40">
+		<element kind="staticText" uuid="870b170b-3425-4c1d-9c47-cb78c1196aaf" x="0" y="0" width="555" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[DETALLE DE VENTAS POR VIDEOJUEGO:]]></text>
+		</element>
+		<element kind="staticText" uuid="e4783963-40d5-4414-a172-3457875d30e3" x="0" y="25" width="200" height="15" fontSize="11.0" bold="true" hTextAlign="Left">
+			<text><![CDATA[VIDEOJUEGO]]></text>
+		</element>
+		<element kind="staticText" uuid="350ececa-aa55-432b-b7a4-ad22f3918029" x="200" y="25" width="80" height="15" fontSize="11.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[VENTAS]]></text>
+		</element>
+		<element kind="staticText" uuid="806febba-7479-4302-b057-734c90cb1543" x="280" y="25" width="90" height="15" fontSize="11.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[MONTO BRUTO]]></text>
+		</element>
+		<element kind="staticText" uuid="375dded6-68a0-42ab-8b53-afccf62576c3" x="370" y="25" width="90" height="15" fontSize="11.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[COMISIÓN]]></text>
+		</element>
+		<element kind="staticText" uuid="2d418fe3-9a8b-474c-bfa5-b35d04a09415" x="460" y="25" width="95" height="15" fontSize="11.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[INGRESO NETO]]></text>
+		</element>
+		<element kind="line" uuid="8827f9ac-164c-4ffd-a39c-c0295059aec0" x="0" y="39" width="555" height="1">
+			<pen lineWidth="1.0"/>
+		</element>
+	</pageHeader>
+	<detail>
+		<band height="25">
+			<element kind="textField" uuid="13e1376f-c78b-458b-902d-353abb55dda0" x="0" y="0" width="200" height="25" fontSize="10.0" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{tituloVideojuego} != null ? $F{tituloVideojuego} : ""]]></expression>
+			</element>
+			<element kind="textField" uuid="358c4aae-e0fd-4990-babc-c0f2f71b252b" x="200" y="0" width="80" height="25" fontSize="10.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{cantidadVentas} != null ? $F{cantidadVentas} : 0]]></expression>
+			</element>
+			<element kind="textField" uuid="e7a22e80-1f52-4c3f-a125-cccdfe76538b" x="280" y="0" width="90" height="25" fontSize="10.0" pattern="Q#,##0.00" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{montoBruto} != null ? $F{montoBruto} : 0]]></expression>
+			</element>
+			<element kind="textField" uuid="4b3f74a6-35db-47ff-bb40-a57ed0383202" x="370" y="0" width="90" height="25" fontSize="10.0" pattern="Q#,##0.00" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{comisionPlataforma} != null ? $F{comisionPlataforma} : 0]]></expression>
+			</element>
+			<element kind="textField" uuid="ee09ab1b-efaa-4716-a36d-0ae983d6ec66" x="460" y="0" width="95" height="25" fontSize="10.0" pattern="Q#,##0.00" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{ingresoNeto} != null ? $F{ingresoNeto} : 0]]></expression>
+			</element>
+			<element kind="line" uuid="0c52c3b2-f3fa-445d-96a3-51ba18bc690b" x="0" y="24" width="555" height="1" forecolor="#E0E0E0">
+				<pen lineWidth="0.5" lineStyle="Solid"/>
+			</element>
+		</band>
+	</detail>
+	<summary height="200">
+		<element kind="line" uuid="453a21ea-b02d-4fa8-b827-e14cf9df2061" x="0" y="10" width="555" height="2">
+			<pen lineWidth="1.5"/>
+		</element>
+		<element kind="staticText" uuid="da5554b4-88dd-44d6-994e-32fa3f51057d" x="0" y="20" width="555" height="25" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[RESUMEN GENERAL:]]></text>
+		</element>
+		<element kind="staticText" uuid="5828c501-eae1-4afc-88ee-f91135499457" x="50" y="50" width="200" height="20" fontSize="11.0" bold="true">
+			<text><![CDATA[Total videojuegos con ventas:]]></text>
+		</element>
+		<element kind="textField" uuid="9e5781cd-6541-4fcc-9b1b-14331105f670" x="250" y="50" width="50" height="20" fontSize="11.0" hTextAlign="Right">
+			<expression><![CDATA[$P{totalVideojuegos}]]></expression>
+		</element>
+		<element kind="staticText" uuid="7fb53ff3-4474-4859-8562-dc31f271c0ca" x="50" y="70" width="200" height="20" fontSize="11.0" bold="true">
+			<text><![CDATA[Total ventas realizadas:]]></text>
+		</element>
+		<element kind="textField" uuid="a664d4cf-0b4a-4436-a1a2-3a2fc45d4855" x="250" y="70" width="50" height="20" fontSize="11.0" hTextAlign="Right">
+			<expression><![CDATA[$P{totalVentas}]]></expression>
+		</element>
+		<element kind="staticText" uuid="62b3faef-ac90-4300-ac66-fd10042944de" x="50" y="90" width="200" height="20" fontSize="11.0" bold="true">
+			<text><![CDATA[Monto bruto total:]]></text>
+		</element>
+		<element kind="textField" uuid="40d4c25c-2b65-4b77-88b9-76d8649edee2" x="250" y="90" width="120" height="20" fontSize="11.0" pattern="Q#,##0.00" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$P{totalBruto}]]></expression>
+		</element>
+		<element kind="staticText" uuid="e56e6d25-7561-4a9d-895a-39a079cb1461" x="50" y="110" width="200" height="20" fontSize="11.0" bold="true">
+			<text><![CDATA[Comisión total de plataforma:]]></text>
+		</element>
+		<element kind="textField" uuid="7fa24b37-7cfb-4b45-9364-4b8414b920ae" x="250" y="110" width="120" height="20" fontSize="11.0" pattern="Q#,##0.00" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$P{totalComision}]]></expression>
+		</element>
+		<element kind="staticText" uuid="571a3287-aada-463a-91e5-7ef7f04cf2a1" x="50" y="130" width="200" height="25" fontSize="12.0" bold="true">
+			<text><![CDATA[Ingreso neto total:]]></text>
+		</element>
+		<element kind="textField" uuid="1e42af7b-02fc-44b4-8dd4-ca6427523177" x="250" y="130" width="120" height="25" fontSize="12.0" pattern="Q#,##0.00" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$P{totalNeto}]]></expression>
+		</element>
+		<element kind="staticText" uuid="f784e05b-2250-4cac-8bb2-b07d13f0074c" x="50" y="160" width="200" height="20" fontSize="10.0">
+			<text><![CDATA[Porcentaje de comisión aplicado:]]></text>
+		</element>
+		<element kind="textField" uuid="6ed7d639-da74-43c8-89af-988b12e9660c" x="250" y="160" width="120" height="20" fontSize="10.0" hTextAlign="Right">
+			<expression><![CDATA[$P{porcentajeComisionAplicado} != null ? 
+                    $P{porcentajeComisionAplicado}.toString() + "%" : "N/A"]]></expression>
+		</element>
+		<element kind="staticText" uuid="6cb5fb07-fe0c-42a6-a5a2-09aaff859fe8" x="0" y="185" width="555" height="15" fontSize="9.0" italic="true" hTextAlign="Center">
+			<text><![CDATA[Reporte generado automáticamente por el Sistema de Gestión de Videojuegos]]></text>
+		</element>
+	</summary>
+</jasperReport>
