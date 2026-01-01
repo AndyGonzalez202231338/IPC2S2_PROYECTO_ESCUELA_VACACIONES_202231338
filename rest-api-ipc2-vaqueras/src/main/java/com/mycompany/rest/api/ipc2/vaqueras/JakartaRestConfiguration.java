@@ -23,6 +23,8 @@ import reportes.empresa.top5juegos.ReporteTop5JuegosResource;
 import reportes.sistema.comision.global.ReporteGananciasGlobalesResource;
 import reportes.sistema.ventas.calidad.ReporteTopVentasCalidadResource;
 import reportes.empresa.ventas.propia.ReporteVentasPropiasResource;
+import reportes.usuario.biblioteca.ReporteAnalisisBibliotecaResource;
+import reportes.usuario.gastos.ReporteGastosUsuarioResource;
 import sistema.resources.SistemaResource;
 import usuario.resources.SaldoResource;
 import videojuego.resources.MultimediaResource;
@@ -55,6 +57,8 @@ public class JakartaRestConfiguration extends ResourceConfig {
         register(ReporteVentasPropiasResource.class);
         register(ReporteTop5JuegosResource.class);
         register(ReporteFeedbackResource.class);
+        register(ReporteGastosUsuarioResource.class);
+        register(ReporteAnalisisBibliotecaResource.class);
         register(MultiPartFeature.class);
         
         property(ServerProperties.PROCESSING_RESPONSE_ERRORS_ENABLED, true);

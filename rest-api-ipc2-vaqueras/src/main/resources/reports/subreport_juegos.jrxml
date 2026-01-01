@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="subreport_juegos">
+
+    <parameter name="analisisJuegosDataSource" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    
+    <field name="tituloJuego" class="java.lang.String"/>
+    <field name="calificacionComunidad" class="java.lang.Double"/>
+    <field name="calificacionPersonal" class="java.lang.Double"/>
+    <field name="diferencia" class="java.lang.Double"/>
+
+    <columnHeader>
+        <band height="30">
+            <staticText>
+                <reportElement x="0" y="0" width="250" height="30"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[VIDEOJUEGO]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="250" y="0" width="100" height="30"/>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[COMUNIDAD]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="350" y="0" width="100" height="30"/>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[TÚ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="450" y="0" width="105" height="30"/>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[DIFERENCIA]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="25">
+            <textField>
+                <reportElement x="0" y="0" width="250" height="20"/>
+                <textFieldExpression><![CDATA[$F{tituloJuego}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="250" y="0" width="100" height="20"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{calificacionComunidad} != null ? 
+                    String.format("%.1f", $F{calificacionComunidad}) : "N/A"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="350" y="0" width="100" height="20"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{calificacionPersonal} != null ? 
+                    String.format("%.1f", $F{calificacionPersonal}) : "N/A"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="450" y="0" width="105" height="20"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{diferencia} != null ? 
+                    ($F{diferencia} > 0 ? "+" : "") + String.format("%.1f", $F{diferencia}) : "N/A"]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+</jasperReport>

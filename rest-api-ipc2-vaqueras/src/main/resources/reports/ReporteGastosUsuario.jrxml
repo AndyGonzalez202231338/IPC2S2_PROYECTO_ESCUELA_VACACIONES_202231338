@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="ReporteGastosUsuario"
+              pageWidth="595"
+              pageHeight="842"
+              columnWidth="555"
+              leftMargin="20"
+              rightMargin="20"
+              topMargin="20"
+              bottomMargin="20">
+
+    <!-- Parámetros del reporte -->
+    <parameter name="nombreUsuario" class="java.lang.String"/>
+    <parameter name="totalGastado" class="java.lang.String"/>
+    <parameter name="periodoTexto" class="java.lang.String"/>
+    
+    <!-- IMPORTANTE: Remover el parámetro comprasDataSource de aquí -->
+    
+    <!-- Campos para cada compra -->
+    <field name="fechaCompra" class="java.time.LocalDate"/>
+    <field name="tituloJuego" class="java.lang.String"/>
+    <field name="montoPagado" class="java.lang.Double"/>
+
+    <!-- Título del reporte -->
+    <title>
+        <band height="100">
+            <!-- Título principal -->
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="30"/>
+                <textElement textAlignment="Center">
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[REPORTE DE GASTOS DEL USUARIO]]></text>
+            </staticText>
+            
+            <!-- Información del usuario -->
+            <staticText>
+                <reportElement x="0" y="40" width="150" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Usuario:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="40" width="405" height="20"/>
+                <textFieldExpression><![CDATA[$P{nombreUsuario}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Período del reporte -->
+            <staticText>
+                <reportElement x="0" y="65" width="150" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Período:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="65" width="405" height="20"/>
+                <textFieldExpression><![CDATA[$P{periodoTexto}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Línea separadora -->
+            <line>
+                <reportElement x="0" y="90" width="555" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="1.0"/>
+                </graphicElement>
+            </line>
+        </band>
+    </title>
+
+    <!-- Encabezado de columnas -->
+    <columnHeader>
+        <band height="30">
+            <!-- Fondo del encabezado -->
+            <rectangle>
+                <reportElement x="0" y="0" width="555" height="30" backcolor="#CCCCCC"/>
+            </rectangle>
+            
+            <!-- Columnas -->
+            <staticText>
+                <reportElement x="0" y="5" width="150" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[FECHA DE COMPRA]]></text>
+            </staticText>
+            
+            <staticText>
+                <reportElement x="150" y="5" width="255" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[TÍTULO DEL JUEGO]]></text>
+            </staticText>
+            
+            <staticText>
+                <reportElement x="405" y="5" width="150" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[MONTO PAGADO]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <!-- Detalle (lista de compras) -->
+    <detail>
+        <band height="25">
+            <!-- IMPORTANTE: Corregir el formato de fecha -->
+            <textField>
+                <reportElement x="0" y="5" width="150" height="15"/>
+                <textFieldExpression><![CDATA[$F{fechaCompra} != null ? 
+                    $F{fechaCompra}.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) : 
+                    ""]]></textFieldExpression>
+            </textField>
+            
+            <!-- Título del juego -->
+            <textField>
+                <reportElement x="150" y="5" width="255" height="15"/>
+                <textFieldExpression><![CDATA[$F{tituloJuego} != null ? $F{tituloJuego} : ""]]></textFieldExpression>
+            </textField>
+            
+            <!-- Monto pagado -->
+            <textField>
+                <reportElement x="405" y="5" width="150" height="15"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{montoPagado} != null ? 
+                    "$" + String.format("%.2f", $F{montoPagado}) : ""]]></textFieldExpression>
+            </textField>
+            
+            <!-- Línea separadora entre filas -->
+            <line>
+                <reportElement x="0" y="24" width="555" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="0.5" lineColor="#EEEEEE"/>
+                </graphicElement>
+            </line>
+        </band>
+    </detail>
+
+    <!-- Resumen al final -->
+    <summary>
+        <band height="100">
+            <!-- Línea separadora -->
+            <line>
+                <reportElement x="0" y="0" width="555" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="2.0"/>
+                </graphicElement>
+            </line>
+            
+            <!-- Total gastado -->
+            <staticText>
+                <reportElement x="0" y="20" width="405" height="25"/>
+                <textElement textAlignment="Right">
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[TOTAL GASTADO:]]></text>
+            </staticText>
+            
+            <textField>
+                <reportElement x="405" y="20" width="150" height="25"/>
+                <textElement textAlignment="Right">
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["$" + $P{totalGastado}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Pie de página - Fecha de generación con mejor formato -->
+            <textField>
+                <reportElement x="0" y="70" width="555" height="15"/>
+                <textElement textAlignment="Center">
+                    <font size="10" isItalic="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Generado el " + 
+                    new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date())]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+
+</jasperReport>
