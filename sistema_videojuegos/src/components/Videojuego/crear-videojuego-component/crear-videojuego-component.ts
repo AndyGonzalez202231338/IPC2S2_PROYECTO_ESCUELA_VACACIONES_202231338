@@ -249,6 +249,6 @@ export class CrearVideojuegoComponent implements OnInit {
   }
 
   volver(): void {
-    this.router.navigate(['/empresa/videojuegos']);
+    this.router.navigate(['/empresas/videojuegos']);
   }
 }

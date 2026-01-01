@@ -30,7 +30,6 @@ public class Usuario {
     public Usuario() {
     }
 
-    // Constructor con objetos
     public Usuario(int idUsuario, String correo, Rol rol, Empresa empresa, String nombre, 
                    String password, Date fecha_nacimiento, String pais, String telefono, 
                    double saldo_cartera, Byte[] avatar) {
@@ -46,14 +45,12 @@ public class Usuario {
         this.saldo_cartera = saldo_cartera;
         this.avatar = avatar;
     }
-
-    // Constructor con IDs (para creación)
+    
     public Usuario(int idUsuario, String correo, int id_rol, int id_empresa, String nombre, 
                    String password, Date fecha_nacimiento, String pais, String telefono, 
                    double saldo_cartera, Byte[] avatar) {
         this.idUsuario = idUsuario;
         this.correo = correo;
-        // Crear objetos básicos con los IDs
         this.rol = new Rol(id_rol, "", "");
         if (id_empresa > 0) {
             this.empresa = new Empresa(id_empresa, "", "");
@@ -67,7 +64,6 @@ public class Usuario {
         this.avatar = avatar;
     }
 
-    // GETTERS CRÍTICOS - estos deben funcionar con ambos constructores
     public int getId_rol() {
         if (rol != null) {
             return rol.getId_rol();

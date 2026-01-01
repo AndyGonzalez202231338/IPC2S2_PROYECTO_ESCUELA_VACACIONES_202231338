@@ -1,0 +1,139 @@
+<app-header></app-header>
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">
+        <i class="fas fa-file-pdf me-2"></i>Generador de Reportes
+      </h4>
+    </div>
+    
+    <div class="card-body">
+      <!-- FORM GROUP -->
+      <form [formGroup]="formularioReporte">
+        
+        <!-- Selección de Tipo de Reporte -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h5 class="mb-3 text-dark">Seleccione el tipo de reporte:</h5>
+            <div class="row">
+              <div class="col-md-3 mb-3" *ngFor="let tipo of tiposReporte">
+                <div class="card reporte-card h-100" 
+                     [class.selected]="reporteSeleccionado === tipo.id"
+                     (click)="seleccionarReporte(tipo.id)">
+                  <div class="card-body text-center">
+                    <i class="fas {{tipo.icono}} fa-2x mb-2 text-primary"></i>
+                    <h6 class="card-title mb-1">{{tipo.nombre}}</h6>
+                    <p class="card-text small text-muted">{{tipo.descripcion}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkbox para activar/desactivar fechas -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" 
+                     id="usarFechas" formControlName="usarFechas"
+                     style="width: 3em; height: 1.5em;">
+              <label class="form-check-label ms-2 fw-bold" for="usarFechas">
+                Filtrar por rango de fechas
+              </label>
+              <div class="form-text mt-1">
+                <span *ngIf="!usarFechas" class="text-success">
+                  <i class="fas fa-check-circle me-1"></i>Reporte histórico completo
+                </span>
+                <span *ngIf="usarFechas" class="text-info">
+                  <i class="fas fa-calendar-alt me-1"></i>Reporte por período específico
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtros de Fecha (solo si está activado) -->
+        <div class="row mb-4" *ngIf="usarFechas">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Fecha Inicio</label>
+            <input type="date" class="form-control" 
+                   formControlName="fechaInicio"
+                   [required]="usarFechas">
+            <div class="form-text">Seleccione la fecha inicial del período</div>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Fecha Fin</label>
+            <input type="date" class="form-control" 
+                   formControlName="fechaFin"
+                   [required]="usarFechas">
+            <div class="form-text">Seleccione la fecha final del período</div>
+          </div>
+        </div>
+
+
+
+    
+
+        <!-- Botones de Acción -->
+        <div class="row mt-4">
+          <div class="col-12 d-flex justify-content-between">
+            <button type="button" class="btn btn-outline-secondary px-4" 
+                    (click)="limpiarFiltros()"
+                    [disabled]="cargando">
+              <i class="fas fa-redo me-2"></i>Limpiar
+            </button>
+            
+            <button type="button" class="btn btn-primary px-4" 
+                    (click)="generarReporte()">
+              <span *ngIf="!cargando">
+                <i class="fas fa-file-download me-2"></i>Generar Reporte
+              </span>
+              <span *ngIf="cargando">
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Procesando...
+              </span>
+            </button>
+          </div>
+        </div>
+
+      </form> <!-- CIERRA EL FORM -->
+
+      <!-- Información -->
+      <div class="alert alert-info mt-4" role="alert">
+        <div class="d-flex">
+          <i class="fas fa-info-circle fa-2x me-3 align-self-start mt-1"></i>
+          <div>
+            <h5 class="alert-heading mb-2">Información importante</h5>
+            <p class="mb-1">
+              <strong>Reporte histórico:</strong> Se incluyen todos los datos desde el inicio del sistema.
+            </p>
+            <p class="mb-0">
+              <strong>Reporte por período:</strong> Se filtran los datos dentro del rango de fechas especificado.
+            </p>
+            <hr>
+            <p class="mb-0 small">
+              <i class="fas fa-clock me-1"></i>
+              La generación del PDF puede tardar unos segundos dependiendo de la cantidad de datos.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card-footer text-muted small">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>
+          <i class="fas fa-database me-1"></i>
+          Sistema de Gestión de Videojuegos
+        </span>
+        <span>
+          <i class="fas fa-calendar-alt me-1"></i>
+          {{ fechaActual | date:'dd/MM/yyyy HH:mm' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from '../services/Login/auth.guard';
+import { RoleGuard } from '../services/Login/role.guard';
 import { LoginForm } from '../components/login/login-form/login-form';
 import { Home } from '../components/Home/home/home';
 import { CreateAccountComponent } from '../components/login/create-account-form/create-account-form';
@@ -22,9 +24,9 @@ import { GruposComponent } from '../components/Grupo/grupos-component/grupos-com
 import { BibliotecaComponent } from '../components/Usuario/biblioteca-component/biblioteca-component';
 import { ReportesSistemaComponent } from '../components/Reporte/reportes-sistema-component/reportes-sistema-component';
 import { ReportesEmpresaComponent } from '../components/Reporte/reportes-empresa-component/reportes-empresa-component';
+import { ReportesUsuarioComponent } from '../components/Reporte/reportes-usuario-component/reportes-usuario-component';
 
 export const routes: Routes = [
-
     { 
         path: '', 
         redirectTo: 'login', 
@@ -34,11 +36,6 @@ export const routes: Routes = [
         path: 'login', 
         component: LoginForm 
     },
-
-    { 
-        path: 'home', 
-        component: Home 
-    },
     { 
         path: 'create-account', 
         component: CreateAccountComponent
@@ -47,96 +44,153 @@ export const routes: Routes = [
         path: 'create-account-form', 
         redirectTo: 'create-account' 
     },
+
+    // Rutas que requieren autenticación básica
+    { 
+        path: 'home', 
+        component: Home,
+        canActivate: [AuthGuard]
+    },
+
+    // Rutas exclusivas para ADMINISTRADOR DE SISTEMA
     { 
         path: 'empresas', 
-        component: GetAllEmpresasComponent
+        component: GetAllEmpresasComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE SISTEMA'] }
     },
     { 
         path: 'empresas/crear', 
-        component: CreateEmpresaComponent
+        component: CreateEmpresaComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE SISTEMA'] }
     },
     { 
-    path: 'empresas/:id/comisiones', 
-    component: ComisionesEmpresaComponent 
+        path: 'empresas/:id/comisiones', 
+        component: ComisionesEmpresaComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE SISTEMA'] }
     },
     { 
-    path: 'empresas/editar/:id', 
-    component: EditEmpresaComponent 
+        path: 'empresas/editar/:id', 
+        component: EditEmpresaComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE SISTEMA'] }
+    },
+    { 
+        path: 'sistema/configuraciones', 
+        component: ListarConfiguracionesComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE SISTEMA'] }
+    },
+    { 
+        path: 'sistema/configuraciones/editar/:id', 
+        component: EditarConfiguracionComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE SISTEMA'] }
+    },
+    { 
+        path: 'categorias', 
+        component: ListarCategoriasComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE SISTEMA'] }
+    },
+    { 
+        path: 'categorias/crear', 
+        component: FormCategoriaComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE SISTEMA'] }
+    },
+    { 
+        path: 'categorias/editar/:id', 
+        component: FormCategoriaComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE SISTEMA'] }
+    },
+    {
+        path: 'reportes-sistema',
+        component: ReportesSistemaComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE SISTEMA'] }
     },
 
-      { 
-    path: 'sistema/configuraciones', 
-    component: ListarConfiguracionesComponent 
-  },
-  { 
-    path: 'sistema/configuraciones/editar/:id', 
-    component: EditarConfiguracionComponent 
-  },
-  { 
-    path: 'categorias', 
-    component: ListarCategoriasComponent 
-  },
-  { 
-    path: 'categorias/crear', 
-    component: FormCategoriaComponent 
-  },
-  { 
-    path: 'categorias/editar/:id', 
-    component: FormCategoriaComponent 
-  },
-  {
-    path: 'reportes-sistema',
-    component: ReportesSistemaComponent  
-  },
-  //empresas
-  {
-    path: 'empresas/crear-usuario',
-    component: CrearUsuarioEmpresaComponent
-  },
+    // Rutas para ADMINISTRADOR DE EMPRESA
     {
-    path: 'empresas/videojuegos',
-    component: VideojuegosEmpresaComponent
-  },
-  {
-    path: 'empresa/videojuegos/crear',
-    component: CrearVideojuegoComponent
-  },
-  { 
-    path: 'empresa/videojuegos/editar/:id', 
-    component: EditarVideojuegoComponent 
-  },
+        path: 'empresas/crear-usuario',
+        component: CrearUsuarioEmpresaComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE EMPRESA'] }
+    },
     {
-    path: 'reportes-empresa',
-    component: ReportesEmpresaComponent
-  },
-  //usuario header
-  {
-    path: 'usuario-cartera',
-    component: CarteraUsuarioComponent
-  },
-  { 
-    path: 'tienda', 
-    component: TiendaVideojuegosComponent 
-  },
-  { 
-    path: 'videojuego/comprar/:id', // Ruta alternativa
-    component: ComprarVideojuegoComponent 
-  },
-  {
-    path: 'videojuego/detalle/:id',
-    component: DetalleVideojuegoComponent
-  },
-  {
-    path: 'grupos',
-    component: GruposComponent
-  },
-  {
-    path: 'biblioteca',
-    component: BibliotecaComponent
-  },
+        path: 'empresas/videojuegos',
+        component: VideojuegosEmpresaComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE EMPRESA'] }
+    },
+    {
+        path: 'empresa/videojuegos/crear',
+        component: CrearVideojuegoComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE EMPRESA'] }
+    },
+    { 
+        path: 'empresa/videojuegos/editar/:id', 
+        component: EditarVideojuegoComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE EMPRESA'] }
+    },
+    {
+        path: 'reportes-empresa',
+        component: ReportesEmpresaComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMINISTRADOR DE EMPRESA'] }
+    },
 
+    // Rutas para USUARIO COMUN
+    {
+        path: 'usuario-cartera',
+        component: CarteraUsuarioComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['COMUN'] }
+    },
+    { 
+        path: 'tienda', 
+        component: TiendaVideojuegosComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['COMUN'] }
+    },
+    { 
+        path: 'videojuego/comprar/:id',
+        component: ComprarVideojuegoComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['COMUN'] }
+    },
+    {
+        path: 'videojuego/detalle/:id',
+        component: DetalleVideojuegoComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['COMUN'] }
+    },
+    {
+        path: 'grupos',
+        component: GruposComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['COMUN'] }
+    },
+    {
+        path: 'biblioteca',
+        component: BibliotecaComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['COMUN'] }
+    },
+    {
+        path: 'reportes-usuario',
+        component: ReportesUsuarioComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['COMUN'] }
+    },
 
-        // Ruta comodín
+    // Ruta comodín
     { 
         path: '**', 
         redirectTo: 'login' 

@@ -1,0 +1,109 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.reporte-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #dee2e6;
+  height: 100%;
+  background-color: white;
+}
+
+.reporte-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  border-color: #007bff;
+}
+
+.reporte-card.selected {
+  border-color: #007bff;
+  background-color: #e7f3ff;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+}
+
+/* Estilos para el select de categorías */
+.form-select:disabled {
+  background-color: #e9ecef;
+  opacity: 0.8;
+}
+
+.input-group .btn-outline-secondary {
+  border-left: 0;
+}
+
+.input-group .btn-outline-secondary:hover:not(:disabled) {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Spinner para categorías */
+.fa-spin {
+  animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Estilos para estados de carga */
+.text-info .fa-spinner {
+  font-size: 0.9em;
+  margin-right: 0.5em;
+}
+
+/* Botones */
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  font-weight: 500;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.btn-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Alertas */
+.alert-info {
+  background-color: #e7f3ff;
+  border-color: #b6d4fe;
+  color: #084298;
+  border-left: 4px solid #007bff;
+}
+
+/* Switch */
+.form-switch .form-check-input {
+  background-color: #adb5bd;
+  border-color: #adb5bd;
+}
+
+.form-switch .form-check-input:checked {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+/* Campos de formulario */
+.form-control, .form-select {
+  border: 1px solid #ced4da;
+  padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+/* Footer */
+.card-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}

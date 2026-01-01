@@ -5,8 +5,8 @@ import { catchError } from 'rxjs/operators';
 import { RestConstants } from '../../shared/rest-appi/rest-constants';
 
 export interface ReporteParametros {
-  fechaInicio?: string; // Formato: YYYY-MM-DD
-  fechaFin?: string;    // Formato: YYYY-MM-DD
+  fechaInicio?: string;
+  fechaFin?: string;
   limite?: number;
   clasificacion?: string;
   categoria?: string;
